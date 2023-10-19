@@ -44,4 +44,4 @@ Route::get('/pelayanan/find/{data}', [PelayananController::class, 'find'])->midd
 // Stanting
 Route::get('/verifikasi', [StantingController::class, 'index'])->middleware('auth');
 Route::post('/verifikasi/accept', [StantingController::class, 'verif'])->middleware('auth');
-Route::get('/status', [StantingController::class, 'status'])->middleware('auth');
+Route::get('/status/{bulan?}', [StantingController::class, 'status'])->middleware('auth');

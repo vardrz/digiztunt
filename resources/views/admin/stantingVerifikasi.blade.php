@@ -77,6 +77,7 @@ function lastData($d, $nik){
                       <button type="button" onclick="confirm()" class="btn btn-lg py-0 px-1 text-danger" data-bs-placement="bottom"  title="Delete"><i class="fas fa-ban"></i></button>
                       <form action="/verifikasi/accept" method="post" id="{{ $d->id }}">
                         @csrf
+                        <input type="hidden" name="nik" value="{{ $d->nik_balita }}">
                         <input type="hidden" name="id" value="{{ $d->id }}">
                         <input type="hidden" name="bb" value="{{ $d->bb }}">
                         <input type="hidden" name="tb" value="{{ $d->tb }}">

@@ -124,7 +124,7 @@
     tb.addEventListener('change', function() {
         if(balitaSelected != undefined){
             if(parseFloat(tb.value.replace(",", ".")) < parseFloat(balitaSelected['tb'])){
-                document.getElementById('tb-invalid').innerHTML = 'Tinggi badan tidak bisa kurang dari tinggi sebelumnya.';
+                document.getElementById('tb-invalid').innerHTML = 'Tinggi badan tidak bisa kurang dari tinggi sebelumnya. (' + balitaSelected['tb'] + ' cm)';
             }else{
                 document.getElementById('tb-invalid').innerHTML = '';
             }

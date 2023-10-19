@@ -39,6 +39,33 @@ function tbu($tbu_zscore, $tb){
             </div>
             <!-- /.card-header -->
             <div class="card-body">
+              <center>
+                <span class="h4">Pilih Bulan :</span>
+                <select id="bulan" class="mb-5">
+                  <option value="1">Januari</option>
+                  <option value="2">Februari</option>
+                  <option value="3">Maret</option>
+                  <option value="4">April</option>
+                  <option value="5">Mei</option>
+                  <option value="6">Juni</option>
+                  <option value="7">Juli</option>
+                  <option value="8">Agustus</option>
+                  <option value="9">September</option>
+                  <option value="10">Oktober</option>
+                  <option value="11">November</option>
+                  <option value="12">Desember</option>
+                </select>
+                <h3 class="mb-3">
+                  @if($bulan[0] != 'Januari')
+                    <a href="/status/{{ $bulan[1] }}" class="btn btn-sm btn-primary"><</a> 
+                  @endif
+                  &nbsp; Data Bulan {{ $bulan[0] }} &nbsp;
+                  @if($bulan[0] != 'Desember')
+                    <a href="/status/{{ $bulan[1]+2 }}" class="btn btn-sm btn-primary">></a>
+                  @endif
+                </h3>
+              </center>
+
               <table id="balita" class="table table-bordered table-striped">
                 <thead>
                   <tr>
@@ -73,5 +100,12 @@ function tbu($tbu_zscore, $tb){
     </div>
   </section>
   <!-- /.content -->
+
+  <script>
+    var bulan = document.getElementById('bulan');
+    bulan.addEventListener('change', function() {
+      window.location = window.location.origin + '/status/' + bulan.value
+    });
+  </script>
 
 @endsection

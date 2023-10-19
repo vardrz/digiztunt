@@ -8,33 +8,42 @@
       <div class="row">
         <div class="col-12 mt-3">
           <!-- Default box -->
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Halaman Home Pimpinan</h3>
-
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  {!! $kota->container() !!}
+                </div>
               </div>
             </div>
-            <div class="card-body">
-                <form action="/logout" method="post">
-                    @csrf
-                    <button type="submit">Logout</button>
-                </form>
+
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  {!! $utaraCount->container() !!}
+                </div>
+              </div>
             </div>
-            <!-- /.card-body -->
-            <div class="card-footer">
-              Footer
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  {!! $utaraList->container() !!}
+                </div>
+              </div>
             </div>
-            <!-- /.card-footer-->
           </div>
-          <!-- /.card -->
         </div>
       </div>
     </div>
   </section>
-  <!-- /.content -->
 
+  <script src="{{ $kota->cdn() }}"></script>
+  <script src="{{ $utaraCount->cdn() }}"></script>
+  <script src="{{ $utaraList->cdn() }}"></script>
+  
+  {{ $kota->script() }}
+  {{ $utaraCount->script() }}
+  {{ $utaraList->script() }}
+
+  <!-- /.content -->
 @endsection

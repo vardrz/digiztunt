@@ -24,7 +24,7 @@ class CreatePelayanansTable extends Migration
             $table->enum('verif', ['y', 'n'])->default('n');
             $table->float('bbu')->nullable();
             $table->float('tbu')->nullable();
-            $table->string('status')->nullable();
+            // $table->string('status')->nullable();
         });
     }
 

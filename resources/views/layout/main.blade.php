@@ -74,12 +74,12 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user (optional) -->
-      <div class="user-panel pb-3 mt-3 mb-3 d-flex">
+      <div class="user-panel pb-3 mt-3 mb-3 d-flex align-items-center">
         <div class="image">
           <img src="/theme/dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <span class="d-block text-white text-capitalize">Akses sebagai {{ session('level') }}</span>
+          <span class="d-block text-white text-capitalize">{{ auth()->user()->name }}<br><small>{{ (session('level') == 'petugas') ? 'Petugas Posyandu' : (session('level') == 'admin' ? 'Petugas Puskesmas' : 'Pimpinan')}}</small></span>
         </div>
       </div>
 
@@ -140,8 +140,8 @@
           </li>
           @endif
 
-          @if (session('level') == 'admin')
-          <li class="nav-item {{ Request::is('verifikasi') ? 'menu-open' : '' }}">
+          @if (session('level') != 'petugas')
+          <li class="nav-item {{ Request::is('verifikasi') || Request::is('status') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ Request::is('verifikasi') ? 'active' : '' }}">
               <i class="nav-icon fas fa-user-md"></i>
               <p>
@@ -150,12 +150,14 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+              @if (session('level') == 'admin')
               <li class="nav-item">
                 <a href="/verifikasi" class="nav-link {{ Request::is('verifikasi') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Verifikasi Pendataan</p>
                 </a>
               </li>
+              @endif
               <li class="nav-item">
                 <a href="/status" class="nav-link {{ Request::is('status') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
@@ -231,7 +233,25 @@
 <script src="/theme/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="/theme/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
-@if(Request::is('balita') || Request::is('balita/history') || Request::is('verifikasi') || Request::is('status'))
+
+@if(
+  Request::is('balita') ||
+  Request::is('balita/history') ||
+  Request::is('verifikasi') ||
+  Request::is('status') ||
+  Request::is('status/1') ||
+  Request::is('status/2') ||
+  Request::is('status/3') ||
+  Request::is('status/4') ||
+  Request::is('status/5') ||
+  Request::is('status/6') ||
+  Request::is('status/7') ||
+  Request::is('status/8') ||
+  Request::is('status/9') ||
+  Request::is('status/10') ||
+  Request::is('status/11') ||
+  Request::is('status/12')
+)
 <script>
   $(function () {
     var table = $("#balita").DataTable({

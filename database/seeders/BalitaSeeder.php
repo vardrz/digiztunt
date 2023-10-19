@@ -14,46 +14,139 @@ class BalitaSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('balitas')->insert([
+        DB::table('balitas')->insert(
             [
-                'nama' => 'Tomi Satrio Gunawan',
-                'tgl_lahir' => '2023-03-10',
-                'nik' => '1234567890123456',
-                'jenis_kelamin' => 'lk',
-                'nama_ibu' => 'Anisa Ratu Wibawa',
-                'nik_ibu' => '3312345678901234',
-                'nama_ayah' => 'Edi Ahmad Gunawan',
-                'nik_ayah' => '3312345678904321',
-                'no_kk' => '3312345678901000',
-                'kelurahan' => 'PODOSUGIH',
-                'kecamatan' => 'PEKALONGAN BARAT'
-            ],
-            [
-                'nama' => 'Bobi Satrio Gunawan',
-                'tgl_lahir' => '2022-01-11',
-                'nik' => '1234567890123457',
-                'jenis_kelamin' => 'lk',
-                'nama_ibu' => 'Anisa Ratu Wibawa',
-                'nik_ibu' => '3312345678901234',
-                'nama_ayah' => 'Edi Ahmad Gunawan',
-                'nik_ayah' => '3312345678904321',
-                'no_kk' => '3312345678901000',
-                'kelurahan' => 'PODOSUGIH',
-                'kecamatan' => 'PEKALONGAN BARAT'
-            ],
-            [
-                'nama' => 'Vina Pandu Winata',
-                'tgl_lahir' => '2018-07-22',
-                'nik' => '1234567890123400',
-                'jenis_kelamin' => 'pr',
-                'nama_ibu' => 'Siti Tirta Ayu',
-                'nik_ibu' => '3322345678901234',
-                'nama_ayah' => 'Rahman Surya Santoso',
-                'nik_ayah' => '3322345678904321',
-                'no_kk' => '3322345678904000',
-                'kelurahan' => 'SETONO',
-                'kecamatan' => 'PEKALONGAN TIMUR'
-            ],
-        ]);
+                [
+                    "nama" => "Andi Fitra",
+                    "tgl_lahir" => "2022-10-05",
+                    "nik" => "2110051001990001",
+                    "jenis_kelamin" => "lk",
+                    "nama_ibu" => "Siti Rahayu",
+                    "nik_ibu" => "4510202001990002",
+                    "nama_ayah" => "Rudi Prabowo",
+                    "nik_ayah" => "3504302001880003",
+                    "no_kk" => "1234567801",
+                    "kelurahan" => "SETONO",
+                    "kecamatan" => "PEKALONGAN TIMUR"
+                ],
+                [
+                    "nama" => "Rizky Fadillah",
+                    "tgl_lahir" => "2022-08-15",
+                    "nik" => "2108151002990004",
+                    "jenis_kelamin" => "lk",
+                    "nama_ibu" => "Dewi Lestari",
+                    "nik_ibu" => "4510202001990005",
+                    "nama_ayah" => "Budi Santoso",
+                    "nik_ayah" => "3504302001880006",
+                    "no_kk" => "1234567802",
+                    "kelurahan" => "SETONO",
+                    "kecamatan" => "PEKALONGAN TIMUR"
+                ],
+                [
+                    "nama" => "Nur Adisantoso",
+                    "tgl_lahir" => "2023-06-22",
+                    "nik" => "2106221003990007",
+                    "jenis_kelamin" => "lk",
+                    "nama_ibu" => "Lina Amelia",
+                    "nik_ibu" => "4510202001990008",
+                    "nama_ayah" => "Yudi Pratama",
+                    "nik_ayah" => "3504302001880009",
+                    "no_kk" => "1234567803",
+                    "kelurahan" => "SETONO",
+                    "kecamatan" => "PEKALONGAN TIMUR"
+                ],
+                [
+                    "nama" => "Rafi Pratama",
+                    "tgl_lahir" => "2022-05-11",
+                    "nik" => "2105111004990010",
+                    "jenis_kelamin" => "lk",
+                    "nama_ibu" => "Nina Fitriana",
+                    "nik_ibu" => "4510202001990011",
+                    "nama_ayah" => "Rian Nugroho",
+                    "nik_ayah" => "3504302001880012",
+                    "no_kk" => "1234567804",
+                    "kelurahan" => "SETONO",
+                    "kecamatan" => "PEKALONGAN TIMUR"
+                ],
+                [
+                    "nama" => "Akbar Tanjung",
+                    "tgl_lahir" => "2023-03-27",
+                    "nik" => "2103271005990013",
+                    "jenis_kelamin" => "lk",
+                    "nama_ibu" => "Eva Sari",
+                    "nik_ibu" => "4510202001990014",
+                    "nama_ayah" => "Fauzan Akbar",
+                    "nik_ayah" => "3504302001880015",
+                    "no_kk" => "1234567805",
+                    "kelurahan" => "SETONO",
+                    "kecamatan" => "PEKALONGAN TIMUR"
+                ],
+                [
+                    "nama" => "Faisal Rahman",
+                    "tgl_lahir" => "2022-11-18",
+                    "nik" => "2011181006990016",
+                    "jenis_kelamin" => "lk",
+                    "nama_ibu" => "Rina Septiani",
+                    "nik_ibu" => "4510202001990017",
+                    "nama_ayah" => "Hendra Wijaya",
+                    "nik_ayah" => "3504302001880018",
+                    "no_kk" => "1234567806",
+                    "kelurahan" => "SETONO",
+                    "kecamatan" => "PEKALONGAN TIMUR"
+                ],
+                [
+                    "nama" => "Septian David",
+                    "tgl_lahir" => "2023-01-09",
+                    "nik" => "2009091007990019",
+                    "jenis_kelamin" => "lk",
+                    "nama_ibu" => "Linda Indah",
+                    "nik_ibu" => "4510202001990020",
+                    "nama_ayah" => "Iqbal Maulana",
+                    "nik_ayah" => "3504302001880021",
+                    "no_kk" => "1234567807",
+                    "kelurahan" => "SETONO",
+                    "kecamatan" => "PEKALONGAN TIMUR"
+                ],
+                [
+                    "nama" => "Ilham Pratama",
+                    "tgl_lahir" => "2022-07-14",
+                    "nik" => "2007141008990022",
+                    "jenis_kelamin" => "lk",
+                    "nama_ibu" => "Fitri Handayani",
+                    "nik_ibu" => "4510202001990023",
+                    "nama_ayah" => "Surya Wijaya",
+                    "nik_ayah" => "3504302001880024",
+                    "no_kk" => "1234567808",
+                    "kelurahan" => "SETONO",
+                    "kecamatan" => "PEKALONGAN TIMUR"
+                ],
+                [
+                    "nama" => "Yoga Ahsan",
+                    "tgl_lahir" => "2023-04-30",
+                    "nik" => "2004301009990025",
+                    "jenis_kelamin" => "lk",
+                    "nama_ibu" => "Diana Sari",
+                    "nik_ibu" => "4510202001990026",
+                    "nama_ayah" => "Rahman Hakim",
+                    "nik_ayah" => "3504302001880027",
+                    "no_kk" => "1234567809",
+                    "kelurahan" => "SETONO",
+                    "kecamatan" => "PEKALONGAN TIMUR"
+                ],
+                [
+                    "nama" => "Ridwan Abdullah",
+                    "tgl_lahir" => "2023-02-19",
+                    "nik" => "2002191010990028",
+                    "jenis_kelamin" => "lk",
+                    "nama_ibu" => "Astuti Lestari",
+                    "nik_ibu" => "4510202001990029",
+                    "nama_ayah" => "Haris Suryadi",
+                    "nik_ayah" => "3504302001880030",
+                    "no_kk" => "1234567810",
+                    "kelurahan" => "SETONO",
+                    "kecamatan" => "PEKALONGAN TIMUR"
+                ]
+            ]
+        );
     }
 }
