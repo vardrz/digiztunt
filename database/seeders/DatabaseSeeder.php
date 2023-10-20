@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             BalitaSeeder::class,
             PelayananSeeder::class,
-            BadutaAntopometriSeeder::class,
+            BalitaAntopometriSeeder::class,
         ]);
     }
 }

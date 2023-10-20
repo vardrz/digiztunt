@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBadutaAntopometrisTable extends Migration
+class CreateBalitaAntopometrisTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateBadutaAntopometrisTable extends Migration
      */
     public function up()
     {
-        Schema::create('baduta_antopometris', function (Blueprint $table) {
+        Schema::create('balita_antopometris', function (Blueprint $table) {
             $table->id();
             $table->integer('usia');
             $table->enum('jenis_kelamin', ['lk', 'pr']);
@@ -32,6 +32,6 @@ class CreateBadutaAntopometrisTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('baduta_antopometris');
+        Schema::dropIfExists('balita_antopometris');
     }
 }

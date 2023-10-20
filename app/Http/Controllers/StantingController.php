@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BadutaAntopometri;
+use App\Models\BalitaAntopometri;
 use App\Models\Pelayanan;
 use App\Models\Balita;
 use Illuminate\Http\Request;
@@ -34,7 +34,7 @@ class StantingController extends Controller
 
     public function verif(Request $req)
     {
-        $standarAntro = BadutaAntopometri::where('usia', $req->usia)->where('jenis_kelamin', $req->jenis_kelamin)->first();
+        $standarAntro = BalitaAntopometri::where('usia', $req->usia)->where('jenis_kelamin', $req->jenis_kelamin)->first();
 
         $bbu_zscore = round((intval($req->bb) - $standarAntro->bbuMedian) / ($standarAntro->bbuMedian - $standarAntro->bbuMin1sd), 2);
         $tbu_zscore = round((intval($req->tb) - $standarAntro->tbuMedian) / ($standarAntro->tbuMedian - $standarAntro->tbuMin1sd), 2);
