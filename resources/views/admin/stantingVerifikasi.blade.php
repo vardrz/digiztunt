@@ -1,7 +1,7 @@
 <?php 
 use App\Models\Pelayanan;
-function lastData($d, $nik){
-  $lastData = Pelayanan::where('nik_balita', $nik)->limit(2)->orderBy('tgl_pelayanan', 'DESC')->get();
+function lastData($d, $id){
+  $lastData = Pelayanan::where('id_balita', $id)->limit(2)->orderBy('tgl_pelayanan', 'DESC')->get();
   if(count($lastData) > 1){
     switch ($d) {
       case 'tb':
@@ -58,17 +58,17 @@ function lastData($d, $nik){
                     <td>{{ $d->usia }} Bulan</td>
                     <td>{{ ($d->balita->jenis_kelamin == 'lk') ? 'Laki-laki' : 'Perempuan' }}</td>
                     <td>
-                      <button class="btn p-0" style="cursor:help" data-bs-toggle="tooltip" data-bs-placement="bottom"  title="Berat badan sebelumnya :&NewLine;{{ lastData('bb', $d->nik_balita) }}">
+                      <button class="btn p-0" style="cursor:help" data-bs-toggle="tooltip" data-bs-placement="bottom"  title="Berat badan sebelumnya :&NewLine;{{ lastData('bb', $d->id_balita) }}">
                         {{ $d->bb }}
                       </button>
                     </td>
                     <td>
-                      <button class="btn p-0" style="cursor:help" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tinggi badan sebelumnya :&NewLine;{{ lastData('tb', $d->nik_balita) }}">
+                      <button class="btn p-0" style="cursor:help" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tinggi badan sebelumnya :&NewLine;{{ lastData('tb', $d->id_balita) }}">
                         {{ $d->tb }}
                       </button>
                     </td>
                     <td>
-                      <button class="btn p-0" style="cursor:help" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Lingkar kepala sebelumnya :&NewLine;{{ lastData('lk', $d->nik_balita) }}">
+                      <button class="btn p-0" style="cursor:help" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Lingkar kepala sebelumnya :&NewLine;{{ lastData('lk', $d->id_balita) }}">
                         {{ $d->lingkar_kepala }}
                       </button>
                     </td>
@@ -77,7 +77,7 @@ function lastData($d, $nik){
                       <button type="button" onclick="confirm()" class="btn btn-lg py-0 px-1 text-danger" data-bs-placement="bottom"  title="Delete"><i class="fas fa-ban"></i></button>
                       <form action="/verifikasi/accept" method="post" id="{{ $d->id }}">
                         @csrf
-                        <input type="hidden" name="nik" value="{{ $d->nik_balita }}">
+                        <input type="hidden" name="id_balita" value="{{ $d->id_balita }}">
                         <input type="hidden" name="id" value="{{ $d->id }}">
                         <input type="hidden" name="bb" value="{{ $d->bb }}">
                         <input type="hidden" name="tb" value="{{ $d->tb }}">

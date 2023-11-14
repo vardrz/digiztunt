@@ -26,8 +26,8 @@ class BalitaSeeder extends Seeder
                     "nama_ayah" => "Rudi Prabowo",
                     "nik_ayah" => "3504302001880003",
                     "no_kk" => "1234567801",
-                    "kelurahan" => "SETONO",
-                    "kecamatan" => "PEKALONGAN TIMUR"
+                    "kelurahan" => "DEGAYU",
+                    "kecamatan" => "PEKALONGAN UTARA"
                 ],
                 [
                     "nama" => "Rizky Fadillah",
@@ -39,8 +39,8 @@ class BalitaSeeder extends Seeder
                     "nama_ayah" => "Budi Santoso",
                     "nik_ayah" => "3504302001880006",
                     "no_kk" => "1234567802",
-                    "kelurahan" => "SETONO",
-                    "kecamatan" => "PEKALONGAN TIMUR"
+                    "kelurahan" => "DEGAYU",
+                    "kecamatan" => "PEKALONGAN UTARA"
                 ],
                 [
                     "nama" => "Nur Adisantoso",
@@ -52,8 +52,8 @@ class BalitaSeeder extends Seeder
                     "nama_ayah" => "Yudi Pratama",
                     "nik_ayah" => "3504302001880009",
                     "no_kk" => "1234567803",
-                    "kelurahan" => "SETONO",
-                    "kecamatan" => "PEKALONGAN TIMUR"
+                    "kelurahan" => "KRAPYAK",
+                    "kecamatan" => "PEKALONGAN UTARA"
                 ],
                 [
                     "nama" => "Rafi Pratama",
@@ -65,8 +65,8 @@ class BalitaSeeder extends Seeder
                     "nama_ayah" => "Rian Nugroho",
                     "nik_ayah" => "3504302001880012",
                     "no_kk" => "1234567804",
-                    "kelurahan" => "SETONO",
-                    "kecamatan" => "PEKALONGAN TIMUR"
+                    "kelurahan" => "KRAPYAK",
+                    "kecamatan" => "PEKALONGAN UTARA"
                 ],
                 [
                     "nama" => "Akbar Tanjung",
@@ -78,8 +78,8 @@ class BalitaSeeder extends Seeder
                     "nama_ayah" => "Fauzan Akbar",
                     "nik_ayah" => "3504302001880015",
                     "no_kk" => "1234567805",
-                    "kelurahan" => "SETONO",
-                    "kecamatan" => "PEKALONGAN TIMUR"
+                    "kelurahan" => "KANDANG PANJANG",
+                    "kecamatan" => "PEKALONGAN UTARA"
                 ],
                 [
                     "nama" => "Faisal Rahman",
@@ -91,8 +91,8 @@ class BalitaSeeder extends Seeder
                     "nama_ayah" => "Hendra Wijaya",
                     "nik_ayah" => "3504302001880018",
                     "no_kk" => "1234567806",
-                    "kelurahan" => "SETONO",
-                    "kecamatan" => "PEKALONGAN TIMUR"
+                    "kelurahan" => "PANJANG WETAN",
+                    "kecamatan" => "PEKALONGAN UTARA"
                 ],
                 [
                     "nama" => "Septian David",
@@ -104,8 +104,8 @@ class BalitaSeeder extends Seeder
                     "nama_ayah" => "Iqbal Maulana",
                     "nik_ayah" => "3504302001880021",
                     "no_kk" => "1234567807",
-                    "kelurahan" => "SETONO",
-                    "kecamatan" => "PEKALONGAN TIMUR"
+                    "kelurahan" => "PANJANG BARU",
+                    "kecamatan" => "PEKALONGAN UTARA"
                 ],
                 [
                     "nama" => "Ilham Pratama",
@@ -117,8 +117,8 @@ class BalitaSeeder extends Seeder
                     "nama_ayah" => "Surya Wijaya",
                     "nik_ayah" => "3504302001880024",
                     "no_kk" => "1234567808",
-                    "kelurahan" => "SETONO",
-                    "kecamatan" => "PEKALONGAN TIMUR"
+                    "kelurahan" => "BANDENGAN",
+                    "kecamatan" => "PEKALONGAN UTARA"
                 ],
                 [
                     "nama" => "Yoga Ahsan",
@@ -130,8 +130,8 @@ class BalitaSeeder extends Seeder
                     "nama_ayah" => "Rahman Hakim",
                     "nik_ayah" => "3504302001880027",
                     "no_kk" => "1234567809",
-                    "kelurahan" => "SETONO",
-                    "kecamatan" => "PEKALONGAN TIMUR"
+                    "kelurahan" => "PADUKUHAN KRATON",
+                    "kecamatan" => "PEKALONGAN UTARA"
                 ],
                 [
                     "nama" => "Ridwan Abdullah",
@@ -143,8 +143,8 @@ class BalitaSeeder extends Seeder
                     "nama_ayah" => "Haris Suryadi",
                     "nik_ayah" => "3504302001880030",
                     "no_kk" => "1234567810",
-                    "kelurahan" => "SETONO",
-                    "kecamatan" => "PEKALONGAN TIMUR"
+                    "kelurahan" => "KRAPYAK",
+                    "kecamatan" => "PEKALONGAN UTARA"
                 ]
             ]
         );

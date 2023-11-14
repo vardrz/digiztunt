@@ -24,6 +24,8 @@
                         </div>
                         <div class="d-none py-2" id="leftcolumn">
                             <form method="post">
+                            <input type="hidden" name="id_balita" value="" id="id_balita">
+                            <input type="hidden" value="" id="dob_balita">
                             @csrf
                             <div class="form-group">
                                 <label for="nik_balita">NIK</label>
@@ -34,10 +36,10 @@
                                 <input type="text" class="form-control text-uppercase" id="nama_balita" placeholder="Nama" required readonly>
                             </div>
                             <div class="form-group">
-                                <label>Tanggal Pelayanan</label>
+                                <label>Tanggal Pendataan</label>
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <select name="tgl" class="form-control mb-1" required>
+                                        <select name="tgl" class="form-control mb-1" id="tgl_pendataan" required>
                                             <option value="" disabled selected>Tanggal</option>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 @if (date('d') - $i == 0)
@@ -49,7 +51,7 @@
                                         </select>
                                     </div>
                                     <div class="col-sm-5">
-                                        <select name="bulan" class="form-control mb-1" required>
+                                        <select name="bulan" class="form-control mb-1" id="bulan_pendataan" required>
                                             <option value="" disabled selected>Bulan</option>
                                             @foreach ($month as $i)
                                                 @if (date('m') - $i['no'] == 0)
@@ -61,7 +63,7 @@
                                         </select>
                                     </div>
                                     <div class="col-sm-4">
-                                        <select name="tahun" class="form-control" required>
+                                        <select name="tahun" class="form-control" id="tahun_pendataan" required>
                                             <option value="" disabled selected>Tahun</option>
                                             @for ($i = date('Y'); $i >= date('Y')-5; $i--)
                                                 @if (date('Y') - $i == 0)
@@ -87,7 +89,7 @@
                         <div class="form-group">
                             <label for="usia">Usia</label> <span>(Bulan) </span>
                             <input type="text" name="usia" class="form-control" id="usia" placeholder="Usia" required>
-                            <span class="text-sm text-info">Dihitung otomatis berdasarkan Tanggal Lahir.</span>
+                            <span class="text-sm text-info">Dihitung otomatis berdasarkan Tanggal Lahir & Tanggal Pendataan.</span>
                         </div>
                         <div class="form-group">
                             <label for="bb">Berat Badan</label> <span>(Kilogram)</span>
@@ -115,9 +117,25 @@
         </form>
     </div>
 </section>
- <!-- /.content -->
+ <!-- /.content --> 
+@endsection
 
- <script>
+@section('script')
+<div class="modal fade" id="modal-data">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Data Balita Tersedia</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body p-0">
+                <table class="table table-striped" id="listdata"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
     var balitaSelected = '';
 
     var tb = document.getElementById('tb');
@@ -130,6 +148,14 @@
             }
         }
     });
+
+    document.getElementById('tahun_pendataan').addEventListener('change', () => updateUsia());
+    document.getElementById('bulan_pendataan').addEventListener('change', () => updateUsia());
+    document.getElementById('tgl_pendataan').addEventListener('change', () => updateUsia());
+    function updateUsia() {
+        update_usia = month(document.getElementById('dob_balita').value);
+        document.querySelector('#usia').value = update_usia;
+    }
 
     var buttonCari = document.getElementById('cari');
     buttonCari.addEventListener('click', function() {
@@ -149,9 +175,30 @@
 
                     for(var i = 0; i < data.length; i++){
                         if(month(data[i]['tgl_lahir']) > 60){
-                            document.getElementById('listdata').innerHTML += `<tr><td class='pl-3'><b>` + data[i]['nama'] + `</b><br><small>Nama Ibu : ` + data[i]['nama_ibu'] + `</small></td><td class='align-middle'><button class='btn btn-sm btn-danger' disabled>> 5 Tahun</button></td></tr>`;
+                            document.getElementById('listdata').innerHTML += 
+                                `<tr>
+                                    <td class='pl-3'>
+                                        <b>` + data[i]['nama'] + `</b><br><small>Ibu : ` + data[i]['nama_ibu'] + ` | ` + data[i]['kelurahan'] + `</small>
+                                    </td>
+                                    <td class='align-middle'>
+                                        <button class='btn btn-sm btn-danger' disabled>> 5 Tahun</button>
+                                    </td>
+                                </tr>`;
                         }else{
-                            document.getElementById('listdata').innerHTML += `<tr><td class='pl-3'><b>` + data[i]['nama'] + `</b><br><small>Nama Ibu : ` + data[i]['nama_ibu'] + `</small></td><td class='align-middle'><button class='btn btn-sm btn-success' onclick="pilih('` + data[i]['nik'] + `','` + data[i]['nama'] + `','` + data[i]['tgl_lahir'] + `')">Pilih</button></td></tr>`;
+                            document.getElementById('listdata').innerHTML += 
+                                `<tr>
+                                    <td class='pl-3'>
+                                        <b>` + data[i]['nama'] + `</b><br><small>Ibu : ` + data[i]['nama_ibu'] + ` | ` + data[i]['kelurahan'] + `</small>
+                                    </td>
+                                    <td class='align-middle'>
+                                        <button class='btn btn-sm btn-success' onclick="pilih('` + 
+                                            data[i]['id'] + `','` + 
+                                            data[i]['nik'] + `','` + 
+                                            data[i]['nama'] + `','` + 
+                                            data[i]['tgl_lahir']
+                                         + `')">Pilih</button>
+                                    </td>
+                                </tr>`;
                         }
                     }
                 }else{
@@ -161,7 +208,7 @@
         );
     });
 
-    function pilih(nik, nama, usia){
+    function pilih(id, nik, nama, usia){
         document.getElementById('leftcolumn').classList.remove("d-none");
         document.getElementById('rightcolumn').classList.remove("d-none");
         document.getElementById('bottomcolumn').classList.remove("d-none");
@@ -170,11 +217,13 @@
         document.querySelector('.modal-backdrop').remove();
         document.body.style.overflow = "visible";
         
+        document.querySelector('#id_balita').value = id;
         document.querySelector('#nik_balita').value = nik;
         document.querySelector('#nama_balita').value = nama;
+        document.querySelector('#dob_balita').value = usia;
         document.querySelector('#usia').value = month(usia);
 
-        var url = window.location.origin + '/pelayanan/find/' + nik;
+        var url = window.location.origin + '/pelayanan/find/' + id;
         fetch(url)
         .then(
             response => response.json()
@@ -186,8 +235,14 @@
     }
 
     function month(dob) {
+        datePendataan = document.querySelector('#tahun_pendataan').value + '-' +
+                        document.querySelector('#bulan_pendataan').value + '-' +
+                        document.querySelector('#tgl_pendataan').value;
+        // console.log(datePendataan);
+
         const dobObj = new Date(dob);
-        const hariIni = new Date();
+        const hariIni = new Date(datePendataan);
+        // const hariIni = new Date();
 
         const selisihTahun = hariIni.getFullYear() - dobObj.getFullYear();
         const selisihBulan = hariIni.getMonth() - dobObj.getMonth();
@@ -220,16 +275,4 @@
         })
     }
 </script>
-
-<div class="modal fade" id="modal-data">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Data Balita Tersedia</h4>
-            </div>
-            <table class="table table-striped" id="listdata"></table>
-        </div>
-    </div>
-</div>
-
 @endsection

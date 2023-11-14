@@ -32,9 +32,9 @@ Route::get('/balita/history', [BalitaController::class, 'history'])->middleware(
 Route::get('/balita/find/{data}', [BalitaController::class, 'find'])->middleware('auth');
 Route::get('/balita/new', [BalitaController::class, 'new'])->middleware('auth');  // Create
 Route::post('/balita/new', [BalitaController::class, 'store']);
-Route::get('/balita/edit/{nik?}', [BalitaController::class, 'edit'])->middleware('auth');  // Update
+Route::get('/balita/edit/{id?}', [BalitaController::class, 'edit'])->middleware('auth');  // Update
 Route::post('/balita/update', [BalitaController::class, 'update'])->middleware('auth');
-Route::post('/balita/delete/{nik}', [BalitaController::class, 'destroy'])->middleware('auth'); // Delete
+Route::post('/balita/delete/{id}', [BalitaController::class, 'destroy'])->middleware('auth'); // Delete
 
 // Pelayanan
 Route::get('/pelayanan', [PelayananController::class, 'index'])->middleware('auth');

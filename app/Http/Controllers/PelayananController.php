@@ -68,7 +68,8 @@ class PelayananController extends Controller
 
     public function find($data = null)
     {
-        $return = Pelayanan::where('nik_balita', $data)->orderBy('tgl_pelayanan', 'DESC')->get();
+        // $return = Pelayanan::where('nik_balita', $data)->orderBy('tgl_pelayanan', 'DESC')->get();
+        $return = Pelayanan::where('id_balita', $data)->orderBy('tgl_pelayanan', 'DESC')->get();
         return $return;
     }
 
@@ -76,7 +77,8 @@ class PelayananController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
-            "nik_balita" => "required|min:16",
+            "id_balita" => "required",
+            "nik_balita" => "required",
             "tb" => "required",
             "bb" => "required",
             "lingkar_kepala" => "required",
@@ -84,6 +86,7 @@ class PelayananController extends Controller
         ]);
 
         $data = [
+            "id_balita" => $validate['id_balita'],
             "nik_balita" => $validate['nik_balita'],
             "tgl_pelayanan" => $request->tahun . '-' . $request->bulan . '-' . $request->tgl,
             "tb" => doubleval(str_replace(',', '.', $validate['tb'])),
@@ -93,8 +96,8 @@ class PelayananController extends Controller
         ];
 
         Pelayanan::updateOrCreate(
-            ['nik_balita' => $data['nik_balita'], 'tgl_pelayanan' => $data['tgl_pelayanan']],
-            ['tb' => $data['tb'], 'bb' => $data['bb'], 'lingkar_kepala' => $data['lingkar_kepala'], 'usia' => $data['usia']]
+            ['id_balita' => $data['id_balita'], 'tgl_pelayanan' => $data['tgl_pelayanan']],
+            ['nik_balita' => $data['nik_balita'], 'tb' => $data['tb'], 'bb' => $data['bb'], 'lingkar_kepala' => $data['lingkar_kepala'], 'usia' => $data['usia']]
         );
 
         return redirect('/pelayanan')->with('success', 'Data berhasil ditambahkan.');

@@ -15,6 +15,7 @@ class CreatePelayanansTable extends Migration
     {
         Schema::create('pelayanans', function (Blueprint $table) {
             $table->id();
+            $table->string('id_balita')->references('id')->on('balitas');
             $table->string('nik_balita', 16)->references('nik')->on('balitas');
             $table->date('tgl_pelayanan');
             $table->float('tb');

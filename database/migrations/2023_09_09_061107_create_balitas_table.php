@@ -17,7 +17,7 @@ class CreateBalitasTable extends Migration
             $table->id();
             $table->string('nama');
             $table->date('tgl_lahir');
-            $table->string('nik', 16)->unique();
+            $table->string('nik', 16);
             $table->enum('jenis_kelamin', ['lk', 'pr']);
             $table->string('nama_ibu');
             $table->string('nik_ibu', 16);

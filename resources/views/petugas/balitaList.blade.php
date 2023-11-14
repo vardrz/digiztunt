@@ -20,8 +20,17 @@ function month($tanggalLahir) {
 
 @extends('layout.main')
 
-@section('content')
+@section('head')
+<style>
+  @media print {
+    body {
+      -webkit-print-color-adjust: exact;
+    }
+  }
+</style>
+@endsection
 
+@section('content')
   <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
@@ -44,7 +53,7 @@ function month($tanggalLahir) {
                   <th>Usia</th>
                   <th>Kecamatan</th>
                   <th>Kelurahan</th>
-                  @if (session('level') == 'admin')<th>Aksi</th>@endif
+                  @if (session('level') == 'petugas')<th>Aksi</th>@endif
                 </tr>
                 </thead>
                 <tbody>
@@ -52,17 +61,21 @@ function month($tanggalLahir) {
                 <tr>
                   <td class="text-center">{{ $no }}</td>
                   <td>{{ $balita->nik }}</td>
-                  <td style="cursor: pointer;" onclick="dataModal('{{ $balita->nik }}','{{ $balita->nama_ibu }}','{{ $balita->nik_ibu }}','{{ $balita->nama_ayah }}','{{ $balita->nik_ayah }}','{{ $balita->no_kk }}')">{{ $balita->nama }}</td>
+                  <td style="cursor: pointer;" onclick="dataModal('{{ $balita->id }}','{{ $balita->nik }}','{{ $balita->nama }}','{{ $balita->kelurahan }}','{{ $balita->nama_ibu }}','{{ $balita->nik_ibu }}','{{ $balita->nama_ayah }}','{{ $balita->nik_ayah }}','{{ $balita->no_kk }}')">
+                    {{ $balita->nama }}
+                  </td>
                   <td>{{ $balita->jenis_kelamin == 'lk' ? 'Laki-laki' : 'Perempuan' }}</td>
                   <td>{{ date('d-m-Y', strtotime ($balita->tgl_lahir)) }}</td>
                   <td>{{ month($balita->tgl_lahir) }}</td>
                   <td>{{ $balita->kecamatan }}</td>
                   <td>{{ $balita->kelurahan }}</td>
-                  @if (session('level') == 'admin')<td class="text-center align-middle">
-                    <a href="/balita/edit/{{ $balita->nik }}" class="btn btn-lg py-0 px-1 text-primary"><i class="fas fa-pen"></i></a>
-                    <button type="button" onclick="confirm({{ $balita->nik }})" class="btn btn-lg py-0 px-1 text-danger"><i class="fas fa-trash"></i></button>
-                    <form action="/balita/delete/{{ $balita->nik }}" method="post" id="{{ $balita->nik }}">@csrf</form>
-                  </td>@endif
+                  @if (session('level') == 'petugas')
+                  <td class="text-center align-middle" width="60">
+                    <a href="/balita/edit/{{ $balita->id }}" class="btn btn-lg py-0 px-1 text-primary"><i class="fas fa-pen"></i></a>
+                    <button type="button" onclick="confirm({{ $balita->id }})" class="btn btn-lg py-0 px-1 text-danger"><i class="fas fa-trash"></i></button>
+                    <form action="/balita/delete/{{ $balita->id }}" method="post" id="delete{{ $balita->id }}">@csrf</form>
+                  </td>
+                  @endif
                 </tr>
                 <?php $no++; ?>
                 @endforeach
@@ -76,8 +89,114 @@ function month($tanggalLahir) {
     </div>
   </section>
   <!-- /.content -->
+@endsection
 
+@section('script')    
+<div class="modal fade" id="dataModal">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div id="btnPDF">
+          <button type="button" class="btn btn-sm btn-danger mr-1" onclick="savePDF()">PDF</button>
+        </div>
+        <button type="button" class="btn btn-sm btn-success" onclick="print()">Print</button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body" id="modalPrint">
+        <h2 class="text-center">Data Balita</h2>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Kelurahan</th>
+              <th>Ibu</th>
+              <th>Ayah</th>
+              <th>No. KK</th>
+            </tr>
+          </thead>
+          <tbody id="data_balita"></tbody>
+        </table>
+        <h4 class="text-center mt-5 @if(session('level') == 'petugas') d-none @endif">Status Gizi Terakhir</h4>
+        <div class="text-center mb-4 @if(session('level') == 'petugas') d-none @endif" id="gizi"></div>
+        <h4 class="text-center">Riwayat Pendataan</h4>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>TANGGAL</th>
+              <th>USIA</th>
+              <th>TB (Cm)</th>
+              <th>BB (Kg)</th>
+              <th>LK (Cm)</th>
+            </tr>
+          </thead>
+          <tbody id="riwayat"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="/theme/plugins/printThis/printThis.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script src="http://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
+  // Func export modal data to pdf
+  function savePDF(nama, kelurahan){
+    const modal = document.getElementById('modalPrint');
+    $('#modalPrint').show().scrollTop(0);
+    html2canvas(modal, {
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: modal.scrollHeight + 100,
+      }).then(function(canvas) {
+        var doc = new jsPDF('p', 'mm', 'a4');
+        var imgData = canvas.toDataURL('image/png');
+        var imgWidth = doc.internal.pageSize.getWidth();
+        var pageHeight = doc.internal.pageSize.getHeight();
+        var imgHeight = canvas.height * imgWidth / canvas.width;
+        var heightLeft = imgHeight;
+        var position = 10; // give some top padding to first page
+
+        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight + 10
+          doc.addPage();
+          doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+        doc.save(nama + '_' + kelurahan +'.pdf');
+
+        // var pdf = new jsPDF('p', 'mm', 'a4');
+        // // get image properties
+        // var imgData = canvas.toDataURL('image/png');
+        // var imgProps= pdf.getImageProperties(imgData);
+        // // generate image to pdf
+        // var pdfWidth = pdf.internal.pageSize.getWidth();
+        // var pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        // pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        // pdf.save();
+
+        // const image = canvas.toDataURL('image/png');
+        // const a = document.createElement('a');
+        // a.setAttribute('download', 'my-image.png');
+        // a.setAttribute('href', image);
+        // a.click();
+        // canvas.remove();
+      }
+    );
+  }
+
+  // Print status gizi
+  function print(){
+    $("#modalPrint").printThis({ 
+      importCSS: true,
+      importStyle: true,
+      printContainer: true,
+    });
+  }
+
   // Func Status Gizi
   function statusGizi(tbu, bbu, tb, bb){
     if(bbu < -3){
@@ -104,40 +223,67 @@ function month($tanggalLahir) {
   }
 
   // Func Data Lengkap
-  function dataModal(nik, nama_ibu, nik_ibu, nama_ayah, nik_ayah, no_kk){
+  function dataModal(id, nik, nama, kelurahan, nama_ibu, nik_ibu, nama_ayah, nik_ayah, no_kk){
     const myModal = new bootstrap.Modal(document.getElementById('dataModal')); // creating modal object
     myModal.show();
+    
+    // Button PDF
+    document.getElementById('btnPDF').innerHTML =
+      `<button type="button" class="btn btn-sm btn-danger mr-1" onclick="savePDF('${nama}','${kelurahan}')">PDF</button>`;
 
-    // Data Ortu
-    document.getElementById('data').innerHTML = 
-      `<div class='col-sm-4'><table><tr><td width='65'><b>Ibu</b><br/><span class='text-xs text-bold'>(NIK)</span></td><td>` + nama_ibu + `<br/><span class='text-xs'>` + nik_ibu + `</span></td></tr></table></div>` +
-      `<div class='col-sm-4'><table><tr><td width='65'><b>Ayah</b><br/><span class='text-xs text-bold'>(NIK)</span></td><td>` + nama_ayah + `<br/><span class='text-xs'>` + nik_ayah + `</span></td></tr></table></div>` +
-      `<div class='col-sm-4'><table><tr><td width='65'><b>No. KK</b></td><td>` + no_kk + `</td></tr></table></div>`;
+    // Data Balita
+    document.getElementById('data_balita').innerHTML =
+      `<tr><td>` + nama + `</td>` +
+      `<td>` + kelurahan + `</td>` +
+      `<td>` + nama_ibu + `<br><small>NIK : ` + nik_ibu + `</small>` + `</td>` +
+      `<td>` + nama_ayah + `<br><small>NIK : ` + nik_ayah + `</small>` + `</td>` +
+      `<td>` + no_kk + `</td></tr>`;
 
     // Pendataan
-    var url = window.location.origin + '/pelayanan/find/' + nik;
+    var url = window.location.origin + '/pelayanan/find/' + id;
+    console.log('/pelayanan/find/' + id)
     fetch(url)
     .then(
         response => response.json()
     ).then(
         data => {
             if(data.length > 0){
-              // Status Gizi
-              if(data[0]['verif'] == 'y'){
-                var gizi = statusGizi(data[0]['tbu'], data[0]['bbu'], data[0]['tb'], data[0]['bb']);
+              if(data.length > 1){
+                // Status Gizi
+                if(data[0]['verif'] == 'y'){
+                  var gizi = statusGizi(data[0]['tbu'], data[0]['bbu'], data[0]['tb'], data[0]['bb']);
+                }else{
+                  var gizi = statusGizi(data[1]['tbu'], data[1]['bbu'], data[1]['tb'], data[1]['bb']);
+                }
+  
+                // Riwayat Pendataan
+                document.getElementById('riwayat').innerHTML = "";
+                for(var i = 0; i < data.length; i++){
+                  document.getElementById('riwayat').innerHTML +=
+                    `<tr><td>` + data[i]['tgl_pelayanan'] + `</td>` +
+                    `<td>` + data[i]['usia'] + ` Bulan</td>` +
+                    `<td>` + data[i]['tb'] + `</td>` +
+                    `<td>` + data[i]['bb'] + `</td>` +
+                    `<td>` + data[i]['lingkar_kepala'] + `</td></tr>`;
+                }
               }else{
-                var gizi = statusGizi(data[1]['tbu'], data[1]['bbu'], data[1]['tb'], data[1]['bb']);
-              }
-
-              // Riwayat Pendataan
-              document.getElementById('riwayat').innerHTML = "";
-              for(var i = 0; i < data.length; i++){
-                document.getElementById('riwayat').innerHTML +=
-                  `<tr><td>` + data[i]['tgl_pelayanan'] + `</td>` +
-                  `<td>` + data[i]['usia'] + ` Bulan</td>` +
-                  `<td>` + data[i]['tb'] + `</td>` +
-                  `<td>` + data[i]['bb'] + `</td>` +
-                  `<td>` + data[i]['lingkar_kepala'] + `</td></tr>`;
+                // Status Gizi
+                if(data[0]['verif'] == 'y'){
+                  var gizi = statusGizi(data[0]['tbu'], data[0]['bbu'], data[0]['tb'], data[0]['bb']);
+                }else{
+                  var gizi = "<button class='btn btn-md btn-secondary mt'><b>Status gizi belum di proses</b></button>";
+                }
+  
+                // Riwayat Pendataan
+                document.getElementById('riwayat').innerHTML = "";
+                for(var i = 0; i < data.length; i++){
+                  document.getElementById('riwayat').innerHTML +=
+                    `<tr><td>` + data[i]['tgl_pelayanan'] + `</td>` +
+                    `<td>` + data[i]['usia'] + ` Bulan</td>` +
+                    `<td>` + data[i]['tb'] + `</td>` +
+                    `<td>` + data[i]['bb'] + `</td>` +
+                    `<td>` + data[i]['lingkar_kepala'] + `</td></tr>`;
+                }
               }
             }else{
               var gizi = "<button class='btn btn-md btn-secondary mt'><b>Belum ada data</b></button>";
@@ -161,30 +307,4 @@ function month($tanggalLahir) {
       }, 1);
   }
 </script>
-
-<div class="modal fade" id="dataModal">
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-body">
-        <h4 class="text-center">Status Gizi Terakhir</h4>
-        <div class="text-center mb-4" id="gizi"></div>
-        <h4>Data Orang Tua</h4>
-        <div class="row" id="data"></div>
-        <h4 class="mt-4">Riwayat Pendataan</h4>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>TANGGAL</th>
-              <th>USIA</th>
-              <th>TB (Cm)</th>
-              <th>BB (Kg)</th>
-              <th>LK (Cm)</th>
-            </tr>
-          </thead>
-          <tbody id="riwayat"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
 @endsection

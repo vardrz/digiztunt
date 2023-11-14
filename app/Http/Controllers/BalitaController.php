@@ -16,7 +16,22 @@ class BalitaController extends Controller
         $thisDay = date('Y-m-d');
         $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
 
-        $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->orderBy('tgl_lahir', 'DESC')->get();
+        // Pimpinan
+        if (auth()->user()->level == 'pimpinan' && auth()->user()->area == 'all') {
+            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->orderBy('tgl_lahir', 'DESC')->get();
+        } else {
+            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->where('kelurahan', auth()->user()->area)->orderBy('tgl_lahir', 'DESC')->get();
+        }
+
+        // Puskesmas
+        if (auth()->user()->level == 'admin' && auth()->user()->area == 'KUSUMA BANGSA') {
+            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereIn('kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG'])->orderBy('tgl_lahir', 'DESC')->get();
+        } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KRAPYAK') {
+            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereIn('kelurahan', ['KRAPYAK', 'DEGAYU'])->orderBy('tgl_lahir', 'DESC')->get();
+        } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'DUKUH') {
+            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereIn('kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN'])->orderBy('tgl_lahir', 'DESC')->get();
+        }
+
 
         return view('petugas.balitaList', [
             'title' => 'Daftar Data Balita',
@@ -47,17 +62,21 @@ class BalitaController extends Controller
             ['no' => '12', 'name' => 'Desember']
         ];
 
-        $kecamatan = [
-            ["id" => "3375010", "name" => "PEKALONGAN BARAT"],
-            ["id" => "3375020", "name" => "PEKALONGAN TIMUR"],
-            ["id" => "3375030", "name" => "PEKALONGAN SELATAN"],
-            ["id" => "3375040", "name" => "PEKALONGAN UTARA"]
+        // $kecamatan = [
+        //     ["id" => "3375010", "name" => "PEKALONGAN BARAT"],
+        //     ["id" => "3375020", "name" => "PEKALONGAN TIMUR"],
+        //     ["id" => "3375030", "name" => "PEKALONGAN SELATAN"],
+        //     ["id" => "3375040", "name" => "PEKALONGAN UTARA"]
+        // ];
+
+        $kelurahan = [
+            "KRAPYAK", "KANDANG PANJANG", "PANJANG WETAN", "PANJANG BARU", "DEGAYU", "BANDENGAN", "PADUKUHAN KRATON"
         ];
 
         return view('petugas.balitaNew', [
             'title' => 'Tambah Data Balita',
             'month' => $bulan,
-            'kecamatan' => $kecamatan
+            'kelurahan' => $kelurahan
         ]);
     }
 
@@ -78,18 +97,33 @@ class BalitaController extends Controller
 
     public function store(Request $request)
     {
-        $validate = $request->validate([
-            "nama" => "required",
-            "jenis_kelamin" => "required",
-            "nik" => "required|unique:balitas|min:16",
-            "namaibu" => "required",
-            "nikibu" => "required|min:16",
-            "namaayah" => "required",
-            "nikayah" => "required|min:16",
-            "nokk" => "required|min:16",
-            "kecamatan" => "required",
-            "kelurahan" => "required"
-        ]);
+        if ($request->haveNIK == 'y') {
+            $validate = $request->validate([
+                "nama" => "required",
+                "jenis_kelamin" => "required",
+                "nik" => "required|unique:balitas|min:16",
+                "namaibu" => "required",
+                "nikibu" => "required|min:16",
+                "namaayah" => "required",
+                "nikayah" => "required|min:16",
+                "nokk" => "required|min:16",
+                "kecamatan" => "required",
+                "kelurahan" => "required"
+            ]);
+        } else {
+            $validate = $request->validate([
+                "nama" => "required",
+                "jenis_kelamin" => "required",
+                "nik" => "",
+                "namaibu" => "required",
+                "nikibu" => "required|min:16",
+                "namaayah" => "required",
+                "nikayah" => "required|min:16",
+                "nokk" => "required|min:16",
+                "kecamatan" => "required",
+                "kelurahan" => "required"
+            ]);
+        }
 
         $balita = [
             "nama" => $validate['nama'],
@@ -105,14 +139,16 @@ class BalitaController extends Controller
             "kecamatan" => $validate['kecamatan'],
         ];
 
+        // dd($balita);
+
         Balita::insert($balita);
 
         return redirect('/pelayanan')->with('success', 'Data balita berhasil ditambahkan.');
     }
 
-    public function edit($nik = null)
+    public function edit($id = null)
     {
-        if ($nik) {
+        if ($id) {
             $bulan = [
                 ['no' => '1', 'name' => 'Januari'],
                 ['no' => '2', 'name' => 'Februari'],
@@ -129,13 +165,10 @@ class BalitaController extends Controller
             ];
 
             $kecamatan = [
-                ["id" => "3375010", "name" => "PEKALONGAN BARAT"],
-                ["id" => "3375020", "name" => "PEKALONGAN TIMUR"],
-                ["id" => "3375030", "name" => "PEKALONGAN SELATAN"],
                 ["id" => "3375040", "name" => "PEKALONGAN UTARA"]
             ];
 
-            $data = Balita::where('nik', $nik)->get();
+            $data = Balita::where('id', $id)->get();
 
             return view('admin.balitaEdit', [
                 'title' => 'Edit Data Balita',
@@ -150,18 +183,34 @@ class BalitaController extends Controller
 
     public function update(Request $request)
     {
-        $validate = $request->validate([
-            "nama" => "required",
-            "jenis_kelamin" => "required",
-            "nik" => "required|min:16",
-            "namaibu" => "required",
-            "nikibu" => "required|min:16",
-            "namaayah" => "required",
-            "nikayah" => "required|min:16",
-            "nokk" => "required|min:16",
-            "kecamatan" => "required",
-            "kelurahan" => "required"
-        ]);
+        if ($request->nik == '-') {
+            $validate = $request->validate([
+                "nama" => "required",
+                "jenis_kelamin" => "required",
+                "nik" => "required",
+                "namaibu" => "required",
+                "nikibu" => "required|min:16",
+                "namaayah" => "required",
+                "nikayah" => "required|min:16",
+                "nokk" => "required|min:16",
+                "kecamatan" => "required",
+                "kelurahan" => "required"
+            ]);
+        } else {
+            $validate = $request->validate([
+                "nama" => "required",
+                "jenis_kelamin" => "required",
+                "nik" => "required|min:16",
+                "namaibu" => "required",
+                "nikibu" => "required|min:16",
+                "namaayah" => "required",
+                "nikayah" => "required|min:16",
+                "nokk" => "required|min:16",
+                "kecamatan" => "required",
+                "kelurahan" => "required"
+            ]);
+        }
+
 
         $dataUpdated = [
             "nama" => $validate['nama'],
@@ -178,14 +227,17 @@ class BalitaController extends Controller
         ];
 
         Balita::where('id', $request->id)->update($dataUpdated);
+        if ($request->nik != '-') {
+            Pelayanan::where('id_balita', $request->id)->update(["nik_balita" => $validate['nik']]);
+        }
 
         return redirect('/balita')->with('success', 'Data balita berhasil diupdate.');
     }
 
-    public function destroy($nik = 0)
+    public function destroy($id = 0)
     {
-        Balita::where('nik', $nik)->delete();
-        Pelayanan::where('nik_balita', $nik)->delete();
+        Balita::where('id', $id)->delete();
+        Pelayanan::where('id_balita', $id)->delete();
         return back()->with('success', 'Data balita berhasil dihapus.');
     }
 }

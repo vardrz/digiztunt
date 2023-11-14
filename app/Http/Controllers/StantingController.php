@@ -11,7 +11,19 @@ class StantingController extends Controller
 {
     public function index()
     {
-        $data = Pelayanan::where('verif', 'n')->get();
+        if (auth()->user()->level == 'admin' && auth()->user()->area == 'KUSUMA BANGSA') {
+            $data = Pelayanan::where('verif', 'n')->whereHas('balita', function ($query) {
+                $query->whereIn('kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG']);
+            })->get();
+        } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KRAPYAK') {
+            $data = Pelayanan::where('verif', 'n')->whereHas('balita', function ($query) {
+                $query->whereIn('kelurahan', ['KRAPYAK', 'DEGAYU']);
+            })->get();
+        } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'DUKUH') {
+            $data = Pelayanan::where('verif', 'n')->whereHas('balita', function ($query) {
+                $query->whereIn('kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN']);
+            })->get();
+        }
 
         return view('admin.stantingVerifikasi', [
             'title' => 'Verifikasi Pendataan',
@@ -41,7 +53,7 @@ class StantingController extends Controller
 
         $status = $this->cekTBU($tbu_zscore);
 
-        Balita::where('nik', $req->nik)->update(['status' => $status]);
+        Balita::where('id', $req->id_balita)->update(['status' => $status]);
         Pelayanan::where('id', $req->id)->update(['verif' => 'y', 'bbu' => $bbu_zscore, 'tbu' => $tbu_zscore]);
 
         return redirect('/status')->with('success', 'Data berhasil diverifikasi.');
@@ -59,7 +71,29 @@ class StantingController extends Controller
             $bln = date('m') - 1;
         }
 
-        $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->get();
+        // Pimpinan
+        if (auth()->user()->level == 'pimpinan' && auth()->user()->area == 'all') {
+            $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->get();
+        } else {
+            $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
+                $query->where('kelurahan', auth()->user()->area);
+            })->get();
+        }
+
+        // Puskesmas
+        if (auth()->user()->level == 'admin' && auth()->user()->area == 'KUSUMA BANGSA') {
+            $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
+                $query->whereIn('kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG']);
+            })->get();
+        } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KRAPYAK') {
+            $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
+                $query->whereIn('kelurahan', ['KRAPYAK', 'DEGAYU']);
+            })->get();
+        } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'DUKUH') {
+            $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
+                $query->whereIn('kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN']);
+            })->get();
+        }
 
         return view('admin.stantingHasil', [
             'title' => 'Hasil Perhitungan Stunting Tahun Ini',

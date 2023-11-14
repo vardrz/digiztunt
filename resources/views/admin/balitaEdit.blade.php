@@ -2,8 +2,15 @@
 
 @extends('layout.main')
 
-@section('content')
+@section('head')
+<style>
+    input[type="range"] {
+        width: 100%;
+    }
+</style>    
+@endsection
 
+@section('content')
 <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
@@ -60,7 +67,14 @@
                         </div>
                         <div class="form-group">
                             <label for="nik">NIK</label>
-                            <input type="text" name="nik" value="{{ $data->nik }}" class="form-control @error('nik') is-invalid @enderror" id="nik" placeholder="NIK" required>
+                            <select id="haveNIK" class="form-control mb-1" required {{ ($data->nik != '-') ? 'disabled' : '' }}>
+                                <option value="y">Sudah memiliki NIK</option>
+                                <option value="n" {{ ($data->nik == '-') ? 'selected' : '' }}>Belum memiliki NIK</option>
+                            </select>
+                            <input type="text" {{ ($data->nik == '-') ? 'readonly' : '' }} name="nik" value="{{ $data->nik }}" class="form-control @error('nik') is-invalid @enderror" id="nik" placeholder="NIK" required>
+                            <div id="showRangeNIK" @if($data->nik == '-') ? class="d-none" @endif>
+                                <input type="range" value="0" min="0" max="16" id="rangeNIK" disabled>
+                            </div>
                             @error('nik')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
                         </div>
                     </div>
@@ -79,7 +93,10 @@
                         </div>
                         <div class="form-group">
                             <label for="nikibu">NIK Ibu</label>
-                            <input type="text" name="nikibu" value="{{ $data->nik_ibu }}" class="form-control @error('nikibu') is-invalid @enderror" id="nikibu" placeholder="NIK Ibu" required>
+                            <input type="text" name="nikibu" value="{{ $data->nik_ibu }}" minlength="16" maxlength="16" class="form-control @error('nikibu') is-invalid @enderror" id="nikibu" placeholder="NIK Ibu" required>
+                            <div id="showRangeNIKibu">
+                                <input type="range" value="0" min="0" max="16" id="rangeNIKibu" disabled>
+                            </div>
                             @error('nikibu')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
                         </div>
                         <div class="form-group">
@@ -89,7 +106,10 @@
                         </div>
                         <div class="form-group">
                             <label for="nikayah">NIK Ayah</label>
-                            <input type="text" name="nikayah" value="{{ $data->nik_ayah }}" class="form-control @error('nikayah') is-invalid @enderror" id="nikayah" placeholder="NIK Ayah" required>
+                            <input type="text" name="nikayah" value="{{ $data->nik_ayah }}" minlength="16" maxlength="16" class="form-control @error('nikayah') is-invalid @enderror" id="nikayah" placeholder="NIK Ayah" required>
+                            <div id="showRangeNIKayah">
+                                <input type="range" value="0" min="0" max="16" id="rangeNIKayah" disabled>
+                            </div>
                             @error('nikayah')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
                         </div>
                         <div class="form-group">
@@ -123,8 +143,39 @@
     </div>
 </section>
  <!-- /.content -->
-
+@endsection
+ 
+@section('script')
 <script>
+    document.getElementById("rangeNIK").value = document.getElementById('nik').value.length;
+    document.getElementById("rangeNIKibu").value = document.getElementById('nikibu').value.length;
+    document.getElementById("rangeNIKayah").value = document.getElementById('nikayah').value.length;
+    document.getElementById('nik').addEventListener("input", function(event) {
+        document.getElementById("rangeNIK").value = event.target.value.length;
+    });
+    document.getElementById('nikibu').addEventListener("input", function(event) {
+        document.getElementById("rangeNIKibu").value = event.target.value.length;
+    });
+    document.getElementById('nikayah').addEventListener("input", function(event) {
+        document.getElementById("rangeNIKayah").value = event.target.value.length;
+    });
+
+    // var current_nik_value = "";
+    var cek_have_nik = document.getElementById('haveNIK');
+    cek_have_nik.addEventListener('change', function() {
+        if(cek_have_nik.value == "y"){
+            // current_nik_value = "y"
+            document.getElementById("showRangeNIK").classList.remove("d-none");
+            document.getElementById("nik").value = "";
+            document.getElementById("nik").readOnly = false;
+        }else{
+        // else if(cek_have_nik.value == "y" && current_nik_value == "n"){
+            document.getElementById("showRangeNIK").classList.add("d-none");
+            document.getElementById("nik").value = "-";
+            document.getElementById("nik").readOnly = true;
+        }
+    });
+
     function getKelurahan(id){
         var urlkelurahan = window.location.origin + '/json/villages/' + id + '.json';
         document.getElementById("kelurahan").innerHTML = "<option value='' disabled selected>Kelurahan</option>";
@@ -173,5 +224,4 @@
         })
     }
 </script>
-
 @endsection

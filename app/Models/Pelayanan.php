@@ -15,6 +15,6 @@ class Pelayanan extends Model
 
     public function balita()
     {
-        return $this->belongsTo(Balita::class, 'nik_balita', 'nik');
+        return $this->belongsTo(Balita::class, 'id_balita', 'id');
     }
 }

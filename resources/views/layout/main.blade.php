@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="/theme/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="/theme/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="/theme/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  @yield('head')
 </head>
 
 <body class="hold-transition sidebar-mini layout-navbar-fixed layout-fixed">
@@ -73,13 +74,14 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user (optional) -->
-      <div class="user-panel pb-3 mt-3 mb-3 d-flex align-items-center">
+      <div class="text-center">
         <div class="image">
-          <img src="/theme/dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
+          <img src="/theme/dist/img/avatar5.png" class="img-circle mt-3" width="50" alt="User Image">
         </div>
-        <div class="info">
-          <span class="d-block text-white text-capitalize">{{ auth()->user()->name }}<br><small>{{ (session('level') == 'petugas') ? 'Petugas Posyandu' : (session('level') == 'admin' ? 'Petugas Puskesmas' : 'Pimpinan')}}</small></span>
+        <div class="user-panel mt-2 mb-3">
+          <div class="info">
+            <span class="d-block text-white text-capitalize">{{ auth()->user()->name }}<br><small>{{ (session('level') == 'petugas') ? 'Petugas Posyandu' : (session('level') == 'admin' ? 'Petugas Puskesmas' : 'Pimpinan')}}</small></span>
+          </div>
         </div>
       </div>
 
@@ -104,7 +106,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              @if (session('level') != 'pimpinan')
+              @if (session('level') == 'petugas')
               <li class="nav-item">
                 <a href="/balita/new" class="nav-link {{ Request::is('balita/new') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
@@ -129,7 +131,7 @@
             </ul>
           </li>
 
-          @if (session('level') != 'pimpinan')
+          @if (session('level') == 'petugas')
           <li class="nav-item">
             <a href="/pelayanan" class="nav-link {{ Request::is('pelayanan') ? 'active' : '' }}">
               <i class="nav-icon fas fa-book"></i>
@@ -196,7 +198,7 @@
 
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-      <a href="http://vaard.site" class="text-bold">&copy; Vard <span class="text-dark">Project</span></a>
+      <a href="http://vaard.site" class="text-bold">&copy; Vard</a>
     </div>
     <strong>SIPosting</strong>. Kota Pekalongan
   </footer>
@@ -233,25 +235,9 @@
 <script src="/theme/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="/theme/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
+@yield('script')
 
-@if(
-  Request::is('balita') ||
-  Request::is('balita/history') ||
-  Request::is('verifikasi') ||
-  Request::is('status') ||
-  Request::is('status/1') ||
-  Request::is('status/2') ||
-  Request::is('status/3') ||
-  Request::is('status/4') ||
-  Request::is('status/5') ||
-  Request::is('status/6') ||
-  Request::is('status/7') ||
-  Request::is('status/8') ||
-  Request::is('status/9') ||
-  Request::is('status/10') ||
-  Request::is('status/11') ||
-  Request::is('status/12')
-)
+@if(Request::is('balita') || Request::is('balita/history') || Request::is('verifikasi'))
 <script>
   $(function () {
     var table = $("#balita").DataTable({
@@ -300,7 +286,7 @@
 
 @if(Request::is('balita') && session('level') == 'admin')
 <script>
-  function confirm(nik) {
+  function confirm(id) {
     Swal.fire({
       html: "<h2>Hapus data ini?</h2>",
       showConfirmButton: false,
@@ -316,7 +302,7 @@
           text: 'Data dihapus.',
         });
         setTimeout(function() {
-          document.getElementById(nik).submit();
+          document.getElementById("delete"+id).submit();
         }, 2000);
       }
     })
