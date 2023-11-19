@@ -71,7 +71,7 @@
                                 <option value="y">Sudah memiliki NIK</option>
                                 <option value="n" {{ ($data->nik == '-') ? 'selected' : '' }}>Belum memiliki NIK</option>
                             </select>
-                            <input type="text" {{ ($data->nik == '-') ? 'readonly' : '' }} name="nik" value="{{ $data->nik }}" class="form-control @error('nik') is-invalid @enderror" id="nik" placeholder="NIK" required>
+                            <input type="text" {{ ($data->nik == '-') ? 'readonly' : '' }} name="nik" value="{{ $data->nik }}" class="form-control @error('nik') is-invalid @enderror" minlength="16" maxlength="16" id="nik" placeholder="NIK" required>
                             <div id="showRangeNIK" @if($data->nik == '-') ? class="d-none" @endif>
                                 <input type="range" value="0" min="0" max="16" id="rangeNIK" disabled>
                             </div>
@@ -114,7 +114,10 @@
                         </div>
                         <div class="form-group">
                             <label for="nokk">Nomor Kartu Keluarga</label>
-                            <input type="text" name="nokk" value="{{ $data->no_kk }}" class="form-control @error('nokk') is-invalid @enderror" id="nokk" placeholder="Nomor KK" required>
+                            <input type="text" name="nokk" value="{{ $data->no_kk }}" minlength="16" maxlength="16" class="form-control @error('nokk') is-invalid @enderror" id="nokk" placeholder="Nomor KK" required>
+                            <div id="showRangeKK">
+                                <input type="range" value="0" min="0" max="16" id="rangeKK" disabled>
+                            </div>
                             @error('nokk')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
                         </div>
                         <div class="form-group">
@@ -132,7 +135,7 @@
                             <input type="hidden" value="{{ $data->kelurahan }}" id="curentVillage">
                         </div>
                     </div>
-                    <div class="row card-footer">
+                    <div class="card-footer">
                         <input type="submit" class="d-none" id="submit">
                         <button type="button" onclick="confirm()" class="col-12 btn btn-primary">Update Data</button>
                     </div>
@@ -150,6 +153,7 @@
     document.getElementById("rangeNIK").value = document.getElementById('nik').value.length;
     document.getElementById("rangeNIKibu").value = document.getElementById('nikibu').value.length;
     document.getElementById("rangeNIKayah").value = document.getElementById('nikayah').value.length;
+    document.getElementById("rangeKK").value = document.getElementById('nokk').value.length;
     document.getElementById('nik').addEventListener("input", function(event) {
         document.getElementById("rangeNIK").value = event.target.value.length;
     });
@@ -158,6 +162,9 @@
     });
     document.getElementById('nikayah').addEventListener("input", function(event) {
         document.getElementById("rangeNIKayah").value = event.target.value.length;
+    });
+    document.getElementById('nokk').addEventListener("input", function(event) {
+        document.getElementById("rangeKK").value = event.target.value.length;
     });
 
     // var current_nik_value = "";

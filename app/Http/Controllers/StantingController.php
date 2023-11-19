@@ -96,7 +96,7 @@ class StantingController extends Controller
         }
 
         return view('admin.stantingHasil', [
-            'title' => 'Hasil Perhitungan Stunting Tahun Ini',
+            'title' => 'Hasil Perhitungan Stunting ' . $bulan[$bln],
             'data' => $data,
             'bulan' => [$bulan[$bln], $bln],
         ]);

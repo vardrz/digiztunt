@@ -26,6 +26,7 @@ class CreateBalitasTable extends Migration
             $table->string('no_kk', 16);
             $table->string('kelurahan');
             $table->string('kecamatan');
+            $table->integer('posyandu');
             $table->enum('status', ['Stunting', 'Normal'])->nullable();
         });
     }

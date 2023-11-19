@@ -27,7 +27,8 @@ class BalitaSeeder extends Seeder
                     "nik_ayah" => "3504302001880003",
                     "no_kk" => "1234567801",
                     "kelurahan" => "DEGAYU",
-                    "kecamatan" => "PEKALONGAN UTARA"
+                    "kecamatan" => "PEKALONGAN UTARA",
+                    "posyandu" => 67
                 ],
                 [
                     "nama" => "Rizky Fadillah",
@@ -40,7 +41,8 @@ class BalitaSeeder extends Seeder
                     "nik_ayah" => "3504302001880006",
                     "no_kk" => "1234567802",
                     "kelurahan" => "DEGAYU",
-                    "kecamatan" => "PEKALONGAN UTARA"
+                    "kecamatan" => "PEKALONGAN UTARA",
+                    "posyandu" => 67
                 ],
                 [
                     "nama" => "Nur Adisantoso",
@@ -53,7 +55,8 @@ class BalitaSeeder extends Seeder
                     "nik_ayah" => "3504302001880009",
                     "no_kk" => "1234567803",
                     "kelurahan" => "KRAPYAK",
-                    "kecamatan" => "PEKALONGAN UTARA"
+                    "kecamatan" => "PEKALONGAN UTARA",
+                    "posyandu" => 45
                 ],
                 [
                     "nama" => "Rafi Pratama",
@@ -66,7 +69,8 @@ class BalitaSeeder extends Seeder
                     "nik_ayah" => "3504302001880012",
                     "no_kk" => "1234567804",
                     "kelurahan" => "KRAPYAK",
-                    "kecamatan" => "PEKALONGAN UTARA"
+                    "kecamatan" => "PEKALONGAN UTARA",
+                    "posyandu" => 45
                 ],
                 [
                     "nama" => "Akbar Tanjung",
@@ -79,7 +83,8 @@ class BalitaSeeder extends Seeder
                     "nik_ayah" => "3504302001880015",
                     "no_kk" => "1234567805",
                     "kelurahan" => "KANDANG PANJANG",
-                    "kecamatan" => "PEKALONGAN UTARA"
+                    "kecamatan" => "PEKALONGAN UTARA",
+                    "posyandu" => 29
                 ],
                 [
                     "nama" => "Faisal Rahman",
@@ -92,7 +97,8 @@ class BalitaSeeder extends Seeder
                     "nik_ayah" => "3504302001880018",
                     "no_kk" => "1234567806",
                     "kelurahan" => "PANJANG WETAN",
-                    "kecamatan" => "PEKALONGAN UTARA"
+                    "kecamatan" => "PEKALONGAN UTARA",
+                    "posyandu" => 1
                 ],
                 [
                     "nama" => "Septian David",
@@ -105,7 +111,8 @@ class BalitaSeeder extends Seeder
                     "nik_ayah" => "3504302001880021",
                     "no_kk" => "1234567807",
                     "kelurahan" => "PANJANG BARU",
-                    "kecamatan" => "PEKALONGAN UTARA"
+                    "kecamatan" => "PEKALONGAN UTARA",
+                    "posyandu" => 16
                 ],
                 [
                     "nama" => "Ilham Pratama",
@@ -118,7 +125,8 @@ class BalitaSeeder extends Seeder
                     "nik_ayah" => "3504302001880024",
                     "no_kk" => "1234567808",
                     "kelurahan" => "BANDENGAN",
-                    "kecamatan" => "PEKALONGAN UTARA"
+                    "kecamatan" => "PEKALONGAN UTARA",
+                    "posyandu" => 94
                 ],
                 [
                     "nama" => "Yoga Ahsan",
@@ -131,7 +139,8 @@ class BalitaSeeder extends Seeder
                     "nik_ayah" => "3504302001880027",
                     "no_kk" => "1234567809",
                     "kelurahan" => "PADUKUHAN KRATON",
-                    "kecamatan" => "PEKALONGAN UTARA"
+                    "kecamatan" => "PEKALONGAN UTARA",
+                    "posyandu" => 77
                 ],
                 [
                     "nama" => "Ridwan Abdullah",
@@ -144,7 +153,8 @@ class BalitaSeeder extends Seeder
                     "nik_ayah" => "3504302001880030",
                     "no_kk" => "1234567810",
                     "kelurahan" => "KRAPYAK",
-                    "kecamatan" => "PEKALONGAN UTARA"
+                    "kecamatan" => "PEKALONGAN UTARA",
+                    "posyandu" => 45
                 ]
             ]
         );

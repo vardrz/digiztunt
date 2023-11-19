@@ -41,6 +41,7 @@ function lastData($d, $id){
                     <th>No.</th>
                     <th>Tanggal Pendataan</th>
                     <th>Nama</th>
+                    <th>Kelurahan</th>
                     <th>Usia</th>
                     <th>Jenis Kelamin</th>
                     <th>Berat Badan</th>
@@ -55,6 +56,7 @@ function lastData($d, $id){
                     <td></td>
                     <td>{{ $d->tgl_pelayanan }}</td>
                     <td>{{ $d->balita->nama }}</td>
+                    <td>{{ $d->balita->kelurahan }}</td>
                     <td>{{ $d->usia }} Bulan</td>
                     <td>{{ ($d->balita->jenis_kelamin == 'lk') ? 'Laki-laki' : 'Perempuan' }}</td>
                     <td>
@@ -98,4 +100,51 @@ function lastData($d, $id){
   </section>
   <!-- /.content -->
 
+@endsection
+
+@section('script')
+  <script>
+    $(function () {
+      var table = $("#balita").DataTable({
+        "columnDefs": [{targets:[0], orderable: false, searchable: false}],
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": [
+          {
+              extend: 'colvis',
+              className: 'btn btn-info',
+              text: 'Kolom'
+          },
+          {
+              extend: 'pdf',
+              className: 'btn btn-danger',
+              exportOptions: {
+                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+              }
+          },
+          {
+              extend: 'excel',
+              className: 'btn btn-success',
+              exportOptions: {
+                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+              }
+          },
+          {
+              extend: 'print',
+              className: 'btn btn-dark',
+              exportOptions: {
+                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+              }
+          }
+      ],
+      });
+
+      table.buttons().container().appendTo('#balita_wrapper .col-md-6:eq(0)');
+      table.on('order.dt search.dt', function () {
+        table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+          cell.innerHTML = i+1;
+          table.cell(cell).invalidate('dom');
+        });
+      }).draw();
+    });
+  </script>
 @endsection

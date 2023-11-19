@@ -12,7 +12,7 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-body">
-                  {!! $kota->container() !!}
+                  {!! $giziBuruk->container() !!}
                 </div>
               </div>
             </div>
@@ -20,14 +20,14 @@
             <div class="col-md-6">
               <div class="card">
                 <div class="card-body">
-                  {!! $utaraCount->container() !!}
+                  {!! $utaraLastMonth->container() !!}
                 </div>
               </div>
             </div>
             <div class="col-md-6">
               <div class="card">
                 <div class="card-body">
-                  {!! $utaraList->container() !!}
+                  {!! $utaraBalita->container() !!}
                 </div>
               </div>
             </div>
@@ -37,13 +37,13 @@
     </div>
   </section>
 
-  <script src="{{ $kota->cdn() }}"></script>
-  <script src="{{ $utaraCount->cdn() }}"></script>
-  <script src="{{ $utaraList->cdn() }}"></script>
+  <script src="{{ $giziBuruk->cdn() }}"></script>
+  <script src="{{ $utaraLastMonth->cdn() }}"></script>
+  <script src="{{ $utaraBalita->cdn() }}"></script>
   
-  {{ $kota->script() }}
-  {{ $utaraCount->script() }}
-  {{ $utaraList->script() }}
+  {{ $giziBuruk->script() }}
+  {{ $utaraLastMonth->script() }}
+  {{ $utaraBalita->script() }}
 
   <!-- /.content -->
 @endsection

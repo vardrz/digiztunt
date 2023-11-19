@@ -80,7 +80,14 @@
         </div>
         <div class="user-panel mt-2 mb-3">
           <div class="info">
-            <span class="d-block text-white text-capitalize">{{ auth()->user()->name }}<br><small>{{ (session('level') == 'petugas') ? 'Petugas Posyandu' : (session('level') == 'admin' ? 'Petugas Puskesmas' : 'Pimpinan')}}</small></span>
+            <span class="d-block text-white text-capitalize">
+              {{ auth()->user()->name }}
+              <br>
+              <small>
+                {{ (session('level') == 'petugas') ? 'Kader Posyandu ' . auth()->user()->posyandu->name : (session('level') == 'admin' ? 'Puskesmas ' . strtolower(auth()->user()->area)  : (auth()->user()->area == 'all' ? 'Pimpinan Kecamatan' : 'Pimpinan Kelurahan ' . strtolower(auth()->user()->area)))}}
+                <br>{{ (session('level') == 'petugas') ? auth()->user()->posyandu->kelurahan : ''}}
+              </small>
+            </span>
           </div>
         </div>
       </div>
@@ -92,7 +99,7 @@
             <a href="/home" class="nav-link {{ Request::is('home') ? 'active' : '' }}">
               <i class="nav-icon fas fa-home"></i>
               <p>
-                Home
+                Beranda
                 {{-- <span class="right badge badge-danger">New</span> --}}
               </p>
             </a>
@@ -120,14 +127,14 @@
                   <p>Daftar Balita</p>
                 </a>
               </li>
-              @if (session('level') == 'admin')
+              {{-- @if (session('level') == 'admin') --}}
               <li class="nav-item">
                 <a href="/balita/history" class="nav-link {{ Request::is('balita/history') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Histori Balita</p>
                 </a>
               </li>
-              @endif
+              {{-- @endif --}}
             </ul>
           </li>
 
@@ -170,7 +177,7 @@
           </li>
           @endif
 
-          @if (session('level') != 'petugas')
+          {{-- @if (session('level') != 'petugas')
           <li class="nav-item">
             <a href="/laporan" class="nav-link">
               <i class="nav-icon fas fa-file-pdf"></i>
@@ -179,7 +186,7 @@
               </p>
             </a>
           </li>
-          @endif
+          @endif --}}
 
         </ul>
       </nav>
@@ -198,7 +205,8 @@
 
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-      <a href="http://vaard.site" class="text-bold">&copy; Vard</a>
+      {{-- <a href="http://vaard.site" class="text-bold">&copy; Vard</a> --}}
+      {{ 'Tahun ' . date('Y') }}
     </div>
     <strong>SIPosting</strong>. Kota Pekalongan
   </footer>
@@ -237,7 +245,7 @@
 
 @yield('script')
 
-@if(Request::is('balita') || Request::is('balita/history') || Request::is('verifikasi'))
+@if(Request::is('balita') || Request::is('balita/history'))
 <script>
   $(function () {
     var table = $("#balita").DataTable({
@@ -284,7 +292,7 @@
 </script>
 @endif
 
-@if(Request::is('balita') && session('level') == 'admin')
+{{-- @if(Request::is('balita') && session('level') == 'admin')
 <script>
   function confirm(id) {
     Swal.fire({
@@ -308,7 +316,7 @@
     })
   }
 </script>
-@endif
+@endif --}}
 
 @if(Request::is('verifikasi'))
 <script>

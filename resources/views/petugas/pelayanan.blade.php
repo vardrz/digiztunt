@@ -13,7 +13,7 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="nama">Cari Data</label>
+                            <label for="nama">Cari Balita</label>
                             <div class="input-group">
                                 <input type="text" class="form-control" id="caridata" placeholder="NIK / Nama Anak">
                                 <span class="input-group-append">
@@ -89,7 +89,7 @@
                         <div class="form-group">
                             <label for="usia">Usia</label> <span>(Bulan) </span>
                             <input type="text" name="usia" class="form-control" id="usia" placeholder="Usia" required>
-                            <span class="text-sm text-info">Dihitung otomatis berdasarkan Tanggal Lahir & Tanggal Pendataan.</span>
+                            <span class="text-sm text-info">Dihitung otomatis berdasarkan Tanggal Lahir & Tanggal Pendataan, perhitungan usia bisa saja tidak tepat, silahkan koreksi lagi.</span>
                         </div>
                         <div class="form-group">
                             <label for="bb">Berat Badan</label> <span>(Kilogram)</span>
@@ -250,7 +250,7 @@
 
         const totalBulan = selisihTahun * 12 + selisihBulan;
 
-        if(selisihHari > 30){
+        if(selisihHari >= 30){
             return totalBulan;
         }else{
             return 0;

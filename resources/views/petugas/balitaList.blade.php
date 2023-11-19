@@ -60,7 +60,8 @@ function month($tanggalLahir) {
                 @foreach ($balitas as $balita)
                 <tr>
                   <td class="text-center">{{ $no }}</td>
-                  <td>{{ $balita->nik }}</td>
+                  <td>@if($balita->nik == '-')<small>Belum memiliki NIK<small>@else{{ $balita->nik }}@endif</td>
+                  {{-- <td>{{ $balita->nik == '-' ? 'Belum memiliki NIK' : $balita->nik }}</td> --}}
                   <td style="cursor: pointer;" onclick="dataModal('{{ $balita->id }}','{{ $balita->nik }}','{{ $balita->nama }}','{{ $balita->kelurahan }}','{{ $balita->nama_ibu }}','{{ $balita->nik_ibu }}','{{ $balita->nama_ayah }}','{{ $balita->nik_ayah }}','{{ $balita->no_kk }}')">
                     {{ $balita->nama }}
                   </td>
@@ -72,7 +73,7 @@ function month($tanggalLahir) {
                   @if (session('level') == 'petugas')
                   <td class="text-center align-middle" width="60">
                     <a href="/balita/edit/{{ $balita->id }}" class="btn btn-lg py-0 px-1 text-primary"><i class="fas fa-pen"></i></a>
-                    <button type="button" onclick="confirm({{ $balita->id }})" class="btn btn-lg py-0 px-1 text-danger"><i class="fas fa-trash"></i></button>
+                    <button type="button" onclick="del({{ $balita->id }})" class="btn btn-lg py-0 px-1 text-danger"><i class="fas fa-trash"></i></button>
                     <form action="/balita/delete/{{ $balita->id }}" method="post" id="delete{{ $balita->id }}">@csrf</form>
                   </td>
                   @endif
@@ -141,6 +142,29 @@ function month($tanggalLahir) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
 <script src="http://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
+  // Hapus Data
+  function del(id) {
+    Swal.fire({
+      html: "<h2>Hapus data ini?</h2>",
+      showConfirmButton: false,
+      showDenyButton: true,
+      showCancelButton: true,
+      denyButtonText: 'Hapus',
+      cancelButtonText: 'Batal',
+    }).then((result) => {
+      if (result.isDenied) {
+        Swal.fire({
+          showConfirmButton: false,
+          icon: 'success',
+          text: 'Data dihapus.',
+        });
+        setTimeout(function() {
+          document.getElementById("delete"+id).submit();
+        }, 2000);
+      }
+    })
+  }
+
   // Func export modal data to pdf
   function savePDF(nama, kelurahan){
     const modal = document.getElementById('modalPrint');
@@ -167,23 +191,6 @@ function month($tanggalLahir) {
           heightLeft -= pageHeight;
         }
         doc.save(nama + '_' + kelurahan +'.pdf');
-
-        // var pdf = new jsPDF('p', 'mm', 'a4');
-        // // get image properties
-        // var imgData = canvas.toDataURL('image/png');
-        // var imgProps= pdf.getImageProperties(imgData);
-        // // generate image to pdf
-        // var pdfWidth = pdf.internal.pageSize.getWidth();
-        // var pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        // pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-        // pdf.save();
-
-        // const image = canvas.toDataURL('image/png');
-        // const a = document.createElement('a');
-        // a.setAttribute('download', 'my-image.png');
-        // a.setAttribute('href', image);
-        // a.click();
-        // canvas.remove();
       }
     );
   }

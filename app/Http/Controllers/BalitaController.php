@@ -32,6 +32,11 @@ class BalitaController extends Controller
             $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereIn('kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN'])->orderBy('tgl_lahir', 'DESC')->get();
         }
 
+        // Posyandu
+        if (auth()->user()->level == 'petugas') {
+            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->where('posyandu', auth()->user()->area)->orderBy('tgl_lahir', 'DESC')->get();
+        }
+
 
         return view('petugas.balitaList', [
             'title' => 'Daftar Data Balita',
@@ -41,7 +46,9 @@ class BalitaController extends Controller
 
     public function find($data = null)
     {
-        $balita = Balita::where('nama', 'like', '%' . $data . '%')->orWhere('nik', $data)->orderBy('nama')->get();
+        $balita = Balita::where('posyandu', auth()->user()->area)->where(function ($query) use ($data) {
+            $query->where('nama', 'like', '%' . $data . '%')->orWhere('nik', $data);
+        })->orderBy('nama')->get();
         return $balita;
     }
 
@@ -82,9 +89,9 @@ class BalitaController extends Controller
 
     public function history()
     {
-        if (session('level') != 'admin') {
-            return abort(403, 'Anda tidak memiliki hak mengakses laman ini!');
-        }
+        // if (session('level') != 'admin') {
+        //     return abort(403, 'Anda tidak memiliki hak mengakses laman ini!');
+        // }
 
         $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
         $data = Balita::where('tgl_lahir', '<', $fiveYearAgo)->get();
@@ -108,7 +115,8 @@ class BalitaController extends Controller
                 "nikayah" => "required|min:16",
                 "nokk" => "required|min:16",
                 "kecamatan" => "required",
-                "kelurahan" => "required"
+                "kelurahan" => "required",
+                "posyandu" => "required"
             ]);
         } else {
             $validate = $request->validate([
@@ -121,7 +129,8 @@ class BalitaController extends Controller
                 "nikayah" => "required|min:16",
                 "nokk" => "required|min:16",
                 "kecamatan" => "required",
-                "kelurahan" => "required"
+                "kelurahan" => "required",
+                "posyandu" => "required"
             ]);
         }
 
@@ -137,6 +146,7 @@ class BalitaController extends Controller
             "no_kk" => $validate['nokk'],
             "kelurahan" => $validate['kelurahan'],
             "kecamatan" => $validate['kecamatan'],
+            "posyandu" => $validate['posyandu'],
         ];
 
         // dd($balita);

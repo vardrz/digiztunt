@@ -20,6 +20,7 @@
                     </div>
                     <form method="post" id="formAddBalita">
                     @csrf
+                    <input type="hidden" name="posyandu" value="{{ auth()->user()->area }}">
                     <div class="card-body">
                         <div class="form-group">
                             <label for="nama">Nama Anak</label>
@@ -113,7 +114,10 @@
                         </div>
                         <div class="form-group">
                             <label for="nokk">Nomor Kartu Keluarga</label>
-                            <input type="text" name="nokk" value="{{ old('nokk') }}" class="form-control @error('nokk') is-invalid @enderror" id="nokk" placeholder="Nomor KK" required>
+                            <input type="text" name="nokk" value="{{ old('nokk') }}" minlength="16" maxlength="16" class="form-control @error('nokk') is-invalid @enderror" id="nokk" placeholder="Nomor KK" required>
+                            <div id="showRangeKK">
+                                <input type="range" value="0" min="0" max="16" id="rangeKK" disabled>
+                            </div>
                             @error('nokk')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
                         </div>
                         <div class="form-group">
@@ -157,6 +161,9 @@
     });
     document.getElementById('nikayah').addEventListener("input", function(event) {
         document.getElementById("rangeNIKayah").value = event.target.value.length;
+    });
+    document.getElementById('nokk').addEventListener("input", function(event) {
+        document.getElementById("rangeKK").value = event.target.value.length;
     });
     // var aa = document.getElementById('kecamatan');
     // aa.addEventListener('change', function() {
