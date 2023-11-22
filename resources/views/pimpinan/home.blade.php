@@ -20,14 +20,14 @@
             <div class="col-md-6">
               <div class="card">
                 <div class="card-body">
-                  {!! $utaraLastMonth->container() !!}
+                  {!! $utaraBalita->container() !!}
                 </div>
               </div>
             </div>
             <div class="col-md-6">
               <div class="card">
                 <div class="card-body">
-                  {!! $utaraBalita->container() !!}
+                  {!! $utaraLastMonth->container() !!}
                 </div>
               </div>
             </div>

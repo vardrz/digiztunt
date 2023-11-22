@@ -61,9 +61,10 @@ function month($tanggalLahir) {
                 <tr>
                   <td class="text-center">{{ $no }}</td>
                   <td>@if($balita->nik == '-')<small>Belum memiliki NIK<small>@else{{ $balita->nik }}@endif</td>
-                  {{-- <td>{{ $balita->nik == '-' ? 'Belum memiliki NIK' : $balita->nik }}</td> --}}
-                  <td style="cursor: pointer;" onclick="dataModal('{{ $balita->id }}','{{ $balita->nik }}','{{ $balita->nama }}','{{ $balita->kelurahan }}','{{ $balita->nama_ibu }}','{{ $balita->nik_ibu }}','{{ $balita->nama_ayah }}','{{ $balita->nik_ayah }}','{{ $balita->no_kk }}')">
-                    {{ $balita->nama }}
+                  <td>
+                    <span style="cursor: pointer;" onclick="dataModal('{{ $balita->id }}','{{ $balita->nik }}','{{ $balita->nama }}','{{ $balita->kelurahan }}','{{ $balita->nama_ibu }}','{{ $balita->nik_ibu }}','{{ $balita->nama_ayah }}','{{ $balita->nik_ayah }}','{{ $balita->no_kk }}')">
+                      {{ $balita->nama }}
+                    </span>
                   </td>
                   <td>{{ $balita->jenis_kelamin == 'lk' ? 'Laki-laki' : 'Perempuan' }}</td>
                   <td>{{ date('d-m-Y', strtotime ($balita->tgl_lahir)) }}</td>
@@ -306,7 +307,7 @@ function month($tanggalLahir) {
     setTimeout(
       function() {
         var notes = document.createElement('small');
-        notes.className = 'text-primary';
+        notes.className = 'text-primary text-bold';
         notes.innerHTML = '*Klik nama balita untuk info lebih lengkap.';
 
         var wrapper = document.getElementById('balita_wrapper');

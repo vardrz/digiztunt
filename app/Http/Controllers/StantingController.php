@@ -59,6 +59,18 @@ class StantingController extends Controller
         return redirect('/status')->with('success', 'Data berhasil diverifikasi.');
     }
 
+    public function update(Request $req)
+    {
+        $data = [
+            'tb' => $req->tb,
+            'bb' => $req->bb,
+            'lingkar_kepala' => $req->lingkar_kepala
+        ];
+
+        Pelayanan::where('id', $req->id)->update($data);
+        return redirect('/verifikasi')->with('success', 'Data berhasil diperbarui.');
+    }
+
     public function status($month = null)
     {
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];

@@ -1,3 +1,6 @@
+
+
+
 <?php 
 use App\Models\Pelayanan;
 function lastData($d, $id){
@@ -35,6 +38,12 @@ function lastData($d, $id){
             </div>
             <!-- /.card-header -->
             <div class="card-body">
+              <div class="text-sm text-primary mb-4" style="line-height : 18px;">
+                <b>*Keterangan:</b>
+                <br>- Untuk melihat data pengukuran bulan sebelumnya, arahkan cursor ke angka.
+                <br>- Perbarui data jika terdapat data pengukuran yang janggal. 
+              </div>
+
               <table id="balita" class="table table-bordered table-striped">
                 <thead>
                   <tr>
@@ -75,8 +84,9 @@ function lastData($d, $id){
                       </button>
                     </td>
                     <td class="text-center align-middle">
-                      <button type="button" onclick="verif({{ $d->id }})" class="btn btn-lg py-0 px-1 text-success" data-bs-placement="bottom" title="Accept"><i class="fas fa-check-circle"></i></a>
-                      <button type="button" onclick="confirm()" class="btn btn-lg py-0 px-1 text-danger" data-bs-placement="bottom"  title="Delete"><i class="fas fa-ban"></i></button>
+                      <button onclick="verif({{ $d->id }})" class="btn btn-lg py-0 px-1 text-success" data-bs-placement="bottom" title="Accept"><i class="fas fa-check-square"></i></a>
+                      <button onclick="update({{ $d->id }}, '{{ $d->balita->nama }}', {{ $d->bb }}, {{ $d->tb }}, {{ $d->lingkar_kepala }})" class="btn btn-lg py-0 px-1 text-primary" data-bs-placement="bottom"  title="Update"><i class="fas fa-pen-square"></i></button>
+
                       <form action="/verifikasi/accept" method="post" id="{{ $d->id }}">
                         @csrf
                         <input type="hidden" name="id_balita" value="{{ $d->id_balita }}">
@@ -103,7 +113,55 @@ function lastData($d, $id){
 @endsection
 
 @section('script')
+  <div class="modal fade" id="dataModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="h4 pt-4 pb-3 text-center w-100" style="border-bottom: solid 1px #b4b4b4" id="updateNama"></div>
+        <div class="modal-body">
+          <form method="post" action="/verifikasi/update">
+            @csrf
+            <input type="hidden" name="id" value="" id="updateID">
+            <div class="form-group">
+              <label for="bb">Berat Badan</label>
+              <input type="text" name="bb" value="" class="form-control" id="updateBB" required>
+            </div>
+            <div class="form-group">
+              <label for="tb">Tinggi Badan</label>
+              <input type="text" name="tb" value="" class="form-control" id="updateTB" required>
+            </div>
+            <div class="form-group">
+              <label for="lingkar_kepala">Lingkar Kepala</label>
+              <input type="text" name="lingkar_kepala" value="" class="form-control" id="updateLK" required>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <input type="submit" id="submit" class="d-none">
+                <button type="button" onclick="confirm()" class="btn btn-primary w-100 mb-1">Perbarui Data</button>
+              </div>
+              <div class="col-md-6">
+                <button type="button" class="btn btn-danger w-100" data-dismiss="modal" id="closeModal">Batal</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
+    const myModal = new bootstrap.Modal(document.getElementById('dataModal')); // creating modal object
+    
+    // Fill update modal form
+    function update(id, nama, bb, tb, lingkar_kepala){
+      myModal.show();
+      document.getElementById('updateNama').innerHTML = nama;
+      document.getElementById('updateID').value = id;
+      document.getElementById('updateBB').value = bb;
+      document.getElementById('updateTB').value = tb;
+      document.getElementById('updateLK').value = lingkar_kepala;
+    }
+
+    // DataTable
     $(function () {
       var table = $("#balita").DataTable({
         "columnDefs": [{targets:[0], orderable: false, searchable: false}],
@@ -146,5 +204,27 @@ function lastData($d, $id){
         });
       }).draw();
     });
+
+    // Swal Confirm Update Data
+    function confirm() {
+      document.getElementById('closeModal').click();
+      Swal.fire({
+        icon: 'question',
+        text: "Perbarui data ini?",
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#007bff',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setTimeout(function() {
+            document.getElementById('submit').click();
+          }, 500);
+        }else{
+          myModal.show();
+        }
+      })
+    }
   </script>
 @endsection
