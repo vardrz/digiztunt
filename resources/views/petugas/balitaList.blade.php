@@ -62,7 +62,7 @@ function month($tanggalLahir) {
                   <td class="text-center">{{ $no }}</td>
                   <td>@if($balita->nik == '-')<small>Belum memiliki NIK<small>@else{{ $balita->nik }}@endif</td>
                   <td>
-                    <span style="cursor: pointer;" onclick="dataModal('{{ $balita->id }}','{{ $balita->nik }}','{{ $balita->nama }}','{{ $balita->kelurahan }}','{{ $balita->nama_ibu }}','{{ $balita->nik_ibu }}','{{ $balita->nama_ayah }}','{{ $balita->nik_ayah }}','{{ $balita->no_kk }}')">
+                    <span style="cursor: pointer;" onclick="dataModal('{{ $balita->id }}','{{ $balita->nama }}','{{ $balita->kelurahan }}','{{ $balita->posyandu()->first()->name }}','{{ $balita->nama_ibu }}','{{ $balita->nik_ibu }}','{{ $balita->nama_ayah }}','{{ $balita->nik_ayah }}','{{ $balita->no_kk }}')">
                       {{ $balita->nama }}
                     </span>
                   </td>
@@ -111,6 +111,7 @@ function month($tanggalLahir) {
             <tr>
               <th>Nama</th>
               <th>Kelurahan</th>
+              <th>Posyandu</th>
               <th>Ibu</th>
               <th>Ayah</th>
               <th>No. KK</th>
@@ -231,7 +232,7 @@ function month($tanggalLahir) {
   }
 
   // Func Data Lengkap
-  function dataModal(id, nik, nama, kelurahan, nama_ibu, nik_ibu, nama_ayah, nik_ayah, no_kk){
+  function dataModal(id, nama, kelurahan, posyandu, nama_ibu, nik_ibu, nama_ayah, nik_ayah, no_kk){
     const myModal = new bootstrap.Modal(document.getElementById('dataModal')); // creating modal object
     myModal.show();
     
@@ -243,6 +244,7 @@ function month($tanggalLahir) {
     document.getElementById('data_balita').innerHTML =
       `<tr><td>` + nama + `</td>` +
       `<td>` + kelurahan + `</td>` +
+      `<td>` + posyandu + `</td>` +
       `<td>` + nama_ibu + `<br><small>NIK : ` + nik_ibu + `</small>` + `</td>` +
       `<td>` + nama_ayah + `<br><small>NIK : ` + nik_ayah + `</small>` + `</td>` +
       `<td>` + no_kk + `</td></tr>`;

@@ -49,8 +49,8 @@
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
             <span class="dropdown-item dropdown-header">{{ auth()->user()->name }}</span>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
-              <i class="fas fa-user mr-2"></i> Edit Profile
+            <a href="/user/password" class="dropdown-item">
+              <i class="fas fa-key mr-2"></i> Ganti Password
             </a>
             <div class="dropdown-divider"></div>
             <form action="/logout" method="post">
@@ -116,21 +116,21 @@
               @if (session('level') == 'petugas')
               <li class="nav-item">
                 <a href="/balita/new" class="nav-link {{ Request::is('balita/new') ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas nav-icon">-</i>
                   <p>Tambah Data Balita</p>
                 </a>
               </li>
               @endif
               <li class="nav-item">
                 <a href="/balita" class="nav-link {{ Request::is('balita') ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas nav-icon">-</i>
                   <p>Daftar Balita</p>
                 </a>
               </li>
               {{-- @if (session('level') == 'admin') --}}
               <li class="nav-item">
                 <a href="/balita/history" class="nav-link {{ Request::is('balita/history') ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas nav-icon">-</i>
                   <p>Histori Balita</p>
                 </a>
               </li>
@@ -151,7 +151,7 @@
 
           @if (session('level') != 'petugas')
           <li class="nav-item {{ Request::is('verifikasi') || Request::is('status') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Request::is('verifikasi') ? 'active' : '' }}">
+            <a href="#" class="nav-link {{ Request::is('verifikasi') || Request::is('status') ? 'active' : '' }}">
               <i class="nav-icon fas fa-user-md"></i>
               <p>
                 Stunting
@@ -162,15 +162,41 @@
               @if (session('level') == 'admin')
               <li class="nav-item">
                 <a href="/verifikasi" class="nav-link {{ Request::is('verifikasi') ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas nav-icon">-</i>
                   <p>Verifikasi Pendataan</p>
                 </a>
               </li>
               @endif
               <li class="nav-item">
                 <a href="/status" class="nav-link {{ Request::is('status') ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas nav-icon">-</i>
                   <p>Hasil Pendataan</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          @endif
+
+          @if (session('level') == 'admin')
+          <li class="nav-item {{ Request::is('posyandu') || Request::is('kader') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ Request::is('posyandu') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Posyandu
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/posyandu" class="nav-link {{ Request::is('posyandu') ? 'active' : '' }}">
+                  <i class="fas nav-icon">-</i>
+                  <p>Data Posyandu</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/kader" class="nav-link {{ Request::is('kader') ? 'active' : '' }}">
+                  <i class="fas nav-icon">-</i>
+                  <p>Data Kader</p>
                 </a>
               </li>
             </ul>

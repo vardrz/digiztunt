@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Balita;
 use App\Models\Pelayanan;
 use App\Charts\StuntingChart;
-use Illuminate\Routing\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
@@ -77,6 +79,27 @@ class HomeController extends Controller
                 'utaraLastMonth' => $stuntingLastMonth,
                 'utaraBalita' => $chart->utaraBalita()
             ]);
+        }
+    }
+
+    public function password()
+    {
+
+        return view('petugas.passwordChange', [
+            'title' => 'Ganti Password'
+        ]);
+    }
+
+    public function changePass(Request $req)
+    {
+        $user = auth()->user();
+        $pass = $req->all();
+
+        if (Hash::check($pass['old'], $user->password)) {
+            User::where('id', $pass['id'])->update(['password' => Hash::make($pass['new'])]);
+            return redirect('/home')->with('success', 'Password berhasil diganti!');
+        } else {
+            return back()->with('fail', 'Password lama yang anda inputkan salah!');
         }
     }
 }
