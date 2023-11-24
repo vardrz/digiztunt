@@ -59,15 +59,30 @@ class StantingController extends Controller
         return redirect('/status')->with('success', 'Data berhasil diverifikasi.');
     }
 
-    public function status($month = null)
+    public function update(Request $req)
     {
+        $data = [
+            'tb' => $req->tb,
+            'bb' => $req->bb,
+            'lingkar_kepala' => $req->lingkar_kepala
+        ];
+
+        Pelayanan::where('id', $req->id)->update($data);
+        return redirect('/verifikasi')->with('success', 'Data berhasil diperbarui.');
+    }
+
+    public function status($year = null, $month = null)
+    {
+        $tahun = ($year == null) ? date('Y') : $year;
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
         if ($month != null) {
-            $between = [date('Y-') . $month . '-1', date('Y-') . $month . '-28'];
+            // $between = [date('Y-') . $month . '-1', date('Y-') . $month . '-28'];
+            $between = [$tahun . '-' . $month . '-1', $tahun . '-' . $month . '-28'];
             $bln = $month - 1;
         } else {
-            $between = [date('Y-m-1'), date('Y-m-28')];
+            // $between = [date('Y-m-1'), date('Y-m-28')];
+            $between = [$tahun . '-' . date('m-1'), $tahun . '-' . date('m-28')];
             $bln = date('m') - 1;
         }
 
@@ -96,9 +111,11 @@ class StantingController extends Controller
         }
 
         return view('admin.stantingHasil', [
-            'title' => 'Hasil Perhitungan Stunting ' . $bulan[$bln],
+            'title' => 'Hasil Perhitungan Stunting ' . $bulan[$bln] . ' ' . $tahun,
             'data' => $data,
+            'listBulan' => $bulan,
             'bulan' => [$bulan[$bln], $bln],
+            'tahun' => $tahun,
         ]);
     }
 }

@@ -1,4 +1,7 @@
 <?php 
+$thisYear = date('Y');
+$dataTahun = [$thisYear, $thisYear-1, $thisYear-2, $thisYear-3, $thisYear-4];
+
 function bbu($bbu_zscore, $bb){
   if ($bbu_zscore < -3) {
     echo "<td width='100' class='bg-danger'><b>Berat badan sangat kurang </b><br/>(" . $bb . " kg)</td>";
@@ -38,32 +41,40 @@ function tbu($tbu_zscore, $tb){
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-              <center>
-                <span class="h4">Pilih Bulan :</span>
-                <select id="bulan" class="mb-5">
-                  <option value="1">Januari</option>
-                  <option value="2">Februari</option>
-                  <option value="3">Maret</option>
-                  <option value="4">April</option>
-                  <option value="5">Mei</option>
-                  <option value="6">Juni</option>
-                  <option value="7">Juli</option>
-                  <option value="8">Agustus</option>
-                  <option value="9">September</option>
-                  <option value="10">Oktober</option>
-                  <option value="11">November</option>
-                  <option value="12">Desember</option>
-                </select>
+              <div class="d-flex justify-content-center">
+                <div class="input-group mb-5 mr-2" style="width: 150px">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Tahun</span>
+                  </div>
+                  <select id="tahun" class="form-control">
+                    @foreach ($dataTahun as $i)
+                      <option value="{{ $i }}" @if($tahun == $i) selected @endif>{{ $i }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="input-group mb-5" style="width: 190px">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Bulan</span>
+                  </div>
+                  <select id="bulan" class="form-control">
+                    @foreach ($listBulan as $i=>$val)
+                    <option value="{{ $i+1 }}" @if($bulan[0] == $val) selected @endif>{{ $val }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+
+              <div class="text-center">
                 <h4 class="mb-3">
                   @if($bulan[0] != 'Januari')
-                    <a href="/status/{{ $bulan[1] }}">&#9664;</a> 
+                    <a href="/status/{{ $tahun }}/{{ $bulan[1] }}">&#9664;</a> 
                   @endif
                   &nbsp;Data Bulan {{ $bulan[0] }}&nbsp;
                   @if($bulan[0] != 'Desember')
-                    <a href="/status/{{ $bulan[1]+2 }}">&#9654;</a>
+                    <a href="/status/{{ $tahun }}/{{ $bulan[1]+2 }}">&#9654;</a>
                   @endif
                 </h4>
-              </center>
+              </div>
 
               <table id="balita" class="table table-bordered table-striped">
                 <thead>
@@ -136,26 +147,6 @@ function tbu($tbu_zscore, $tb){
             className: 'btn btn-dark',
             exportOptions: {columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]},
             exportOptions: {stripHtml: false}
-            // customize: function(win){
-            //   var last = null;
-            //   var current = null;
-            //   var bod = [];
-
-            //   var css = '@page { size: landscape; }',
-            //       head = win.document.head || win.document.getElementsByTagName('head')[0],
-            //       style = win.document.createElement('style');
-
-            //   style.type = 'text/css';
-            //   style.media = 'print';
-
-            //   if (style.styleSheet){
-            //     style.styleSheet.cssText = css;
-            //   }else{
-            //     style.appendChild(win.document.createTextNode(css));
-            //   }
-
-            //   head.appendChild(style);
-            // }
         }
     ],
     });
@@ -171,9 +162,13 @@ function tbu($tbu_zscore, $tb){
 </script>
 
 <script>
+  var tahun = document.getElementById('tahun');
+  tahun.addEventListener('change', function() {
+    window.location = '/status/' + tahun.value;
+  });
   var bulan = document.getElementById('bulan');
   bulan.addEventListener('change', function() {
-    window.location = window.location.origin + '/status/' + bulan.value
+    window.location = '/status/' + <?= $tahun ?> + '/' + bulan.value;
   });
 </script>
 @endsection

@@ -14,56 +14,53 @@ class StuntingChart
         $this->chart = $chart;
     }
 
+    private function countData($data, $ukur)
+    {
+        $count = 0;
+        foreach ($data as $d) {
+            if ($ukur == 'tbu') {
+                if ($d->pelayanan->where('verif', 'y')->last()->tbu < -2) {
+                    $count++;
+                }
+            } else {
+                if ($d->pelayanan->where('verif', 'y')->last()->bbu < -2) {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
+    }
+
     public function giziBuruk(): \ArielMejiaDev\LarapexCharts\AreaChart
     {
         $thisDay = date('Y-m-d');
         $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
 
         $pendek = [];
-        $pendek[0] = Balita::where('kelurahan', 'PANJANG WETAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-        })->count();
-        $pendek[1] = Balita::where('kelurahan', 'PANJANG BARU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-        })->count();
-        $pendek[2] = Balita::where('kelurahan', 'KANDANG PANJANG')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-        })->count();
-        $pendek[3] = Balita::where('kelurahan', 'KRAPYAK')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-        })->count();
-        $pendek[4] = Balita::where('kelurahan', 'DEGAYU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-        })->count();
-        $pendek[5] = Balita::where('kelurahan', 'PADUKUHAN KRATON')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-        })->count();
-        $pendek[6] = Balita::where('kelurahan', 'BANDENGAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-        })->count();
-
         $kurus = [];
-        $kurus[0] = Balita::where('kelurahan', 'PANJANG WETAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-        })->count();
-        $kurus[1] = Balita::where('kelurahan', 'PANJANG BARU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-        })->count();
-        $kurus[2] = Balita::where('kelurahan', 'KANDANG PANJANG')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-        })->count();
-        $kurus[3] = Balita::where('kelurahan', 'KRAPYAK')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-        })->count();
-        $kurus[4] = Balita::where('kelurahan', 'DEGAYU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-        })->count();
-        $kurus[5] = Balita::where('kelurahan', 'PADUKUHAN KRATON')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-        })->count();
-        $kurus[6] = Balita::where('kelurahan', 'BANDENGAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-            $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-        })->count();
+
+        $panjangwetan = Balita::where('kelurahan', 'PANJANG WETAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+        $pendek[0] = $this->countData($panjangwetan, 'tbu');
+        $kurus[0] = $this->countData($panjangwetan, 'bbu');
+        $panjangbaru = Balita::where('kelurahan', 'PANJANG BARU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+        $pendek[1] = $this->countData($panjangbaru, 'tbu');
+        $kurus[1] = $this->countData($panjangbaru, 'bbu');
+        $kandangpanjang = Balita::where('kelurahan', 'KANDANG PANJANG')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+        $pendek[2] = $this->countData($kandangpanjang, 'tbu');
+        $kurus[2] = $this->countData($kandangpanjang, 'bbu');
+        $krapyak = Balita::where('kelurahan', 'KRAPYAK')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+        $pendek[3] = $this->countData($krapyak, 'tbu');
+        $kurus[3] = $this->countData($krapyak, 'bbu');
+        $degayu = Balita::where('kelurahan', 'DEGAYU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+        $pendek[4] = $this->countData($degayu, 'tbu');
+        $kurus[4] = $this->countData($degayu, 'bbu');
+        $padukuhankraton = Balita::where('kelurahan', 'PADUKUHAN KRATON')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+        $pendek[5] = $this->countData($padukuhankraton, 'tbu');
+        $kurus[5] = $this->countData($padukuhankraton, 'bbu');
+        $bandengan = Balita::where('kelurahan', 'BANDENGAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+        $pendek[6] = $this->countData($bandengan, 'tbu');
+        $kurus[6] = $this->countData($bandengan, 'bbu');
 
         return $this->chart->areaChart()
             ->setTitle('Grafik Masalah Gizi Balita',)
@@ -150,58 +147,37 @@ class StuntingChart
         $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
 
         $pendek = [];
+        $kurus = [];
+
         if ($puskesmas == 'KUSUMA BANGSA') {
-            $pendek[0] = Balita::where('kelurahan', 'PANJANG WETAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-            })->count();
-            $pendek[1] = Balita::where('kelurahan', 'PANJANG BARU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-            })->count();
-            $pendek[2] = Balita::where('kelurahan', 'KANDANG PANJANG')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-            })->count();
+            $panjangwetan = Balita::where('kelurahan', 'PANJANG WETAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+            $pendek[0] = $this->countData($panjangwetan, 'tbu');
+            $kurus[0] = $this->countData($panjangwetan, 'bbu');
+            $panjangbaru = Balita::where('kelurahan', 'PANJANG BARU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+            $pendek[1] = $this->countData($panjangbaru, 'tbu');
+            $kurus[1] = $this->countData($panjangbaru, 'bbu');
+            $kandangpanjang = Balita::where('kelurahan', 'KANDANG PANJANG')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+            $pendek[2] = $this->countData($kandangpanjang, 'tbu');
+            $kurus[2] = $this->countData($kandangpanjang, 'bbu');
         } elseif ($puskesmas == 'KRAPYAK') {
-            $pendek[0] = Balita::where('kelurahan', 'KRAPYAK')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-            })->count();
-            $pendek[1] = Balita::where('kelurahan', 'DEGAYU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-            })->count();
+            $krapyak = Balita::where('kelurahan', 'KRAPYAK')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+            $pendek[0] = $this->countData($krapyak, 'tbu');
+            $kurus[0] = $this->countData($krapyak, 'bbu');
+            $degayu = Balita::where('kelurahan', 'DEGAYU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+            $pendek[1] = $this->countData($degayu, 'tbu');
+            $kurus[1] = $this->countData($degayu, 'bbu');
         } else {
-            $pendek[0] = Balita::where('kelurahan', 'PADUKUHAN KRATON')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-            })->count();
-            $pendek[1] = Balita::where('kelurahan', 'BANDENGAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('tbu', '<', -2);
-            })->count();
+            $padukuhankraton = Balita::where('kelurahan', 'PADUKUHAN KRATON')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+            $pendek[0] = $this->countData($padukuhankraton, 'tbu');
+            $kurus[0] = $this->countData($padukuhankraton, 'bbu');
+            $bandengan = Balita::where('kelurahan', 'BANDENGAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
+            $pendek[1] = $this->countData($bandengan, 'tbu');
+            $kurus[1] = $this->countData($bandengan, 'bbu');
         }
 
-        $kurus = [];
-        if ($puskesmas == 'KUSUMA BANGSA') {
-            $kurus[0] = Balita::where('kelurahan', 'PANJANG WETAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-            })->count();
-            $kurus[1] = Balita::where('kelurahan', 'PANJANG BARU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-            })->count();
-            $kurus[2] = Balita::where('kelurahan', 'KANDANG PANJANG')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-            })->count();
-        } elseif ($puskesmas == 'KRAPYAK') {
-            $kurus[0] = Balita::where('kelurahan', 'KRAPYAK')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-            })->count();
-            $kurus[1] = Balita::where('kelurahan', 'DEGAYU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-            })->count();
-        } else {
-            $kurus[0] = Balita::where('kelurahan', 'PADUKUHAN KRATON')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-            })->count();
-            $kurus[1] = Balita::where('kelurahan', 'BANDENGAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-                $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-            })->count();
-        }
+        // $kurus[0] = Balita::where('kelurahan', 'PANJANG WETAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
+        //     $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
+        // })->count();
 
         if ($puskesmas == 'KUSUMA BANGSA') {
             $axisX = ['Panjang Wetan', 'Panjang Baru', 'Kandang Panjang'];
