@@ -84,7 +84,8 @@ function tbu($tbu_zscore, $tb){
                     <th>Nama</th>
                     <th>Usia</th>
                     <th>Jenis Kelamin</th>
-                    <th>Kelurahan</th>
+                    @if ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))<th>Kelurahan</th>@endif
+                    <th>Posyandu</th>
                     <th>Orang Tua <br><small>(Ibu & Bapak)</small></th>
                     <th>Berat Badan</th>
                     <th>Tinggi Badan</th>
@@ -94,11 +95,14 @@ function tbu($tbu_zscore, $tb){
                   @foreach ($data as $d)
                   <tr>
                     <td></td>
-                    <td>{{ $d->tgl_pelayanan }}</td>
+                    <td>{{ date('d-m-Y', strtotime ($d->tgl_pelayanan)) }}</td>
                     <td>{{ $d->balita->nama }}</td>
                     <td>{{ $d->usia }} Bulan</td>
                     <td>{{ ($d->balita->jenis_kelamin == 'lk') ? 'Laki-laki' : 'Perempuan' }}</td>
-                    <td>{{ $d->balita->kelurahan }}</td>
+                    @if ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
+                      <td>{{ $d->balita->kelurahan }}</td>
+                    @endif
+                    <td>{{ $d->balita->posyandu()->first()->name }}</td>
                     <td width='100'>{{ $d->balita->nama_ibu }} & {{ $d->balita->nama_ayah }}</td>
                     {{ bbu($d->bbu, $d->bb) }}
                     {{ tbu($d->tbu, $d->tb) }}
@@ -119,9 +123,21 @@ function tbu($tbu_zscore, $tb){
 @section('script')
 <script>
   $(function () {
+    var title = [document.title.split(' ')];
+    var title1 = '';
+    for(var i=0; i < title[0].length-4; i++){
+      title1 += title[0][i] + ' ';
+    }
+    var title2 = title[0][title[0].length-4] + ' ' + title[0][title[0].length-3] + ' ' + title[0][title[0].length-2] + ' ' + title[0][title[0].length-1];
+    console.log(title1);
+    console.log(title2);
+
     var table = $("#balita").DataTable({
-      "columnDefs": [{targets:[0], orderable: false, searchable: false}],
-      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "columnDefs": [
+          {targets:[0], orderable: false, searchable: false, visible: false},
+          {targets:[3,4,7], orderable: false},
+      ],
+      "responsive": true, "lengthChange": false, "autoWidth": true,
       "buttons": [
         {
             extend: 'colvis',
@@ -130,22 +146,31 @@ function tbu($tbu_zscore, $tb){
         },
         {
             extend: 'pdf',
+            title: `${title1}\n${title2}\n`,
             className: 'btn btn-danger',
             exportOptions: {
-              columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+              columns: <?= ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
+                ? '[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]'
+                : '[ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]'
+               ?>
             }
         },
         {
             extend: 'excel',
+            title: `${title1}\n${title2}\n`,
             className: 'btn btn-success',
             exportOptions: {
-              columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+              columns: <?= ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
+                ? '[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]'
+                : '[ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]'
+               ?>
             }
         },
         {
             extend: 'print',
+            title: `<center>${title1}<br>${title2}</center><br>`,
             className: 'btn btn-dark',
-            exportOptions: {columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]},
+            exportOptions: {columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]},
             exportOptions: {stripHtml: false}
         }
     ],

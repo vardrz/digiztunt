@@ -21,6 +21,11 @@
                             @error('name')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
                         </div>
                         <div class="form-group">
+                            <label for="alamat">Alamat Posyandu</label>
+                            <input type="text" name="alamat" value="{{ $data->alamat }}" class="form-control @error('alamat') is-invalid @enderror" placeholder="Alamat Posyandu" required>
+                            @error('alamat')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="form-group">
                             <label for="kelurahan">Kelurahan</label>
                             <select name="kelurahan" class="form-control" required>
                                 @foreach ($kelurahan as $kel)

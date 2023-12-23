@@ -38,7 +38,7 @@ function month($tanggalLahir) {
         <div class="col-12 mt-3">
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Daftar Balita</h3>
+              <h3 class="card-title">{{ $title }}</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -51,9 +51,9 @@ function month($tanggalLahir) {
                   <th>Jenis Kelamin</th>
                   <th>Tanggal Lahir</th>
                   <th>Usia</th>
-                  <th>Kecamatan</th>
-                  <th>Kelurahan</th>
-                  @if (session('level') == 'petugas')<th>Aksi</th>@endif
+                  @if ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))<th>Kelurahan</th>@endif
+                  <th>Posyandu</th>
+                  @if (session('level') == 'pimpinan' && auth()->user()->area != 'all')<th>Aksi</th>@endif
                 </tr>
                 </thead>
                 <tbody>
@@ -69,12 +69,14 @@ function month($tanggalLahir) {
                   <td>{{ $balita->jenis_kelamin == 'lk' ? 'Laki-laki' : 'Perempuan' }}</td>
                   <td>{{ date('d-m-Y', strtotime ($balita->tgl_lahir)) }}</td>
                   <td>{{ month($balita->tgl_lahir) }}</td>
-                  <td>{{ $balita->kecamatan }}</td>
-                  <td>{{ $balita->kelurahan }}</td>
-                  @if (session('level') == 'petugas')
+                  @if ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
+                    <td>{{ $balita->kelurahan }}</td>
+                  @endif
+                  <td>{{ $balita->posyandu()->first()->name }}</td>
+                  @if (session('level') == 'pimpinan' && auth()->user()->area != 'all')
                   <td class="text-center align-middle" width="60">
-                    <a href="/balita/edit/{{ $balita->id }}" class="btn btn-lg py-0 px-1 text-primary"><i class="fas fa-pen"></i></a>
-                    <button type="button" onclick="del({{ $balita->id }})" class="btn btn-lg py-0 px-1 text-danger"><i class="fas fa-trash"></i></button>
+                    <a href="/balita/edit/{{ $balita->id }}" class="btn btn-lg py-0 px-0 mr-1 text-primary"><i class="fas fa-edit"></i></a>
+                    <button type="button" onclick="del({{ $balita->id }})" class="btn btn-lg py-0 px-0 text-danger"><i class="fas fa-trash"></i></button>
                     <form action="/balita/delete/{{ $balita->id }}" method="post" id="delete{{ $balita->id }}">@csrf</form>
                   </td>
                   @endif
@@ -93,7 +95,7 @@ function month($tanggalLahir) {
   <!-- /.content -->
 @endsection
 
-@section('script')    
+@section('script')
 <div class="modal fade" id="dataModal">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -119,8 +121,12 @@ function month($tanggalLahir) {
           </thead>
           <tbody id="data_balita"></tbody>
         </table>
-        <h4 class="text-center mt-5 @if(session('level') == 'petugas') d-none @endif">Status Gizi Terakhir</h4>
-        <div class="text-center mb-4 @if(session('level') == 'petugas') d-none @endif" id="gizi"></div>
+        
+        {{-- <h4 class="text-center mt-5 @if(session('level') == 'petugas') d-none @endif">Status Gizi Terakhir</h4>
+        <div class="text-center mb-4 @if(session('level') == 'petugas') d-none @endif" id="gizi"></div> --}}
+        <h4 class="text-center mt-5">Status Gizi Terakhir</h4>
+        <div class="text-center mb-4" id="gizi"></div>
+
         <h4 class="text-center">Riwayat Pendataan</h4>
         <table class="table table-bordered">
           <thead>
@@ -270,7 +276,7 @@ function month($tanggalLahir) {
                 document.getElementById('riwayat').innerHTML = "";
                 for(var i = 0; i < data.length; i++){
                   document.getElementById('riwayat').innerHTML +=
-                    `<tr><td>` + data[i]['tgl_pelayanan'] + `</td>` +
+                    `<tr><td>` + data[i]['tgl_pelayanan'].toString().split('-').reverse().join('-') + `</td>` +
                     `<td>` + data[i]['usia'] + ` Bulan</td>` +
                     `<td>` + data[i]['tb'] + `</td>` +
                     `<td>` + data[i]['bb'] + `</td>` +
@@ -288,7 +294,7 @@ function month($tanggalLahir) {
                 document.getElementById('riwayat').innerHTML = "";
                 for(var i = 0; i < data.length; i++){
                   document.getElementById('riwayat').innerHTML +=
-                    `<tr><td>` + data[i]['tgl_pelayanan'] + `</td>` +
+                    `<tr><td>` + data[i]['tgl_pelayanan'].toString().split('-').reverse().join('-') + `</td>` +
                     `<td>` + data[i]['usia'] + ` Bulan</td>` +
                     `<td>` + data[i]['tb'] + `</td>` +
                     `<td>` + data[i]['bb'] + `</td>` +

@@ -77,21 +77,21 @@ class UserSeeder extends Seeder
             // Puskesmas
             [
                 'name' => 'Petugas Kusuma Bangsa',
-                'email' => 'puskesmas-kusumabangsa@mail.com',
+                'email' => 'puskesmas-kusumabangsa',
                 'password' => Hash::make('kusumabangsa'),
                 'level' => 'admin',
                 'area' => 'KUSUMA BANGSA'
             ],
             [
                 'name' => 'Petugas Krapyak',
-                'email' => 'puskesmas-krapyak@mail.com',
+                'email' => 'puskesmas-krapyak',
                 'password' => Hash::make('krapyak'),
                 'level' => 'admin',
                 'area' => 'KRAPYAK'
             ],
             [
                 'name' => 'Petugas Dukuh',
-                'email' => 'puskesmas-dukuh@mail.com',
+                'email' => 'puskesmas-dukuh',
                 'password' => Hash::make('dukuh'),
                 'level' => 'admin',
                 'area' => 'DUKUH'
@@ -100,52 +100,52 @@ class UserSeeder extends Seeder
             // --- Puskesmas Kusuma Bangsa ---
             [
                 'name' => 'Kader Rajawali',
-                'email' => 'pos-rajawali@mail.com',
-                'password' => Hash::make('rajawali'),
+                'email' => 'panjangwetan-rajawali',
+                'password' => Hash::make('123456'),
                 'level' => 'petugas',
                 'area' => '1'
             ],
             [
                 'name' => 'Kader Wijaya Kusuma',
-                'email' => 'pos-wijayakusuma@mail.com',
-                'password' => Hash::make('wijayakusuma'),
+                'email' => 'panjangbaru-wijayakusuma',
+                'password' => Hash::make('123456'),
                 'level' => 'petugas',
                 'area' => '16'
             ],
             [
                 'name' => 'Kader Bakti Ibu',
-                'email' => 'pos-baktiibu@mail.com',
-                'password' => Hash::make('baktiibu'),
+                'email' => 'kandangpanjang-baktiibu',
+                'password' => Hash::make('123456'),
                 'level' => 'petugas',
                 'area' => '29'
             ],
             // --- Puskesmas Krapyak ---
             [
                 'name' => 'Kader Melati I',
-                'email' => 'pos-melatisatu@mail.com',
-                'password' => Hash::make('melatisatu'),
+                'email' => 'krapyak-melatisatu',
+                'password' => Hash::make('123456'),
                 'level' => 'petugas',
                 'area' => '45'
             ],
             [
                 'name' => 'Kader Melati',
-                'email' => 'pos-melati@mail.com',
-                'password' => Hash::make('melati'),
+                'email' => 'degayu-melati',
+                'password' => Hash::make('123456'),
                 'level' => 'petugas',
                 'area' => '67'
             ],
             // --- Puskesmas Dukuh ---
             [
                 'name' => 'Kader Nusa Indah',
-                'email' => 'pos-nusaindah@mail.com',
-                'password' => Hash::make('nusaindah'),
+                'email' => 'kraton-nusaindah',
+                'password' => Hash::make('123456'),
                 'level' => 'petugas',
                 'area' => '77'
             ],
             [
                 'name' => 'Kader Flamboyan',
-                'email' => 'pos-flamboyan@mail.com',
-                'password' => Hash::make('flamboyan'),
+                'email' => 'bandengan-flamboyan',
+                'password' => Hash::make('123456'),
                 'level' => 'petugas',
                 'area' => '94'
             ],

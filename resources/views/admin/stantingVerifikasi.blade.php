@@ -50,7 +50,9 @@ function lastData($d, $id){
                     <th>No.</th>
                     <th>Tanggal Pendataan</th>
                     <th>Nama</th>
+                    {{-- <th>Kelurahan / Posyandu</th> --}}
                     <th>Kelurahan</th>
+                    <th>Posyandu</th>
                     <th>Usia</th>
                     <th>Jenis Kelamin</th>
                     <th>Berat Badan</th>
@@ -63,9 +65,11 @@ function lastData($d, $id){
                   @foreach ($data as $d)
                   <tr>
                     <td></td>
-                    <td>{{ $d->tgl_pelayanan }}</td>
+                    <td>{{ date('d-m-Y', strtotime ($d->tgl_pelayanan)) }}</td>
                     <td>{{ $d->balita->nama }}</td>
+                    {{-- <td>{{ $d->balita->kelurahan }}<br>{{ $d->balita->posyandu()->first()->name }}</td> --}}
                     <td>{{ $d->balita->kelurahan }}</td>
+                    <td>{{ $d->balita->posyandu()->first()->name }}</td>
                     <td>{{ $d->usia }} Bulan</td>
                     <td>{{ ($d->balita->jenis_kelamin == 'lk') ? 'Laki-laki' : 'Perempuan' }}</td>
                     <td>
@@ -163,9 +167,18 @@ function lastData($d, $id){
 
     // DataTable
     $(function () {
+      var titleArr = [document.title.split(' ')];
+      var title = '';
+      for(var i=1; i < titleArr[0].length; i++){
+        title += titleArr[0][i] + ' ';
+      }
+      
       var table = $("#balita").DataTable({
-        "columnDefs": [{targets:[0], orderable: false, searchable: false}],
-        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "columnDefs": [
+          {targets:[0], orderable: false, searchable: false, visible: false},
+          {targets:[5,7,8,9], orderable: false},
+        ],
+        "responsive": true, "lengthChange": false, "autoWidth": true,
         "buttons": [
           {
               extend: 'colvis',
@@ -174,23 +187,26 @@ function lastData($d, $id){
           },
           {
               extend: 'pdf',
+              title: `${title}\n`,
               className: 'btn btn-danger',
               exportOptions: {
-                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
               }
           },
           {
               extend: 'excel',
+              title: `${title}\n`,
               className: 'btn btn-success',
               exportOptions: {
-                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
               }
           },
           {
               extend: 'print',
+              title: title,
               className: 'btn btn-dark',
               exportOptions: {
-                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
               }
           }
       ],

@@ -23,14 +23,13 @@ class AuthController extends Controller
 
         if (Auth::attempt($validation)) {
             $userLevel = auth()->user()->level;
-            // $user = User::where('email', $validation['email'])->pluck('level');
             $request->session()->regenerate();
             $request->session()->put('level', $userLevel);
 
             return redirect()->intended('home');
         }
 
-        return back()->with('error', 'Email atau password salah!');
+        return back()->with('error', 'Username atau password salah!');
     }
 
     public function logout(Request $request)

@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sistem Informasi Posyandu Stanting</title>
+  <title>DIGIZTUNT - Digital Analisis Z-Score Status Gizi dan Kontrol Stunting</title>
+  <link rel="icon" href="/theme/dist/img/favicon.png" type="image/x-icon" />
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -20,16 +21,17 @@
 <div class="login-box">
   <!-- /.login-logo -->
   <div class="card card-outline card-primary">
-    <div class="card-header text-center">
-      <a href="/" class="h1"><b>SI</b>Posting</a>
+    <div class="card-header text-center pb-0">
+      <a href="/" class="h1 text-bold">DIGIZTUNT</a>
+      <p class="text-sm">Digital Analisis Z-Score Status Gizi dan<br>Kontrol Stunting</p>
     </div>
     <div class="card-body">
-      <p class="login-box-msg">Masuk untuk mengakses menu.</p>
+      {{-- <p class="login-box-msg">Masuk untuk mengakses menu.</p> --}}
 
       <form action="/" method="post">
         @csrf
         <div class="input-group mb-2">
-          <input type="email" name="email" class="form-control" placeholder="Email" required>
+          <input type="text" name="email" class="form-control" placeholder="Username / Email" required>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -56,8 +58,8 @@
 
       <hr>
       <div class="social-auth-links text-center mt-2 mb-3">
-        <a href="#" class="btn btn-block btn-danger">
-            <i class="fa fa-key mr-2"></i> Reset Password
+        <a href="http://wa.me/628100200300" class="btn btn-block btn-danger">
+            <i class="fa fa-key mr-2"></i> Lupa Password?
         </a>
       </div>
       <!-- /.social-auth-links -->
@@ -81,7 +83,7 @@
 @if (session()->has('error'))
 <script>
   window.onload = (event) => {
-    toastr.error('Email atau password salah!')
+    toastr.error('Username atau password salah!')
   };
 </script>
 @endif

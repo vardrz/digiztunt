@@ -16,14 +16,19 @@ class StuntingChart
 
     private function countData($data, $ukur)
     {
+        // dd($data[0]->pelayanan->last()->verif == 'n');
         $count = 0;
         foreach ($data as $d) {
             if ($ukur == 'tbu') {
-                if ($d->pelayanan->where('verif', 'y')->last()->tbu < -2) {
+                if ($d->pelayanan->last()->verif == 'n') {
+                    $count = 0;
+                } elseif ($d->pelayanan->where('verif', 'y')->last()->tbu < -2) {
                     $count++;
                 }
             } else {
-                if ($d->pelayanan->where('verif', 'y')->last()->bbu < -2) {
+                if ($d->pelayanan->last()->verif == 'n') {
+                    $count = 0;
+                } elseif ($d->pelayanan->where('verif', 'y')->last()->bbu < -2) {
                     $count++;
                 }
             }

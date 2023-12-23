@@ -35,6 +35,7 @@ class PosyanduController extends Controller
                 return $query->where('name', $request->name)
                     ->where('kelurahan', $request->kelurahan);
             })],
+            "alamat" => "required",
             "kelurahan" => "required",
         ]);
 
@@ -43,6 +44,7 @@ class PosyanduController extends Controller
         } else {
             $data = [
                 'name' => $request->name,
+                'alamat' => $request->alamat,
                 'kelurahan' => $request->kelurahan
             ];
 
@@ -81,6 +83,7 @@ class PosyanduController extends Controller
                     return $query->where('name', $request->name)
                         ->where('kelurahan', $request->kelurahan);
                 })],
+                "alamat" => "required",
                 "kelurahan" => "required",
             ]);
 
@@ -91,6 +94,7 @@ class PosyanduController extends Controller
 
         $data = [
             'name' => $request->name,
+            'alamat' => $request->alamat,
             'kelurahan' => $request->kelurahan
         ];
 

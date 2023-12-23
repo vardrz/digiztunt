@@ -8,6 +8,7 @@ use App\Http\Controllers\StantingController;
 use App\Http\Controllers\PosyanduController;
 use App\Http\Controllers\KaderController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,3 +64,11 @@ Route::get('/kader', [KaderController::class, 'index'])->middleware('auth');
 Route::post('/kader', [KaderController::class, 'store'])->middleware('auth');
 Route::post('/kader/reset', [KaderController::class, 'resetPassword'])->middleware('auth');
 Route::post('/kader/delete', [KaderController::class, 'destroy'])->middleware('auth');
+
+// Excel
+Route::get('/import', [BalitaController::class, 'import'])->middleware('auth');
+Route::post('/import', [BalitaController::class, 'import_excel'])->middleware('auth');
+
+// Rekap Laporan
+Route::get('/laporan', [LaporanController::class, 'index'])->middleware('auth');
+Route::get('/rekap/{tahun?}/{bulan?}', [LaporanController::class, 'rekap'])->middleware('auth');

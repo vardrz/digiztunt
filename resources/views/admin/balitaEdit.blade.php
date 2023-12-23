@@ -77,6 +77,16 @@
                             </div>
                             @error('nik')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
                         </div>
+                        <div class="form-group">
+                            <label for="posyandu">Posyandu</label>
+                            <select name="posyandu" class="form-control" id="posyandu" required>
+                                <option value="" disabled selected>Posyandu</option>
+                                @foreach ($posyandu as $p)
+                                <option value="{{ $p->id }}" @if($data->posyandu == $p->id) ? selected @endif>{{ $p->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('posyandu')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
                     </div>
                 </div>
             </div>
