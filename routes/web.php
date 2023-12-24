@@ -61,6 +61,7 @@ Route::post('/posyandu/delete', [PosyanduController::class, 'destroy'])->middlew
 
 // Kader
 Route::get('/kader', [KaderController::class, 'index'])->middleware('auth');
+Route::get('/kader/generate', [KaderController::class, 'generate'])->middleware('auth');
 Route::post('/kader', [KaderController::class, 'store'])->middleware('auth');
 Route::post('/kader/reset', [KaderController::class, 'resetPassword'])->middleware('auth');
 Route::post('/kader/delete', [KaderController::class, 'destroy'])->middleware('auth');

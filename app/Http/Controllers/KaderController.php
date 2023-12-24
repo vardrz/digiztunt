@@ -68,4 +68,29 @@ class KaderController extends Controller
         User::where('id', $req->id)->delete();
         return back()->with('success', 'Akun kader dihapus.');
     }
+
+    public function generate()
+    {
+        $added = 0;
+        $data = [];
+
+        $pos = Posyandu::all();
+        foreach ($pos as $p) {
+            $push = [
+                'name' => 'Kader ' . $p->name,
+                'email' => str_replace(' ', '', strtolower($p->kelurahan)) . '-' . str_replace(' ', '', str_replace([' iii', ' ii', ' i', '1ndah', '1bu'], ['3', '2', '1', 'indah', 'ibu'], strtolower($p->name))),
+                'password' => Hash::make('123456'),
+                'level' => 'petugas',
+                'area' => $p->id,
+            ];
+            array_push($data, $push);
+        }
+
+        foreach ($data as $d) {
+            User::insert($d);
+            $added++;
+        }
+
+        return $added . " Data Kader Berhasil Ditambahkan.";
+    }
 }

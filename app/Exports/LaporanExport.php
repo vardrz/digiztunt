@@ -36,7 +36,7 @@ class LaporanExport implements FromView, WithColumnFormatting, WithColumnWidths,
         $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
 
         if (auth()->user()->level == 'petugas') {
-            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->where('posyandu', auth()->user()->area)->orderBy('tgl_lahir', 'DESC')->get();
+            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->where('posyandu', auth()->user()->area)->orderBy('tgl_lahir')->get();
         } else {
             return back();
         }
@@ -53,6 +53,7 @@ class LaporanExport implements FromView, WithColumnFormatting, WithColumnWidths,
     {
         return [
             'C' => '@',
+            'G' => '@',
             'H' => '@',
         ];
     }
@@ -64,20 +65,21 @@ class LaporanExport implements FromView, WithColumnFormatting, WithColumnWidths,
             'B' => 15,
             'C' => 12.27,
             'D' => 7.5,
-            'E' => 3.45,
-            'F' => 8,
-            'G' => 15,
+            'E' => 8,
+            'F' => 15,
+            'G' => 12.27,
             'H' => 12.27,
-            'I' => 12.27,
-            'J' => 13,
-            'K' => 12,
-            'L' => 7.5,
-            'M' => 3.1,
-            'N' => 3.1,
-            'O' => 3.1,
-            'P' => 3.1,
-            'Q' => 3.1,
-            'R' => 8.3,
+            'I' => 13,
+            'J' => 12,
+            'K' => 7.5,
+            'L' => 3.45,
+            'M' => 4,
+            'N' => 4,
+            'O' => 3.3,
+            'P' => 3.3,
+            'Q' => 3.3,
+            'R' => 10,
+            'S' => 10,
         ];
     }
 
@@ -128,13 +130,14 @@ class LaporanExport implements FromView, WithColumnFormatting, WithColumnWidths,
             2 => $header,
             3 => $header,
             'A' => $centered,
-            'E' => $centered,
+            'L' => $centered,
             'M' => $centered,
             'N' => $centered,
             'O' => $centered,
             'P' => $centered,
             'Q' => $centered,
             'R' => $centered,
+            'S' => $centered,
         ];
     }
 }

@@ -297,6 +297,7 @@ if(session('level') == 'petugas'){
   $(function () {
     var table = $("#balita").DataTable({
       "columnDefs": [{targets:[0], orderable: false, searchable: false}],
+      "pageLength": 20,
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {

@@ -92,12 +92,12 @@ class StantingController extends Controller
         // Pimpinan
         if (auth()->user()->level == 'pimpinan' && auth()->user()->area == 'all') {
             $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->get();
-            $title = 'Perhitungan Stunting Pekalongan Utara ' . $bulan[$bln] . ' ' . $tahun;
+            $title = 'Analisis Stunting Pekalongan Utara ' . $bulan[$bln] . ' ' . $tahun;
         } else {
             $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
                 $query->where('kelurahan', auth()->user()->area);
             })->get();
-            $title = 'Perhitungan Stunting Kelurahan ' . ucwords(strtolower(auth()->user()->area)) . ' ' . $bulan[$bln] . ' ' . $tahun;
+            $title = 'Analisis Stunting Kelurahan ' . ucwords(strtolower(auth()->user()->area)) . ' ' . $bulan[$bln] . ' ' . $tahun;
         }
 
         // Puskesmas
@@ -105,17 +105,17 @@ class StantingController extends Controller
             $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
                 $query->whereIn('kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG']);
             })->get();
-            $title = 'Perhitungan Stunting Puskesmas Kusuma Bangsa ' . $bulan[$bln] . ' ' . $tahun;
+            $title = 'Analisis Stunting Puskesmas Kusuma Bangsa ' . $bulan[$bln] . ' ' . $tahun;
         } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KRAPYAK') {
             $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
                 $query->whereIn('kelurahan', ['KRAPYAK', 'DEGAYU']);
             })->get();
-            $title = 'Perhitungan Stunting Puskesmas Krapyak ' . $bulan[$bln] . ' ' . $tahun;
+            $title = 'Analisis Stunting Puskesmas Krapyak ' . $bulan[$bln] . ' ' . $tahun;
         } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'DUKUH') {
             $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
                 $query->whereIn('kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN']);
             })->get();
-            $title = 'Perhitungan Stunting Puskesmas Dukuh ' . $bulan[$bln] . ' ' . $tahun;
+            $title = 'Analisis Stunting Puskesmas Dukuh ' . $bulan[$bln] . ' ' . $tahun;
         }
 
         return view('admin.stantingHasil', [

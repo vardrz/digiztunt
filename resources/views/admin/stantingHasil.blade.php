@@ -4,13 +4,13 @@ $dataTahun = [$thisYear, $thisYear-1, $thisYear-2, $thisYear-3, $thisYear-4];
 
 function bbu($bbu_zscore, $bb){
   if ($bbu_zscore < -3) {
-    echo "<td width='100' class='bg-danger'><b>Berat badan sangat kurang </b><br/>(" . $bb . " kg)</td>";
+    echo "<td width='100' class='bg-danger'><b>Sangat Kurang </b><br/>(" . $bb . " kg)</td>";
   } elseif ($bbu_zscore >= -3 && $bbu_zscore < -2) {
-    echo "<td width='100' class='bg-warning'><b>Berat badan kurang </b><br/>(" . $bb . " kg)</td>";
+    echo "<td width='100' class='bg-warning'><b>Kurang </b><br/>(" . $bb . " kg)</td>";
   } elseif ($bbu_zscore >= -2 && $bbu_zscore <= 1) {
-    echo "<td width='100' class='bg-success'><b>Berat badan normal </b><br/>(" . $bb . " kg)</td>";
+    echo "<td width='100' class='bg-success'><b>Normal </b><br/>(" . $bb . " kg)</td>";
   } elseif ($bbu_zscore > 1) {
-    echo "<td width='100' class='bg-warning'><b>Berat badan lebih </b><br/>(" . $bb . " kg)</td>";
+    echo "<td width='100' class='bg-warning'><b>Lebih </b><br/>(" . $bb . " kg)</td>";
   }
 }
 
@@ -42,7 +42,7 @@ function tbu($tbu_zscore, $tb){
             <!-- /.card-header -->
             <div class="card-body">
               <div class="d-flex justify-content-center">
-                <div class="input-group mb-5 mr-2" style="width: 150px">
+                <div class="input-group mb-4 mr-2" style="width: 150px">
                   <div class="input-group-prepend">
                     <span class="input-group-text">Tahun</span>
                   </div>
@@ -52,7 +52,7 @@ function tbu($tbu_zscore, $tb){
                     @endforeach
                   </select>
                 </div>
-                <div class="input-group mb-5" style="width: 190px">
+                <div class="input-group mb-4" style="width: 190px">
                   <div class="input-group-prepend">
                     <span class="input-group-text">Bulan</span>
                   </div>
@@ -137,7 +137,8 @@ function tbu($tbu_zscore, $tb){
           {targets:[0], orderable: false, searchable: false, visible: false},
           {targets:[3,4,7], orderable: false},
       ],
-      "responsive": true, "lengthChange": false, "autoWidth": true,
+      "pageLength": 20,
+      "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {
             extend: 'colvis',

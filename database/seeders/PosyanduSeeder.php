@@ -404,7 +404,7 @@ class PosyanduSeeder extends Seeder
                 'alamat' => 'RW 01'
             ],
             [
-                'name' => 'Mawar',
+                'name' => 'Mawar Dukuh',
                 'kelurahan' => 'PADUKUHAN KRATON',
                 'alamat' => 'RW 01'
             ],
@@ -429,7 +429,7 @@ class PosyanduSeeder extends Seeder
                 'alamat' => 'RW 04'
             ],
             [
-                'name' => 'Mawar',
+                'name' => 'Mawar Kraton Lor',
                 'kelurahan' => 'PADUKUHAN KRATON',
                 'alamat' => 'RW 05'
             ],
