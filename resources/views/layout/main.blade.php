@@ -1,9 +1,21 @@
+<?php 
+$avatar = '';
+if(session('level') == 'petugas'){
+  $avatar = 'posyandu';
+}elseif (session('level') == 'admin') {
+  $avatar = 'puskesmas';
+}else{
+  $avatar = 'pimpinan';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ $title }} - SIPosting</title>
+  <title>{{ $title }} - DIGIZTUNT</title>
+  <link rel="icon" href="/theme/dist/img/favicon.png" type="image/x-icon" />
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -69,23 +81,22 @@
     <!-- Brand Logo -->
     <a href="home" class="brand-link">
       {{-- <img src="/theme/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8"> --}}
-      <span class="font-weight-bold d-flex justify-content-center"><span class="text-danger">SI</span>Posting</span>
+      <span class="font-weight-bold d-flex justify-content-center"><span class="text-danger">DIGI</span>ZTUNT</span>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
       <div class="text-center">
         <div class="image">
-          <img src="/theme/dist/img/avatar5.png" class="img-circle mt-3" width="50" alt="User Image">
+          <img src="/theme/dist/img/{{$avatar}}.png" class="img-circle mt-3" width="50" height="50" alt="User Image">
         </div>
         <div class="user-panel mt-2 mb-3">
           <div class="info">
             <span class="d-block text-white text-capitalize">
-              {{ auth()->user()->name }}
+              {{ session('level') == 'petugas' ? 'Kader Posyandu ' . auth()->user()->posyandu->name : auth()->user()->name }}
               <br>
               <small>
-                {{ (session('level') == 'petugas') ? 'Kader Posyandu ' . auth()->user()->posyandu->name : (session('level') == 'admin' ? 'Puskesmas ' . strtolower(auth()->user()->area)  : (auth()->user()->area == 'all' ? 'Pimpinan Kecamatan' : 'Pimpinan Kelurahan ' . strtolower(auth()->user()->area)))}}
-                <br>{{ (session('level') == 'petugas') ? auth()->user()->posyandu->kelurahan : ''}}
+                {{ (session('level') == 'petugas') ? auth()->user()->posyandu->kelurahan : (session('level') == 'admin' ? 'Puskesmas ' . strtolower(auth()->user()->area)  : (auth()->user()->area == 'all' ? 'Pimpinan Kecamatan' : 'Pimpinan Kelurahan ' . strtolower(auth()->user()->area)))}}
               </small>
             </span>
           </div>
@@ -113,7 +124,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              @if (session('level') == 'petugas')
+              @if (session('level') == 'pimpinan' && auth()->user()->area != 'all')
               <li class="nav-item">
                 <a href="/balita/new" class="nav-link {{ Request::is('balita/new') ? 'active' : '' }}">
                   <i class="fas nav-icon">-</i>
@@ -154,7 +165,7 @@
             <a href="#" class="nav-link {{ Request::is('verifikasi') || Request::is('status') ? 'active' : '' }}">
               <i class="nav-icon fas fa-user-md"></i>
               <p>
-                Stunting
+                Data Penimbangan
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -163,14 +174,14 @@
               <li class="nav-item">
                 <a href="/verifikasi" class="nav-link {{ Request::is('verifikasi') ? 'active' : '' }}">
                   <i class="fas nav-icon">-</i>
-                  <p>Verifikasi Pendataan</p>
+                  <p>Verifikasi</p>
                 </a>
               </li>
               @endif
               <li class="nav-item">
                 <a href="/status" class="nav-link {{ Request::is('status') ? 'active' : '' }}">
                   <i class="fas nav-icon">-</i>
-                  <p>Hasil Pendataan</p>
+                  <p>Analisis</p>
                 </a>
               </li>
             </ul>
@@ -196,10 +207,21 @@
               <li class="nav-item">
                 <a href="/kader" class="nav-link {{ Request::is('kader') ? 'active' : '' }}">
                   <i class="fas nav-icon">-</i>
-                  <p>Data Kader</p>
+                  <p>Data Akun Kader</p>
                 </a>
               </li>
             </ul>
+          </li>
+          @endif
+
+          @if (session('level') == 'petugas')
+          <li class="nav-item">
+            <a href="/laporan" class="nav-link {{ Request::is('laporan') ? 'active' : '' }}">
+              <i class="nav-icon far fa-file-alt"></i>
+              <p>
+                Rekap Laporan
+              </p>
+            </a>
           </li>
           @endif
 
@@ -231,10 +253,9 @@
 
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-      {{-- <a href="http://vaard.site" class="text-bold">&copy; Vard</a> --}}
       {{ 'Tahun ' . date('Y') }}
     </div>
-    <strong>SIPosting</strong>. Kota Pekalongan
+    <strong>DIGIZTUNT</strong>. Kecamatan Pekalongan Utara
   </footer>
 
   <!-- Control Sidebar -->
@@ -276,6 +297,7 @@
   $(function () {
     var table = $("#balita").DataTable({
       "columnDefs": [{targets:[0], orderable: false, searchable: false}],
+      "pageLength": 20,
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {
@@ -287,21 +309,30 @@
             extend: 'pdf',
             className: 'btn btn-danger',
             exportOptions: {
-              columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+              columns: <?= ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
+                ? '[ 0, 1, 2, 3, 4, 5, 6, 7 ]'
+                : '[ 0, 1, 2, 3, 4, 5, 6]'
+               ?>
             }
         },
         {
             extend: 'excel',
             className: 'btn btn-success',
             exportOptions: {
-              columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+              columns: <?= ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
+                ? '[ 0, 1, 2, 3, 4, 5, 6, 7 ]'
+                : '[ 0, 1, 2, 3, 4, 5, 6]'
+               ?>
             }
         },
         {
             extend: 'print',
             className: 'btn btn-dark',
             exportOptions: {
-              columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+              columns: <?= ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
+                ? '[ 0, 1, 2, 3, 4, 5, 6, 7 ]'
+                : '[ 0, 1, 2, 3, 4, 5, 6]'
+               ?>
             }
         }
     ],
@@ -318,7 +349,7 @@
 </script>
 @endif
 
-{{-- @if(Request::is('balita') && session('level') == 'admin')
+@if(Request::is('balita') && session('level') == 'admin')
 <script>
   function confirm(id) {
     Swal.fire({
@@ -342,7 +373,7 @@
     })
   }
 </script>
-@endif --}}
+@endif
 
 @if(Request::is('verifikasi'))
 <script>

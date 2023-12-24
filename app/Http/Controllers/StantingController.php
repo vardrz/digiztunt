@@ -15,19 +15,22 @@ class StantingController extends Controller
             $data = Pelayanan::where('verif', 'n')->whereHas('balita', function ($query) {
                 $query->whereIn('kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG']);
             })->get();
+            $title = 'Data Penimbangan Balita Puskesmas Kusuma Bangsa';
         } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KRAPYAK') {
             $data = Pelayanan::where('verif', 'n')->whereHas('balita', function ($query) {
                 $query->whereIn('kelurahan', ['KRAPYAK', 'DEGAYU']);
             })->get();
+            $title = 'Data Penimbangan Balita Puskesmas Krapyak';
         } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'DUKUH') {
             $data = Pelayanan::where('verif', 'n')->whereHas('balita', function ($query) {
                 $query->whereIn('kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN']);
             })->get();
+            $title = 'Data Penimbangan Balita Puskesmas Dukuh';
         }
 
         return view('admin.stantingVerifikasi', [
-            'title' => 'Verifikasi Pendataan',
-            'data' => $data
+            'title' => 'Verifikasi ' . $title,
+            'data' => $data,
         ]);
     }
 
@@ -56,15 +59,15 @@ class StantingController extends Controller
         Balita::where('id', $req->id_balita)->update(['status' => $status]);
         Pelayanan::where('id', $req->id)->update(['verif' => 'y', 'bbu' => $bbu_zscore, 'tbu' => $tbu_zscore]);
 
-        return redirect('/status')->with('success', 'Data berhasil diverifikasi.');
+        return back()->with('success', 'Data berhasil diverifikasi.');
     }
 
     public function update(Request $req)
     {
         $data = [
-            'tb' => $req->tb,
-            'bb' => $req->bb,
-            'lingkar_kepala' => $req->lingkar_kepala
+            'tb' => str_replace([','], ['.'], $req->tb),
+            'bb' => str_replace([','], ['.'], $req->bb),
+            'lingkar_kepala' => str_replace([','], ['.'], $req->lingkar_kepala)
         ];
 
         Pelayanan::where('id', $req->id)->update($data);
@@ -89,10 +92,12 @@ class StantingController extends Controller
         // Pimpinan
         if (auth()->user()->level == 'pimpinan' && auth()->user()->area == 'all') {
             $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->get();
+            $title = 'Analisis Stunting Pekalongan Utara ' . $bulan[$bln] . ' ' . $tahun;
         } else {
             $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
                 $query->where('kelurahan', auth()->user()->area);
             })->get();
+            $title = 'Analisis Stunting Kelurahan ' . ucwords(strtolower(auth()->user()->area)) . ' ' . $bulan[$bln] . ' ' . $tahun;
         }
 
         // Puskesmas
@@ -100,18 +105,21 @@ class StantingController extends Controller
             $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
                 $query->whereIn('kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG']);
             })->get();
+            $title = 'Analisis Stunting Puskesmas Kusuma Bangsa ' . $bulan[$bln] . ' ' . $tahun;
         } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KRAPYAK') {
             $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
                 $query->whereIn('kelurahan', ['KRAPYAK', 'DEGAYU']);
             })->get();
+            $title = 'Analisis Stunting Puskesmas Krapyak ' . $bulan[$bln] . ' ' . $tahun;
         } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'DUKUH') {
             $data = Pelayanan::where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->whereHas('balita', function ($query) {
                 $query->whereIn('kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN']);
             })->get();
+            $title = 'Analisis Stunting Puskesmas Dukuh ' . $bulan[$bln] . ' ' . $tahun;
         }
 
         return view('admin.stantingHasil', [
-            'title' => 'Hasil Perhitungan Stunting ' . $bulan[$bln] . ' ' . $tahun,
+            'title' => $title,
             'data' => $data,
             'listBulan' => $bulan,
             'bulan' => [$bulan[$bln], $bln],

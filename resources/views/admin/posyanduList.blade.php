@@ -19,6 +19,7 @@
                   <th class="text-center">No.</th>
                   <th>Kelurahan</th>
                   <th>Posyandu</th>
+                  <th>Alamat</th>
                   <th>Aksi</th>
                 </tr>
                 </thead>
@@ -28,6 +29,7 @@
                   <td class="text-center">{{ $no }}</td>
                   <td>{{ $pos->kelurahan }}</td>
                   <td>{{ $pos->name }}</td>
+                  <td>{{ $pos->alamat }}</td>
                   <td class="text-center align-middle" width="100">
                     <a href="/posyandu/edit/{{ $pos->id }}" class="btn btn-lg py-0 px-1 text-primary"><i class="fas fa-edit"></i></a>
                     <button type="button" onclick="del({{ $pos->id }})" class="btn btn-lg py-0 px-1 text-danger"><i class="fas fa-trash"></i></button>
@@ -61,6 +63,11 @@
                 <label for="name">Nama Posyandu</label>
                 <input type="text" value="{{ old('name') }}" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Nama Posyandu" required>
                 @error('name')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
+            </div>
+            <div class="form-group">
+                <label for="alamat">Alamat Posyandu (RW)</label>
+                <input type="text" value="{{ old('alamat') }}" name="alamat" class="form-control @error('alamat') is-invalid @enderror" placeholder="Contoh: RW 01" required>
+                @error('alamat')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="kelurahan">Kelurahan</label>
@@ -127,21 +134,21 @@
                     extend: 'pdf',
                     className: 'btn btn-danger',
                     exportOptions: {
-                    columns: [ 0, 1, 2 ]
+                    columns: [ 0, 1, 2, 3 ]
                     }
                 },
                 {
                     extend: 'excel',
                     className: 'btn btn-success',
                     exportOptions: {
-                    columns: [ 0, 1, 2 ]
+                    columns: [ 0, 1, 2, 3 ]
                     }
                 },
                 {
                     extend: 'print',
                     className: 'btn btn-dark',
                     exportOptions: {
-                    columns: [ 0, 1, 2 ]
+                    columns: [ 0, 1, 2, 3 ]
                     }
                 },
                 {

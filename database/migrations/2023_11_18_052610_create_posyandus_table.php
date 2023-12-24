@@ -18,6 +18,7 @@ class CreatePosyandusTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('kelurahan');
+            $table->string('alamat');
             // $table->timestamps();
         });
     }

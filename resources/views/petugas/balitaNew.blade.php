@@ -20,7 +20,7 @@
                     </div>
                     <form method="post" id="formAddBalita">
                     @csrf
-                    <input type="hidden" name="posyandu" value="{{ auth()->user()->area }}">
+                    {{-- <input type="hidden" name="posyandu" value="{{ auth()->user()->area }}"> --}}
                     <div class="card-body">
                         <div class="form-group">
                             <label for="nama">Nama Anak</label>
@@ -76,6 +76,16 @@
                                 <input type="range" value="0" min="0" max="16" id="rangeNIK" disabled>
                             </div>
                             @error('nik')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="posyandu">Posyandu</label>
+                            <select name="posyandu" class="form-control" id="posyandu" required>
+                                <option value="" disabled selected>Posyandu</option>
+                                @foreach ($posyandu as $p)
+                                <option value="{{ $p->id }}">{{ $p->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('posyandu')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
                         </div>
                     </div>
                 </div>
@@ -135,7 +145,9 @@
                             <select name="kelurahan" class="form-control" id="kelurahan" required>
                                 <option value="" disabled selected>Kelurahan</option>
                                 @foreach ($kelurahan as $i)
-                                <option value="{{ $i }}">{{ $i }}</option>
+                                    @if($i == auth()->user()->area)
+                                        <option value="{{ $i }}" selected>{{ $i }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>

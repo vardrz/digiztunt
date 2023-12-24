@@ -26,7 +26,7 @@
                             <th>Kelurahan</th>
                             <th>Posyandu</th>
                             <th>Nama</th>
-                            <th>Email</th>
+                            <th>Username</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>

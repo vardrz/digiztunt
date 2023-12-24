@@ -17,10 +17,10 @@ class BalitaSeeder extends Seeder
         DB::table('balitas')->insert(
             [
                 [
-                    "nama" => "Andi Fitra",
+                    "nama" => "Fitri Anggraini",
                     "tgl_lahir" => "2022-10-05",
                     "nik" => "2110051001990001",
-                    "jenis_kelamin" => "lk",
+                    "jenis_kelamin" => "pr",
                     "nama_ibu" => "Siti Rahayu",
                     "nik_ibu" => "4510202001990002",
                     "nama_ayah" => "Rudi Prabowo",
@@ -73,10 +73,10 @@ class BalitaSeeder extends Seeder
                     "posyandu" => 45
                 ],
                 [
-                    "nama" => "Akbar Tanjung",
+                    "nama" => "Revina Cahya",
                     "tgl_lahir" => "2023-03-27",
                     "nik" => "2103271005990013",
-                    "jenis_kelamin" => "lk",
+                    "jenis_kelamin" => "pr",
                     "nama_ibu" => "Eva Sari",
                     "nik_ibu" => "4510202001990014",
                     "nama_ayah" => "Fauzan Akbar",
@@ -101,10 +101,10 @@ class BalitaSeeder extends Seeder
                     "posyandu" => 1
                 ],
                 [
-                    "nama" => "Septian David",
+                    "nama" => "Asih Setiani",
                     "tgl_lahir" => "2023-01-09",
                     "nik" => "2009091007990019",
-                    "jenis_kelamin" => "lk",
+                    "jenis_kelamin" => "pr",
                     "nama_ibu" => "Linda Indah",
                     "nik_ibu" => "4510202001990020",
                     "nama_ayah" => "Iqbal Maulana",

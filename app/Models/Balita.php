@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Balita extends Model
 {
+    protected $guarded = ['id'];
+
     use HasFactory;
     public $timestamps = false;
 

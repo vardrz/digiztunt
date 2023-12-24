@@ -18,397 +18,495 @@ class PosyanduSeeder extends Seeder
             // Puskesmas Kusuma Bangsa
             [
                 'name' => 'Rajawali',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 01"
             ],
             [
                 'name' => 'Sehat Barokah',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 03"
             ],
             [
                 'name' => 'Tulip',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 04"
             ],
             [
                 'name' => 'Kusuma Indah',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 05"
             ],
             [
                 'name' => 'Dahlia',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 06"
             ],
             [
                 'name' => 'Kenanga I',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 07"
             ],
             [
                 'name' => 'Kenanga II',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 07"
             ],
             [
                 'name' => 'Delima Putih',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 08"
             ],
             [
                 'name' => 'Anggrek',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 09"
             ],
             [
                 'name' => 'Melati I',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 10"
             ],
             [
                 'name' => 'Melati II',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 13"
             ],
             [
                 'name' => 'Mekar Sari',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 10"
             ],
             [
                 'name' => 'Wijaya Kusuma',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 11"
             ],
             [
                 'name' => 'Mawar Semi',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 11"
             ],
             [
                 'name' => 'Mawar Sari',
-                'kelurahan' => 'PANJANG WETAN'
+                'kelurahan' => 'PANJANG WETAN',
+                "alamat" => "RW 12"
             ],
             [
                 'name' => 'Wijaya Kusuma',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 02"
             ],
             [
                 'name' => 'Cempaka',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 01"
             ],
             [
                 'name' => 'Ceria I',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 03"
             ],
             [
                 'name' => 'Ceria II',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 04"
             ],
             [
                 'name' => 'Ceria III',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 04"
             ],
             [
                 'name' => 'Kusuma sari I',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 09"
             ],
             [
                 'name' => 'Kusuma Sari II',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 10"
             ],
             [
                 'name' => 'Melati Sari ',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 05"
             ],
             [
                 'name' => 'Kemuning',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 05"
             ],
             [
                 'name' => 'Cemara',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 06"
             ],
             [
                 'name' => 'Mau Sehat I',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 08"
             ],
             [
                 'name' => 'Mau Sehat II',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 08"
             ],
             [
                 'name' => 'Kasih Bunda',
-                'kelurahan' => 'PANJANG BARU'
+                'kelurahan' => 'PANJANG BARU',
+                "alamat" => "RW 09"
             ],
             [
                 'name' => 'Bakti Ibu',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 01"
             ],
             [
                 'name' => 'Kusuma',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 02"
             ],
             [
                 'name' => 'Tunas Mekar',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 02"
             ],
             [
                 'name' => 'Merak',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 03"
             ],
             [
                 'name' => 'Melati',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 04"
             ],
             [
                 'name' => 'Mawar Merah',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 05"
             ],
             [
                 'name' => 'Anggrek Ungu',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 05"
             ],
             [
                 'name' => 'Melati Putih',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 05"
             ],
             [
                 'name' => 'Dahlia I',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 12"
             ],
             [
                 'name' => 'Dahlia II',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 06"
             ],
             [
                 'name' => 'Dahlia III',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 13"
             ],
             [
                 'name' => 'Wijaya Kusuma',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 07"
             ],
             [
                 'name' => 'Flamboyan',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 08"
             ],
             [
                 'name' => 'Kencono Ungu',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 09"
             ],
             [
                 'name' => 'Pesona Sehat',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 11"
             ],
             [
                 'name' => 'Damar Wulan',
-                'kelurahan' => 'KANDANG PANJANG'
+                'kelurahan' => 'KANDANG PANJANG',
+                "alamat" => "RW 10"
             ],
             // Puskesmas Krapyak
             [
                 'name' => 'Melati I',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 01'
             ],
             [
                 'name' => 'Melati II',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 01'
             ],
             [
                 'name' => 'Mawar',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 02'
             ],
             [
                 'name' => 'Mentari',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 06'
             ],
             [
                 'name' => 'Cahaya',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 03'
             ],
             [
                 'name' => 'Kenanga',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 03'
             ],
             [
                 'name' => 'Anggrek Jerli',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 04'
             ],
             [
                 'name' => 'Millenium',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 06'
             ],
             [
                 'name' => 'Nusa Indah I',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 07'
             ],
             [
                 'name' => 'Cempaka',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 08'
             ],
             [
                 'name' => 'Beringin',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 09'
             ],
             [
                 'name' => 'Teratai',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 10'
             ],
             [
                 'name' => 'Bougenvil',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 11'
             ],
             [
                 'name' => 'Sakura I',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 12'
             ],
             [
                 'name' => 'Tulip',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 13'
             ],
             [
                 'name' => 'Melati III',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 14'
             ],
             [
                 'name' => 'Flamboyan',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 14'
             ],
             [
                 'name' => 'Nusa Indah II',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 15'
             ],
             [
                 'name' => 'Anggrek',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 16'
             ],
             [
                 'name' => 'Melati Mandiri',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 17'
             ],
             [
                 'name' => 'Sakura II',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 18'
             ],
             [
                 'name' => 'Sekar Melati',
-                'kelurahan' => 'KRAPYAK'
+                'kelurahan' => 'KRAPYAK',
+                'alamat' => 'RW 19'
             ],
             [
                 'name' => 'Melati',
-                'kelurahan' => 'DEGAYU'
+                'kelurahan' => 'DEGAYU',
+                'alamat' => 'RW 01'
             ],
             [
                 'name' => 'Kenanga',
-                'kelurahan' => 'DEGAYU'
+                'kelurahan' => 'DEGAYU',
+                'alamat' => 'RW 03'
             ],
             [
                 'name' => 'Mawar',
-                'kelurahan' => 'DEGAYU'
+                'kelurahan' => 'DEGAYU',
+                'alamat' => 'RW 04'
             ],
             [
                 'name' => 'Seruni',
-                'kelurahan' => 'DEGAYU'
+                'kelurahan' => 'DEGAYU',
+                'alamat' => 'RW 05'
             ],
             [
                 'name' => 'Cemara',
-                'kelurahan' => 'DEGAYU'
+                'kelurahan' => 'DEGAYU',
+                'alamat' => 'RW 06'
             ],
             [
                 'name' => 'Gelombang Cinta',
-                'kelurahan' => 'DEGAYU'
+                'kelurahan' => 'DEGAYU',
+                'alamat' => 'RW 07'
             ],
             [
                 'name' => 'Bidara',
-                'kelurahan' => 'DEGAYU'
+                'kelurahan' => 'DEGAYU',
+                'alamat' => 'RW 07'
             ],
             [
                 'name' => 'Kamboja',
-                'kelurahan' => 'DEGAYU'
+                'kelurahan' => 'DEGAYU',
+                'alamat' => 'RW 08'
             ],
             [
                 'name' => 'Anggrek ',
-                'kelurahan' => 'DEGAYU'
+                'kelurahan' => 'DEGAYU',
+                'alamat' => 'RW 09'
             ],
             // Puskesmas Dukuh
             [
                 'name' => 'Melati',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 01'
             ],
             [
                 'name' => 'Nusa Indah',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 01'
             ],
             [
-                'name' => 'Mawar',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'name' => 'Mawar Dukuh',
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 01'
             ],
             [
                 'name' => 'Cempaka',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 02'
             ],
             [
                 'name' => 'Teratai',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 03'
             ],
             [
                 'name' => 'Seruni',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 04'
             ],
             [
                 'name' => 'Manunggal',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 04'
             ],
             [
-                'name' => 'Mawar',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'name' => 'Mawar Kraton Lor',
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 05'
             ],
             [
                 'name' => 'Handayani',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 06'
             ],
             [
                 'name' => 'Bougenvil',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 07'
             ],
             [
                 'name' => 'Anggrek',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 08'
             ],
             [
                 'name' => 'Flamboyan',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 09'
             ],
             [
                 'name' => 'Mawar 1',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 12'
             ],
             [
                 'name' => 'Mawar 2',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 13'
             ],
             [
                 'name' => 'Mawar 3',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 14'
             ],
             [
                 'name' => 'Mawar 4',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 13'
             ],
             [
                 'name' => 'Mawar 5',
-                'kelurahan' => 'PADUKUHAN KRATON'
+                'kelurahan' => 'PADUKUHAN KRATON',
+                'alamat' => 'RW 15'
             ],
             [
                 'name' => 'Melati',
-                'kelurahan' => 'BANDENGAN'
+                'kelurahan' => 'BANDENGAN',
+                'alamat' => 'RW 01'
             ],
             [
                 'name' => 'Flamboyan',
-                'kelurahan' => 'BANDENGAN'
+                'kelurahan' => 'BANDENGAN',
+                'alamat' => 'RW 02'
             ],
             [
                 'name' => 'Anggrek',
-                'kelurahan' => 'BANDENGAN'
+                'kelurahan' => 'BANDENGAN',
+                'alamat' => 'RW 03'
             ],
             [
                 'name' => 'Teratai',
-                'kelurahan' => 'BANDENGAN'
+                'kelurahan' => 'BANDENGAN',
+                'alamat' => 'RW 04'
             ],
             [
                 'name' => 'Cempaka',
-                'kelurahan' => 'BANDENGAN'
+                'kelurahan' => 'BANDENGAN',
+                'alamat' => 'RW 05'
             ],
             [
                 'name' => 'Nusa Indah',
-                'kelurahan' => 'BANDENGAN'
+                'kelurahan' => 'BANDENGAN',
+                'alamat' => 'RW 06'
             ],
         ]);
     }
