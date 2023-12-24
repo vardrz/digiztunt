@@ -226,21 +226,21 @@
                     extend: 'pdf',
                     className: 'btn btn-danger',
                     exportOptions: {
-                    columns: [ 0, 1, 2 ]
+                    columns: [ 0, 1, 2, 3, 4 ]
                     }
                 },
                 {
                     extend: 'excel',
                     className: 'btn btn-success',
                     exportOptions: {
-                    columns: [ 0, 1, 2 ]
+                    columns: [ 0, 1, 2, 3, 4 ]
                     }
                 },
                 {
                     extend: 'print',
                     className: 'btn btn-dark',
                     exportOptions: {
-                    columns: [ 0, 1, 2 ]
+                    columns: [ 0, 1, 2, 3, 4 ]
                     }
                 },
                 {
