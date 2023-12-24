@@ -194,7 +194,7 @@ class BalitaController extends Controller
 
         Balita::insert($balita);
 
-        return redirect('/pelayanan')->with('success', 'Data balita berhasil ditambahkan.');
+        return redirect('/balita')->with('success', 'Data balita berhasil ditambahkan.');
     }
 
     public function edit($id = null)
