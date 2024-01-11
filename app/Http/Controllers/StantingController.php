@@ -126,4 +126,114 @@ class StantingController extends Controller
             'tahun' => $tahun,
         ]);
     }
+
+    public function belumDitimbang($year = null, $month = null)
+    {
+        $tahun = ($year == null) ? date('Y') : $year;
+        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        if ($month != null) {
+            $fiveYearAgo = date('Y-m-d', strtotime(date($tahun . '-' . $month . '-1') . '-5 years'));
+            $thisDay = $tahun . '-' . $month . '-' . '01';
+
+            $between = [$tahun . '-' . $month . '-1', $tahun . '-' . $month . '-28'];
+            $bln = $month - 1;
+        } else {
+            $fiveYearAgo = date('Y-m-d', strtotime(date($tahun . '-m-1') . '-5 years'));
+            $thisDay = $tahun . '-' . date('m-d');
+
+            $between = [$tahun . '-' . date('m-1'), $tahun . '-' . date('m-28')];
+            $bln = date('m') - 1;
+        }
+
+        // Pimpinan
+        if (auth()->user()->level == 'pimpinan' && auth()->user()->area == 'all') {
+            $belumDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])
+                ->whereDoesntHave('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $sudahDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])
+                ->whereHas('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $title = 'Balita Belum Ditimbang Kec. Pekalongan Utara ' . $bulan[$bln] . ' ' . $tahun;
+        } else {
+            $belumDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->where('kelurahan', auth()->user()->area)
+                ->whereDoesntHave('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $sudahDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->where('kelurahan', auth()->user()->area)
+                ->whereHas('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $title = 'Balita Belum Ditimbang Kelurahan ' . ucwords(strtolower(auth()->user()->area)) . ' ' . $bulan[$bln] . ' ' . $tahun;
+        }
+
+        // Puskesmas
+        if (auth()->user()->level == 'admin' && auth()->user()->area == 'KUSUMA BANGSA') {
+            $belumDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])
+                ->whereIn('kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG'])
+                ->whereDoesntHave('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $sudahDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])
+                ->whereIn('kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG'])
+                ->whereHas('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $title = 'Balita Belum Ditimbang Puskesmas Kusuma Bangsa ' . $bulan[$bln] . ' ' . $tahun;
+        } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KRAPYAK') {
+            $belumDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])
+                ->whereIn('kelurahan', ['KRAPYAK', 'DEGAYU'])
+                ->whereDoesntHave('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $sudahDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])
+                ->whereIn('kelurahan', ['KRAPYAK', 'DEGAYU'])
+                ->whereHas('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $title = 'Balita Belum Ditimbang Puskesmas Krapyak ' . $bulan[$bln] . ' ' . $tahun;
+        } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'DUKUH') {
+            $belumDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])
+                ->whereIn('kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN'])
+                ->whereDoesntHave('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $sudahDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])
+                ->whereIn('kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN'])
+                ->whereHas('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $title = 'Balita Belum Ditimbang Puskesmas Dukuh ' . $bulan[$bln] . ' ' . $tahun;
+        }
+
+        // Posyandu
+        if (auth()->user()->level == 'petugas') {
+            $belumDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])
+                ->where('posyandu', auth()->user()->area)
+                ->whereDoesntHave('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $sudahDitimbang = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])
+                ->where('posyandu', auth()->user()->area)
+                ->whereHas('pelayanan', function ($query) use ($between) {
+                    $query->whereBetween('tgl_pelayanan', $between);
+                })->get();
+            $title = 'Balita Belum Ditimbang Posyandu ' . auth()->user()->posyandu->name . ' ' . $bulan[$bln] . ' ' . $tahun;
+        }
+
+        // foreach ($data as $d) {
+        //     echo $d->nama . '<br>';
+        // }
+        // die;
+        return view('petugas.balitaBelumDitimbang', [
+            'title' => $title,
+            'belumDitimbang' => $belumDitimbang,
+            'sudahDitimbang' => $sudahDitimbang,
+            'listBulan' => $bulan,
+            'bulan' => [$bulan[$bln], $bln],
+            'tahun' => $tahun,
+        ]);
+    }
 }

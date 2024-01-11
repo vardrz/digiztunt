@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
-    public function index(StuntingChart $chart)
+    public function index(StuntingChart $chart, $year = null, $month = null)
     {
         if (session()->get('level') == 'petugas') { // Posyandu
             $thisDay = date('Y-m-d');
@@ -67,6 +67,18 @@ class HomeController extends Controller
                 'verif' => $verif
             ]);
         } elseif (session()->get('level') == 'pimpinan') { // Pimpinan
+            // define year & month
+            $tahun = ($year == null) ? date('Y') : $year;
+            $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            if ($month != null) {
+                $between = [date('Y-m-d', strtotime($tahun . '-' . $month . '-0')), date('Y-m-d', strtotime($tahun . '-' . $month . '-28'))];
+                $bln = $month - 1;
+            } else {
+                $between = [date('Y-m-d', strtotime($tahun . '-' . date('m-0'))), date('Y-m-d', strtotime($tahun . '-' . date('m-28')))];
+                $bln = date('m') - 1;
+            }
+
+            // get chart data
             if (auth()->user()->area != 'all') {
                 $stuntingLastMonth = $chart->kelurahanLastMonth(auth()->user()->area);
             } else {
@@ -75,7 +87,10 @@ class HomeController extends Controller
 
             return view('pimpinan.home', [
                 'title' => 'Home',
-                'giziBuruk' => $chart->giziBuruk(),
+                'listBulan' => $bulan,
+                'bulan' => [$bulan[$bln], $bln],
+                'tahun' => $tahun,
+                'giziBuruk' => $chart->giziBuruk($between),
                 'utaraLastMonth' => $stuntingLastMonth,
                 'utaraBalita' => $chart->utaraBalita()
             ]);

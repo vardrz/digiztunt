@@ -160,7 +160,6 @@ if(session('level') == 'petugas'){
           </li>
           @endif
 
-          @if (session('level') != 'petugas')
           <li class="nav-item {{ Request::is('verifikasi') || Request::is('status') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ Request::is('verifikasi') || Request::is('status') ? 'active' : '' }}">
               <i class="nav-icon fas fa-user-md"></i>
@@ -178,15 +177,22 @@ if(session('level') == 'petugas'){
                 </a>
               </li>
               @endif
+              @if (session('level') != 'petugas')
               <li class="nav-item">
                 <a href="/status" class="nav-link {{ Request::is('status') ? 'active' : '' }}">
                   <i class="fas nav-icon">-</i>
                   <p>Analisis</p>
                 </a>
               </li>
+              @endif
+              <li class="nav-item">
+                <a href="/belum-ditimbang" class="nav-link {{ Request::is('belum-ditimbang') ? 'active' : '' }}">
+                  <i class="fas nav-icon">-</i>
+                  <p>Data Balita</p>
+                </a>
+              </li>
             </ul>
           </li>
-          @endif
 
           @if (session('level') == 'admin')
           <li class="nav-item {{ Request::is('posyandu') || Request::is('kader') ? 'menu-open' : '' }}">

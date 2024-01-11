@@ -27,7 +27,7 @@ Route::post('/', [AuthController::class, 'auth']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
 // User
-Route::get('/home', [HomeController::class, 'index'])->middleware('auth');
+Route::get('/home/{tahun?}/{bulan?}', [HomeController::class, 'index'])->middleware('auth');
 Route::get('/user/password', [HomeController::class, 'password'])->middleware('auth');
 Route::post('/user/password', [HomeController::class, 'changePass'])->middleware('auth');
 
@@ -46,11 +46,12 @@ Route::get('/pelayanan', [PelayananController::class, 'index'])->middleware('aut
 Route::post('/pelayanan', [PelayananController::class, 'store']);
 Route::get('/pelayanan/find/{data}', [PelayananController::class, 'find'])->middleware('auth');
 
-// Stanting
+// Penimbangan
 Route::get('/verifikasi', [StantingController::class, 'index'])->middleware('auth');
 Route::post('/verifikasi/accept', [StantingController::class, 'verif'])->middleware('auth');
 Route::post('/verifikasi/update', [StantingController::class, 'update'])->middleware('auth');
 Route::get('/status/{tahun?}/{bulan?}', [StantingController::class, 'status'])->middleware('auth');
+Route::get('/belum-ditimbang/{tahun?}/{bulan?}', [StantingController::class, 'belumDitimbang'])->middleware('auth');
 
 // Posyandu
 Route::get('/posyandu', [PosyanduController::class, 'index'])->middleware('auth');
