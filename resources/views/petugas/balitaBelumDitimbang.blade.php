@@ -1,23 +1,6 @@
 <?php
 $thisYear = date('Y');
 $dataTahun = [$thisYear, $thisYear-1, $thisYear-2, $thisYear-3, $thisYear-4];
-
-function month($tanggalLahir) {
-    $tanggalLahirObj = new DateTime($tanggalLahir);
-    $hariIni = new DateTime();
-
-    $selisihTahun = $hariIni->format('Y') - $tanggalLahirObj->format('Y');
-    $selisihBulan = $hariIni->format('m') - $tanggalLahirObj->format('m');
-    $selisihHari = $tanggalLahirObj->diff($hariIni)->format('%a');
-    
-    $totalBulan = $selisihTahun * 12 + $selisihBulan;
-
-    if($selisihHari > 30){
-      return $totalBulan . ' Bulan';
-    }else{
-      return $selisihHari . ' Hari';
-    }
-}
 ?>
 
 @extends('layout.main')
@@ -46,8 +29,8 @@ function month($tanggalLahir) {
                             <div class="col-md-12">
                                 <nav>
                                     <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                                        <a class="nav-item nav-link active" id="nav-belum-tab" data-toggle="tab" onclick="titleChange('belum')" href="#nav-belum" role="tab" aria-controls="nav-belum" aria-selected="true">Belum Ditimbang</a>
-                                        <a class="nav-item nav-link" id="nav-sudah-tab" data-toggle="tab" onclick="titleChange('sudah')" href="#nav-sudah" role="tab" aria-controls="nav-sudah" aria-selected="false">Sudah Ditimbang</a>
+                                        <a class="nav-item nav-link active" id="nav-belum-tab" data-toggle="tab" onclick="titleChange('belum')" href="#nav-belum" role="tab" aria-controls="nav-belum" aria-selected="true"><span id="btn-belum" class="w-100 btn btn-danger">Belum Ditimbang</span></a>
+                                        <a class="nav-item nav-link" id="nav-sudah-tab" data-toggle="tab" onclick="titleChange('sudah')" href="#nav-sudah" role="tab" aria-controls="nav-sudah" aria-selected="false"><span id="btn-sudah" class="w-100 btn btn-success">Sudah Ditimbang</span></a>
                                     </div>
                                 </nav>
                                 <div class="tab-content" id="nav-tabContent">
@@ -85,7 +68,6 @@ function month($tanggalLahir) {
                                                     <th>Nama</th>
                                                     <th>Jenis Kelamin</th>
                                                     <th>Tanggal Lahir</th>
-                                                    <th>Usia</th>
                                                     @if ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))<th>Kelurahan</th>@endif
                                                     <th>Posyandu</th>
                                                 </tr>
@@ -98,7 +80,6 @@ function month($tanggalLahir) {
                                                     <td>{{ $data->nama }}</td>
                                                     <td>{{ $data->jenis_kelamin == 'lk' ? 'Laki-laki' : 'Perempuan' }}</td>
                                                     <td>{{ date('d-m-Y', strtotime ($data->tgl_lahir)) }}</td>
-                                                    <td>{{ month($data->tgl_lahir) }}</td>
                                                     @if ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
                                                         <td>{{ $data->kelurahan }}</td>
                                                     @endif
@@ -144,7 +125,7 @@ function month($tanggalLahir) {
                                                     <th>Usia</th>
                                                     @if ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))<th>Kelurahan</th>@endif
                                                     <th>Posyandu</th>
-                                                    <th>Penimbangan Terakhir</th>
+                                                    <th>Tgl Penimbangan</th>
                                                     <th>BB</th>
                                                     <th>TB</th>
                                                 </tr>
@@ -156,14 +137,14 @@ function month($tanggalLahir) {
                                                     <td>@if($data->nik == '-')<small>Belum memiliki NIK<small>@else{{ $data->nik }}@endif</td>
                                                     <td>{{ $data->nama }}</td>
                                                     <td>{{ $data->jenis_kelamin == 'lk' ? 'Laki-laki' : 'Perempuan' }}</td>
-                                                    <td>{{ month($data->tgl_lahir) }}</td>
+                                                    <td>{{ $data->pelayanan()->whereBetween('tgl_pelayanan', $between)->orderBy('tgl_pelayanan', 'desc')->first()->usia }} Bulan</td>
                                                     @if ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
                                                         <td>{{ $data->kelurahan }}</td>
                                                     @endif
                                                     <td>{{ $data->posyandu()->first()->name }}</td>
-                                                    <td>{{ date('d-m-Y', strtotime($data->pelayanan()->orderBy('tgl_pelayanan', 'desc')->first()->tgl_pelayanan)) }}</td>
-                                                    <td>{{ $data->pelayanan()->orderBy('tgl_pelayanan', 'desc')->first()->bb }}</td>
-                                                    <td>{{ $data->pelayanan()->orderBy('tgl_pelayanan', 'desc')->first()->tb }}</td>
+                                                    <td>{{ date('d-m-Y', strtotime($data->pelayanan()->whereBetween('tgl_pelayanan', $between)->orderBy('tgl_pelayanan', 'desc')->first()->tgl_pelayanan)) }}</td>
+                                                    <td>{{ $data->pelayanan()->whereBetween('tgl_pelayanan', $between)->orderBy('tgl_pelayanan', 'desc')->first()->bb }}</td>
+                                                    <td>{{ $data->pelayanan()->whereBetween('tgl_pelayanan', $between)->orderBy('tgl_pelayanan', 'desc')->first()->tb }}</td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -203,8 +184,8 @@ function month($tanggalLahir) {
                     className: 'btn btn-danger',
                     exportOptions: {
                         columns: <?= ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
-                            ? '[ 0, 1, 2, 3, 4, 5, 6, 7 ]'
-                            : '[ 0, 1, 2, 3, 4, 5, 6 ]'
+                            ? '[ 0, 1, 2, 3, 4, 5, 6 ]'
+                            : '[ 0, 1, 2, 3, 4, 5 ]'
                         ?>
                     }
                 },
@@ -213,8 +194,8 @@ function month($tanggalLahir) {
                     className: 'btn btn-success',
                     exportOptions: {
                         columns: <?= ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
-                            ? '[ 0, 1, 2, 3, 4, 5, 6, 7 ]'
-                            : '[ 0, 1, 2, 3, 4, 5, 6 ]'
+                            ? '[ 0, 1, 2, 3, 4, 5, 6 ]'
+                            : '[ 0, 1, 2, 3, 4, 5 ]'
                         ?>
                     }
                 },
@@ -223,8 +204,8 @@ function month($tanggalLahir) {
                     className: 'btn btn-dark',
                     exportOptions: {
                         columns: <?= ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
-                            ? '[ 0, 1, 2, 3, 4, 5, 6, 7 ]'
-                            : '[ 0, 1, 2, 3, 4, 5, 6 ]'
+                            ? '[ 0, 1, 2, 3, 4, 5, 6 ]'
+                            : '[ 0, 1, 2, 3, 4, 5 ]'
                         ?>
                     }
                 },
@@ -318,9 +299,13 @@ function month($tanggalLahir) {
     function titleChange(status){
         if(status == 'belum'){
             document.title = document.title.replace('Sudah', 'Belum');
+            document.getElementById('btn-belum').classList.add('text-bold');
+            document.getElementById('btn-sudah').classList.remove('text-bold');
             document.getElementById('titleBelum').innerHTML = document.title.replace('Sudah', 'Belum').replace(' - DIGIZTUNT', '');
         }else{
             document.title = document.title.replace('Belum', 'Sudah');
+            document.getElementById('btn-sudah').classList.add('text-bold');
+            document.getElementById('btn-belum').classList.remove('text-bold');
             document.getElementById('titleSudah').innerHTML = document.title.replace('Belum', 'Sudah').replace(' - DIGIZTUNT', '');
         }
     }

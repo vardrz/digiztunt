@@ -67,7 +67,7 @@ class StuntingChart
         return $count;
     }
 
-    public function giziBuruk($between): \ArielMejiaDev\LarapexCharts\AreaChart
+    public function giziBuruk($between, $title): \ArielMejiaDev\LarapexCharts\AreaChart
     {
         $thisDay = date('Y-m-d');
         $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
@@ -98,7 +98,7 @@ class StuntingChart
         $kurus[6] = $this->countDataGiziBuruk($bandengan, 'bbu', $between);
 
         return $this->chart->areaChart()
-            ->setTitle('Grafik Masalah Gizi Balita',)
+            ->setTitle('Grafik Masalah Gizi Balita ' . $title,)
             ->setSubtitle('Jumlah masalah gizi balita per kelurahan.')
             ->addData('Pendek', $pendek)
             ->addData('Kurus', $kurus)

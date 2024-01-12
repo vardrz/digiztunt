@@ -160,8 +160,8 @@ if(session('level') == 'petugas'){
           </li>
           @endif
 
-          <li class="nav-item {{ Request::is('verifikasi') || Request::is('status') ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Request::is('verifikasi') || Request::is('status') ? 'active' : '' }}">
+          <li class="nav-item {{ Request::is('verifikasi') || Request::is('status') || Request::is('belum-ditimbang') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ Request::is('verifikasi') || Request::is('status') || Request::is('belum-ditimbang') ? 'active' : '' }}">
               <i class="nav-icon fas fa-user-md"></i>
               <p>
                 Data Penimbangan

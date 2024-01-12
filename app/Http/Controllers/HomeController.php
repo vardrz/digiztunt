@@ -90,7 +90,7 @@ class HomeController extends Controller
                 'listBulan' => $bulan,
                 'bulan' => [$bulan[$bln], $bln],
                 'tahun' => $tahun,
-                'giziBuruk' => $chart->giziBuruk($between),
+                'giziBuruk' => $chart->giziBuruk($between, $bulan[$bln] . ' ' . $tahun),
                 'utaraLastMonth' => $stuntingLastMonth,
                 'utaraBalita' => $chart->utaraBalita()
             ]);
