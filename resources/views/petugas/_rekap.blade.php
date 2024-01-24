@@ -83,11 +83,11 @@ $beforeDateTo = $tahun.'-'.($bulan-1).'-31';
             <td>{{ $pendataan == null ? '' : $pendataan->usia }}</td>
             <td>{{ $pendataan == null ? '' : $pendataan->bb }}</td>
             <td>{{ $pendataan == null ? '' : $pendataan->tb }}</td>
-            <td>{{ $pendataan == null ? '' : ($pendataan->bb > $beforeBB) ? '✓' : '' }}</td>
-            <td>{{ $pendataan == null ? '' : ($pendataan->bb == $beforeBB) ? '✓' : '' }}</td>
-            <td>{{ $pendataan == null ? '' : ($pendataan->bb < $beforeBB) ? '✓' : '' }}</td>
-            <td>{{ $pendataan == null ? '' : ($pendataan->verif == 'y') ? bbu($pendataan->bbu) : '' }}</td>
-            <td>{{ $pendataan == null ? '' : ($pendataan->verif == 'y') ? tbu($pendataan->tbu) : '' }}</td>
+            <td>{{ $pendataan == null ? '' : (($pendataan->bb > $beforeBB) ? '✓' : '') }}</td>
+            <td>{{ $pendataan == null ? '' : (($pendataan->bb == $beforeBB) ? '✓' : '') }}</td>
+            <td>{{ $pendataan == null ? '' : (($pendataan->bb < $beforeBB) ? '✓' : '') }}</td>
+            <td>{{ $pendataan == null ? '' : (($pendataan->verif == 'y') ? bbu($pendataan->bbu) : '') }}</td>
+            <td>{{ $pendataan == null ? '' : (($pendataan->verif == 'y') ? tbu($pendataan->tbu) : '') }}</td>
         </tr>
     @endforeach
     </tbody>
