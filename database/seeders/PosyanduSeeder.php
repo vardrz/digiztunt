@@ -127,7 +127,7 @@ class PosyanduSeeder extends Seeder
                 "alamat" => "RW 10"
             ],
             [
-                'name' => 'Melati Sari ',
+                'name' => 'Melati Sari',
                 'kelurahan' => 'PANJANG BARU',
                 "alamat" => "RW 05"
             ],
@@ -388,7 +388,7 @@ class PosyanduSeeder extends Seeder
                 'alamat' => 'RW 08'
             ],
             [
-                'name' => 'Anggrek ',
+                'name' => 'Anggrek',
                 'kelurahan' => 'DEGAYU',
                 'alamat' => 'RW 09'
             ],
