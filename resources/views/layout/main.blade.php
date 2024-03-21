@@ -329,6 +329,13 @@ if(session('level') == 'petugas'){
                 ? '[ 0, 1, 2, 3, 4, 5, 6, 7 ]'
                 : '[ 0, 1, 2, 3, 4, 5, 6]'
                ?>
+            },
+            customizeData: function (data) {
+              for (var i = 0; i < data.body.length; i++) {
+                for (var j = 0; j < data.body[i].length; j++) {
+                  data.body[i][1] = '\u200C' + data.body[i][1];
+                }
+              }
             }
         },
         {

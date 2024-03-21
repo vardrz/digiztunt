@@ -168,7 +168,7 @@ $dataTahun = [$thisYear, $thisYear-1, $thisYear-2, $thisYear-3, $thisYear-4];
 @section('script')
 <script>
     $(function () {
-        // Table Sudah Ditimbang
+        // Table Belum Ditimbang
         var belum = $("#belum").DataTable({
             "pageLength": 20,
             "columnDefs": [{targets:[0], orderable: false, searchable: false}],
@@ -197,6 +197,13 @@ $dataTahun = [$thisYear, $thisYear-1, $thisYear-2, $thisYear-3, $thisYear-4];
                             ? '[ 0, 1, 2, 3, 4, 5, 6 ]'
                             : '[ 0, 1, 2, 3, 4, 5 ]'
                         ?>
+                    },
+                    customizeData: function (data) {
+                        for (var i = 0; i < data.body.length; i++) {
+                            for (var j = 0; j < data.body[i].length; j++) {
+                                data.body[i][1] = '\u200C' + data.body[i][1];
+                            }
+                        }
                     }
                 },
                 {
@@ -252,6 +259,13 @@ $dataTahun = [$thisYear, $thisYear-1, $thisYear-2, $thisYear-3, $thisYear-4];
                             ? '[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]'
                             : '[ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]'
                         ?>
+                    },
+                    customizeData: function (data) {
+                        for (var i = 0; i < data.body.length; i++) {
+                            for (var j = 0; j < data.body[i].length; j++) {
+                                data.body[i][1] = '\u200C' + data.body[i][1];
+                            }
+                        }
                     }
                 },
                 {
