@@ -20,7 +20,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 1,
                     "nik_balita" => "2110051001990001",
-                    'tgl_pelayanan' => '2023-11-02',
+                    'tgl_pelayanan' => '2024-08-02',
                     "tb" => 74.2,
                     "bb" => 9,
                     "lingkar_kepala" => 45,
@@ -32,7 +32,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 2,
                     "nik_balita" => "2108151002990004",
-                    'tgl_pelayanan' => '2023-11-02',
+                    'tgl_pelayanan' => '2024-08-02',
                     "tb" => 74.2,
                     "bb" => 9.2,
                     "lingkar_kepala" => 46,
@@ -44,7 +44,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 3,
                     "nik_balita" => "2106221003990007",
-                    'tgl_pelayanan' => '2023-11-02',
+                    'tgl_pelayanan' => '2024-08-02',
                     "tb" => 66.3,
                     "bb" => 7.5,
                     "lingkar_kepala" => 40,
@@ -56,7 +56,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 4,
                     "nik_balita" => "2105111004990010",
-                    'tgl_pelayanan' => '2023-11-02',
+                    'tgl_pelayanan' => '2024-08-02',
                     "tb" => 76.9,
                     "bb" => 9.5,
                     "lingkar_kepala" => 47.2,
@@ -68,7 +68,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 5,
                     "nik_balita" => "2103271005990013",
-                    'tgl_pelayanan' => '2023-11-02',
+                    'tgl_pelayanan' => '2024-08-02',
                     "tb" => 69,
                     "bb" => 8,
                     "lingkar_kepala" => 44.2,
@@ -80,7 +80,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 6,
                     "nik_balita" => "2011181006990016",
-                    'tgl_pelayanan' => '2023-11-02',
+                    'tgl_pelayanan' => '2024-08-02',
                     "tb" => 73.2,
                     "bb" => 8.5,
                     "lingkar_kepala" => 42,
@@ -92,7 +92,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 7,
                     "nik_balita" => "2009091007990019",
-                    'tgl_pelayanan' => '2023-11-02',
+                    'tgl_pelayanan' => '2024-08-02',
                     "tb" => 72.2,
                     "bb" => 8.5,
                     "lingkar_kepala" => 41.7,
@@ -104,7 +104,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 8,
                     "nik_balita" => "2007141008990022",
-                    'tgl_pelayanan' => '2023-11-02',
+                    'tgl_pelayanan' => '2024-08-02',
                     "tb" => 82.2,
                     "bb" => 10.5,
                     "lingkar_kepala" => 46,
@@ -116,7 +116,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 9,
                     "nik_balita" => "2004301009990025",
-                    'tgl_pelayanan' => '2023-11-02',
+                    'tgl_pelayanan' => '2024-08-02',
                     "tb" => 66,
                     "bb" => 6.7,
                     "lingkar_kepala" => 40,
@@ -128,7 +128,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 10,
                     "nik_balita" => "2002191010990028",
-                    'tgl_pelayanan' => '2023-11-02',
+                    'tgl_pelayanan' => '2024-08-02',
                     "tb" => 70.5,
                     "bb" => 8.2,
                     "lingkar_kepala" => 42,
@@ -142,7 +142,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 1,
                     "nik_balita" => "2110051001990001",
-                    'tgl_pelayanan' => '2023-12-03',
+                    'tgl_pelayanan' => '2024-09-03',
                     "tb" => 76.4,
                     "bb" => 9.4,
                     "lingkar_kepala" => 46,
@@ -154,7 +154,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 2,
                     "nik_balita" => "2108151002990004",
-                    'tgl_pelayanan' => '2023-12-03',
+                    'tgl_pelayanan' => '2024-09-03',
                     "tb" => 76.2,
                     "bb" => 10.2,
                     "lingkar_kepala" => 46.2,
@@ -166,7 +166,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 3,
                     "nik_balita" => "2106221003990007",
-                    'tgl_pelayanan' => '2023-12-03',
+                    'tgl_pelayanan' => '2024-09-03',
                     "tb" => 67.6,
                     "bb" => 7.9,
                     "lingkar_kepala" => 40.5,
@@ -178,7 +178,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 4,
                     "nik_balita" => "2105111004990010",
-                    'tgl_pelayanan' => '2023-12-03',
+                    'tgl_pelayanan' => '2024-09-03',
                     "tb" => 79.8,
                     "bb" => 9.8,
                     "lingkar_kepala" => 47.5,
@@ -190,7 +190,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 5,
                     "nik_balita" => "2103271005990013",
-                    'tgl_pelayanan' => '2023-12-03',
+                    'tgl_pelayanan' => '2024-09-03',
                     "tb" => 69.7,
                     "bb" => 8.2,
                     "lingkar_kepala" => 44.2,
@@ -202,7 +202,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 6,
                     "nik_balita" => "2011181006990016",
-                    'tgl_pelayanan' => '2023-12-03',
+                    'tgl_pelayanan' => '2024-09-03',
                     "tb" => 74.3,
                     "bb" => 8.7,
                     "lingkar_kepala" => 42.2,
@@ -214,7 +214,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 7,
                     "nik_balita" => "2009091007990019",
-                    'tgl_pelayanan' => '2023-12-03',
+                    'tgl_pelayanan' => '2024-09-03',
                     "tb" => 72.8,
                     "bb" => 8.7,
                     "lingkar_kepala" => 41.9,
@@ -226,7 +226,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 8,
                     "nik_balita" => "2007141008990022",
-                    'tgl_pelayanan' => '2023-12-03',
+                    'tgl_pelayanan' => '2024-09-03',
                     "tb" => 83.2,
                     "bb" => 11,
                     "lingkar_kepala" => 46.2,
@@ -238,7 +238,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 9,
                     "nik_balita" => "2004301009990025",
-                    'tgl_pelayanan' => '2023-12-03',
+                    'tgl_pelayanan' => '2024-09-03',
                     "tb" => 67.2,
                     "bb" => 6.9,
                     "lingkar_kepala" => 40.5,
@@ -250,7 +250,7 @@ class PelayananSeeder extends Seeder
                 [
                     "id_balita" => 10,
                     "nik_balita" => "2002191010990028",
-                    'tgl_pelayanan' => '2023-12-03',
+                    'tgl_pelayanan' => '2024-09-03',
                     "tb" => 73.3,
                     "bb" => 9.2,
                     "lingkar_kepala" => 42.5,
