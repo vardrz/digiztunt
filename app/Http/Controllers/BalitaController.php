@@ -178,7 +178,7 @@ class BalitaController extends Controller
         $balita = [
             "nama" => $validate['nama'],
             "tgl_lahir" => $request->tahun . '-' . $request->bulan . '-' . $request->tgl,
-            "nik" => $validate['nik'],
+            "nik" => $validate['nik'] ?? "-",
             "jenis_kelamin" => $validate['jenis_kelamin'],
             "nama_ibu" => $validate['namaibu'],
             "nik_ibu" => $validate['nikibu'],
