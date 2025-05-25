@@ -7,6 +7,7 @@ use App\Models\Balita;
 use App\Models\Pelayanan;
 use App\Models\Posyandu;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Routing\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -14,45 +15,127 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class BalitaController extends Controller
 {
-    public function index()
+    // Fungsi helper untuk menghitung usia, bisa diletakkan di dalam kelas atau sebagai private method
+    private function calculateUsia($tanggalLahir)
     {
-        $thisDay = date('Y-m-d');
-        $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
+        $tanggalLahirObj = new \DateTime($tanggalLahir);
+        $hariIni = new \DateTime();
 
-        // Pimpinan
-        if (auth()->user()->level == 'pimpinan' && auth()->user()->area == 'all') {
-            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->orderBy('tgl_lahir', 'DESC')->get();
-            $title = "Daftar Balita Pekalongan Utara";
-        } else {
-            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->where('kelurahan', auth()->user()->area)->orderBy('tgl_lahir', 'DESC')->get();
-            $title = "Daftar Balita Kelurahan " . ucwords(strtolower(auth()->user()->area));
+        $selisihTahun = $hariIni->format('Y') - $tanggalLahirObj->format('Y');
+        $selisihBulan = $hariIni->format('m') - $tanggalLahirObj->format('m');
+        $selisihHari = $tanggalLahirObj->diff($hariIni)->format('%a');
+        
+        $totalBulan = $selisihTahun * 12 + $selisihBulan;
+
+        if($selisihHari > 30){
+        return $totalBulan . ' Bulan';
+        }else{
+        return $selisihHari . ' Hari';
+        }
+    }
+
+    public function index(Request $request)
+    {
+        if ($request->ajax()) {
+            $thisDay = date('Y-m-d');
+            $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
+            
+            $query = Balita::with('posyanduRelation')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay]);
+
+            // Terapkan filter berdasarkan level dan area pengguna
+            if (auth()->user()->level == 'pimpinan' && auth()->user()->area != 'all') {
+                $query->where('balitas.kelurahan', auth()->user()->area); // Perubahan di sini
+            } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KUSUMA BANGSA') {
+                $query->whereIn('balitas.kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG']); // Perubahan di sini
+            } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KRAPYAK') {
+                $query->whereIn('balitas.kelurahan', ['KRAPYAK', 'DEGAYU']); // Perubahan di sini
+            } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'DUKUH') {
+                $query->whereIn('balitas.kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN']); // Perubahan di sini
+            } elseif (auth()->user()->level == 'petugas') {
+                $query->where('posyandu', auth()->user()->area);
+            }
+            // Untuk 'pimpinan' dengan area 'all', tidak ada filter tambahan pada query utama
+
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('usia', function ($row) {
+                    return $this->calculateUsia($row->tgl_lahir);
+                })
+                ->editColumn('nik', function ($row) {
+                    return $row->nik == '-' ? '<small>Belum memiliki NIK</small>' : e($row->nik);
+                })
+                ->editColumn('nama', function ($row) {
+                    $posyanduName = $row->posyanduRelation ? $row->posyanduRelation->name : '';
+
+                    // Prepare modal data parameters with proper escaping and JSON encoding
+                    $modalParams = [
+                        $row->id,
+                        json_encode($row->nama),
+                        json_encode($row->kelurahan),
+                        json_encode($posyanduName), 
+                        json_encode($row->nama_ibu),
+                        json_encode($row->nik_ibu),
+                        json_encode($row->nama_ayah),
+                        json_encode($row->nik_ayah),
+                        json_encode($row->no_kk)
+                    ];
+
+                    // Build onclick handler with joined parameters
+                    $onClickHandler = sprintf(
+                        "dataModal(%s)", 
+                        implode(",", $modalParams)
+                    );
+
+                    // Return clickable name span with escaped display name
+                    return sprintf(
+                        '<span style="cursor: pointer;" onclick="%s">%s</span>',
+                        htmlspecialchars($onClickHandler, ENT_QUOTES),
+                        htmlspecialchars($row->nama, ENT_QUOTES)
+                    );
+                })
+                ->editColumn('jenis_kelamin', function ($row) {
+                    return $row->jenis_kelamin == 'lk' ? 'Laki-laki' : 'Perempuan';
+                })
+                ->editColumn('tgl_lahir', function ($row) {
+                    return date('d-m-Y', strtotime($row->tgl_lahir));
+                })
+                ->addColumn('posyandu_name', function ($row) {
+                    return $row->posyanduRelation ? e($row->posyanduRelation->name) : '-';
+                })
+                ->addColumn('action', function ($row) {
+                    $actionBtn = '';
+                    if (session('level') == 'pimpinan' && auth()->user()->area != 'all') {
+                        $editUrl = url('/balita/edit/' . $row->id);
+                        $deleteFormId = 'delete' . $row->id;
+                        $deleteUrl = url('/balita/delete/' . $row->id);
+                        $actionBtn = '<a href="'.$editUrl.'" class="btn btn-lg py-0 px-0 mr-1 text-primary"><i class="fas fa-edit"></i></a>';
+                        $actionBtn .= '<button type="button" onclick="del('.$row->id.')" class="btn btn-lg py-0 px-0 text-danger"><i class="fas fa-trash"></i></button>';
+                        $actionBtn .= '<form action="'.$deleteUrl.'" method="post" id="'.$deleteFormId.'">'.csrf_field().'</form>';
+                    }
+                    return $actionBtn;
+                })
+                ->rawColumns(['action', 'nik', 'nama'])
+                ->make(true);
         }
 
-        // Puskesmas
-        if (auth()->user()->level == 'admin' && auth()->user()->area == 'KUSUMA BANGSA') {
-            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereIn('kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG'])->orderBy('tgl_lahir', 'DESC')->get();
+        // Logika untuk judul tetap sama
+        $title = "Daftar Balita"; // Default
+        if (auth()->user()->level == 'pimpinan' && auth()->user()->area == 'all') {
+            $title = "Daftar Balita Pekalongan Utara";
+        } elseif (auth()->user()->level == 'pimpinan') { // pimpinan kelurahan
+            $title = "Daftar Balita Kelurahan " . ucwords(strtolower(auth()->user()->area));
+        } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KUSUMA BANGSA') {
             $title = "Daftar Balita Puskesmas Kusuma Bangsa";
         } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KRAPYAK') {
-            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereIn('kelurahan', ['KRAPYAK', 'DEGAYU'])->orderBy('tgl_lahir', 'DESC')->get();
             $title = "Daftar Balita Puskesmas Krapyak";
         } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'DUKUH') {
-            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereIn('kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN'])->orderBy('tgl_lahir', 'DESC')->get();
             $title = "Daftar Balita Puskesmas Dukuh";
-        }
-
-        // Posyandu
-        if (auth()->user()->level == 'petugas') {
-            $balitas = Balita::whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->where('posyandu', auth()->user()->area)->orderBy('tgl_lahir', 'DESC')->get();
-
+        } elseif (auth()->user()->level == 'petugas') {
             $namaPos = Posyandu::where('id', auth()->user()->area)->first();
-            $title = "Daftar Balita Posyandu " . $namaPos->name;
+            $title = "Daftar Balita Posyandu " . ($namaPos ? e($namaPos->name) : 'N/A');
         }
-
-
-        return view('petugas.balitaList', [
-            'title' => $title,
-            'balitas' => $balitas
-        ]);
+        
+        return view('petugas.balitaList', compact('title'));
     }
 
     public function find($data = null)
@@ -101,7 +184,7 @@ class BalitaController extends Controller
         ]);
     }
 
-    public function history()
+    public function history(Request $request)
     {
         // if (session('level') != 'admin') {
         //     return abort(403, 'Anda tidak memiliki hak mengakses laman ini!');
@@ -109,38 +192,75 @@ class BalitaController extends Controller
 
         $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
 
-        // Pimpinan
-        if (auth()->user()->level == 'pimpinan' && auth()->user()->area == 'all') {
-            $data = Balita::where('tgl_lahir', '<', $fiveYearAgo)->orderBy('tgl_lahir', 'DESC')->get();
-            $title = "History Balita Pekalongan Utara";
-        } else {
-            $data = Balita::where('tgl_lahir', '<', $fiveYearAgo)->where('kelurahan', auth()->user()->area)->orderBy('tgl_lahir', 'DESC')->get();
-            $title = "History Balita Kelurahan " . ucwords(strtolower(auth()->user()->area));
+        if ($request->ajax()) {
+            $query = Balita::with('posyanduRelation')->where('tgl_lahir', '<', $fiveYearAgo);
+
+            // Filter berdasarkan level dan area pengguna
+            if (auth()->user()->level == 'pimpinan' && auth()->user()->area == 'all') {
+                // Tidak ada filter tambahan untuk pimpinan 'all'
+            } elseif (auth()->user()->level == 'pimpinan') { // Pimpinan dengan area spesifik
+                $query->where('balitas.kelurahan', auth()->user()->area); // Perubahan di sini
+            } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KUSUMA BANGSA') {
+                $query->whereIn('balitas.kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG']); // Perubahan di sini
+            } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KRAPYAK') {
+                $query->whereIn('balitas.kelurahan', ['KRAPYAK', 'DEGAYU']); // Perubahan di sini
+            } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'DUKUH') {
+                $query->whereIn('balitas.kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN']); // Perubahan di sini
+            } elseif (auth()->user()->level == 'petugas') {
+                // Asumsi 'posyandu' di tabel balitas adalah ID posyandu
+                $query->where('posyandu', auth()->user()->area); 
+            }
+
+            return DataTables::of($query)
+                ->addIndexColumn() // Menambahkan kolom DT_RowIndex (nomor urut)
+                ->addColumn('usia', function ($row) {
+                    $tanggalLahirObj = new \DateTime($row->tgl_lahir);
+                    $hariIni = new \DateTime();
+                    
+                    $selisihTahun = $hariIni->format('Y') - $tanggalLahirObj->format('Y');
+                    $selisihBulan = $hariIni->format('m') - $tanggalLahirObj->format('m');
+
+                    return $selisihTahun . ' Tahun ' . $selisihBulan . ' Bulan';
+                })
+                ->editColumn('nik', function ($row) {
+                    return $row->nik == '-' ? '<small>Belum memiliki NIK</small>' : e($row->nik);
+                })
+                ->editColumn('nama', function ($row) {
+                    $posyanduName = $row->posyanduRelation ? $row->posyanduRelation->name : '';
+                    return '<span style="cursor: pointer;" onclick="dataModal(\''. $row->id .'\',\''. htmlspecialchars($row->nama, ENT_QUOTES) .'\',\''. htmlspecialchars($row->kelurahan, ENT_QUOTES) .'\',\''. htmlspecialchars($posyanduName, ENT_QUOTES) .'\',\''. htmlspecialchars($row->nama_ibu, ENT_QUOTES) .'\',\''. htmlspecialchars($row->nik_ibu, ENT_QUOTES) .'\',\''. htmlspecialchars($row->nama_ayah, ENT_QUOTES) .'\',\''. htmlspecialchars($row->nik_ayah, ENT_QUOTES) .'\',\''. htmlspecialchars($row->no_kk, ENT_QUOTES) .'\')">'. htmlspecialchars($row->nama, ENT_QUOTES) .'</span>';
+                })
+                ->editColumn('jenis_kelamin', function ($row) {
+                    return $row->jenis_kelamin == 'lk' ? 'Laki-laki' : 'Perempuan';
+                })
+                ->editColumn('tgl_lahir', function ($row) {
+                    return date('d-m-Y', strtotime($row->tgl_lahir));
+                })
+                ->addColumn('posyandu_name', function ($row) {
+                    return $row->posyanduRelation ? $row->posyanduRelation->name : '-';
+                })
+                ->rawColumns(['nik', 'nama'])
+                ->make(true);
         }
 
-        // Puskesmas
-        if (auth()->user()->level == 'admin' && auth()->user()->area == 'KUSUMA BANGSA') {
-            $data = Balita::where('tgl_lahir', '<', $fiveYearAgo)->whereIn('kelurahan', ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG'])->orderBy('tgl_lahir', 'DESC')->get();
+        // Logika untuk menentukan judul (bisa disederhanakan atau dipindahkan jika perlu)
+        $title = "History Balita"; // Judul default
+        if (auth()->user()->level == 'pimpinan' && auth()->user()->area == 'all') {
+            $title = "History Balita Pekalongan Utara";
+        } elseif (auth()->user()->level == 'pimpinan') {
+            $title = "History Balita Kelurahan " . ucwords(strtolower(auth()->user()->area));
+        } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KUSUMA BANGSA') {
             $title = "History Balita Puskesmas Kusuma Bangsa";
         } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'KRAPYAK') {
-            $data = Balita::where('tgl_lahir', '<', $fiveYearAgo)->whereIn('kelurahan', ['KRAPYAK', 'DEGAYU'])->orderBy('tgl_lahir', 'DESC')->get();
             $title = "History Balita Puskesmas Krapyak";
         } elseif (auth()->user()->level == 'admin' && auth()->user()->area == 'DUKUH') {
-            $data = Balita::where('tgl_lahir', '<', $fiveYearAgo)->whereIn('kelurahan', ['PADUKUHAN KRATON', 'BANDENGAN'])->orderBy('tgl_lahir', 'DESC')->get();
             $title = "History Balita Puskesmas Dukuh";
-        }
-
-        // Posyandu
-        if (auth()->user()->level == 'petugas') {
-            $data = Balita::where('tgl_lahir', '<', $fiveYearAgo)->where('posyandu', auth()->user()->area)->orderBy('tgl_lahir', 'DESC')->get();
-
-            $namaPos = Posyandu::where('id', auth()->user()->area)->first();
-            $title = "History Balita Posyandu " . $namaPos->name;
+        } elseif (auth()->user()->level == 'petugas') {
+            $namaPos = Posyandu::find(auth()->user()->area);
+            $title = "History Balita Posyandu " . ($namaPos ? $namaPos->name : 'Tidak Diketahui');
         }
 
         return view('admin.balitaHistory', [
-            'title' => $title,
-            'data' => $data
+            'title' => $title
         ]);
     }
 

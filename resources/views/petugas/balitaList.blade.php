@@ -1,23 +1,3 @@
-<?php 
-$no = 1;
-function month($tanggalLahir) {
-    $tanggalLahirObj = new DateTime($tanggalLahir);
-    $hariIni = new DateTime();
-
-    $selisihTahun = $hariIni->format('Y') - $tanggalLahirObj->format('Y');
-    $selisihBulan = $hariIni->format('m') - $tanggalLahirObj->format('m');
-    $selisihHari = $tanggalLahirObj->diff($hariIni)->format('%a');
-    
-    $totalBulan = $selisihTahun * 12 + $selisihBulan;
-
-    if($selisihHari > 30){
-      return $totalBulan . ' Bulan';
-    }else{
-      return $selisihHari . ' Hari';
-    }
-}
-?>
-
 @extends('layout.main')
 
 @section('head')
@@ -42,7 +22,7 @@ function month($tanggalLahir) {
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-              <table id="balita" class="table table-bordered table-striped">
+              <table id="balita" class="table table-bordered table-striped" style="width:100%">
                 <thead>
                 <tr>
                   <th class="text-center">No.</th>
@@ -51,39 +31,16 @@ function month($tanggalLahir) {
                   <th>Jenis Kelamin</th>
                   <th>Tanggal Lahir</th>
                   <th>Usia</th>
-                  @if ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))<th>Kelurahan</th>@endif
+                  @if ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
+                    <th>Kelurahan</th>
+                  @endif
                   <th>Posyandu</th>
-                  @if (session('level') == 'pimpinan' && auth()->user()->area != 'all')<th>Aksi</th>@endif
+                  @if (session('level') == 'pimpinan' && auth()->user()->area != 'all')
+                    <th class="text-center">Aksi</th>
+                  @endif
                 </tr>
                 </thead>
-                <tbody>
-                @foreach ($balitas as $balita)
-                <tr>
-                  <td class="text-center">{{ $no }}</td>
-                  <td>@if($balita->nik == '-')<small>Belum memiliki NIK<small>@else{{ $balita->nik }}@endif</td>
-                  <td>
-                    <span style="cursor: pointer;" onclick="dataModal('{{ $balita->id }}','{{ $balita->nama }}','{{ $balita->kelurahan }}','{{ $balita->posyandu()->first()->name }}','{{ $balita->nama_ibu }}','{{ $balita->nik_ibu }}','{{ $balita->nama_ayah }}','{{ $balita->nik_ayah }}','{{ $balita->no_kk }}')">
-                      {{ $balita->nama }}
-                    </span>
-                  </td>
-                  <td>{{ $balita->jenis_kelamin == 'lk' ? 'Laki-laki' : 'Perempuan' }}</td>
-                  <td>{{ date('d-m-Y', strtotime ($balita->tgl_lahir)) }}</td>
-                  <td>{{ month($balita->tgl_lahir) }}</td>
-                  @if ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
-                    <td>{{ $balita->kelurahan }}</td>
-                  @endif
-                  <td>{{ $balita->posyandu()->first()->name }}</td>
-                  @if (session('level') == 'pimpinan' && auth()->user()->area != 'all')
-                  <td class="text-center align-middle" width="60">
-                    <a href="/balita/edit/{{ $balita->id }}" class="btn btn-lg py-0 px-0 mr-1 text-primary"><i class="fas fa-edit"></i></a>
-                    <button type="button" onclick="del({{ $balita->id }})" class="btn btn-lg py-0 px-0 text-danger"><i class="fas fa-trash"></i></button>
-                    <form action="/balita/delete/{{ $balita->id }}" method="post" id="delete{{ $balita->id }}">@csrf</form>
-                  </td>
-                  @endif
-                </tr>
-                <?php $no++; ?>
-                @endforeach
-                </tbody>
+                <tbody></tbody>
               </table>
             </div>
             <!-- /.card-body -->
@@ -100,10 +57,8 @@ function month($tanggalLahir) {
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <div id="btnPDF">
-          <button type="button" class="btn btn-sm btn-danger mr-1" onclick="savePDF()">PDF</button>
-        </div>
-        <button type="button" class="btn btn-sm btn-success" onclick="print()">Print</button>
+        <div id="btnPDF"></div>
+        <button type="button" class="btn btn-sm btn-success" onclick="printModal()">Print</button>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body" id="modalPrint">
@@ -125,17 +80,18 @@ function month($tanggalLahir) {
         {{-- <h4 class="text-center mt-5 @if(session('level') == 'petugas') d-none @endif">Status Gizi Terakhir</h4>
         <div class="text-center mb-4 @if(session('level') == 'petugas') d-none @endif" id="gizi"></div> --}}
         <h4 class="text-center mt-5">Status Gizi Terakhir</h4>
-        <div class="text-center mb-4" id="gizi"></div>
+        <div class="text-center mb-5" id="gizi"></div>
 
-        <h4 class="text-center">Riwayat Pendataan</h4>
+        <h4 class="text-center">Riwayat Penimbangan</h4>
         <table class="table table-bordered">
           <thead>
             <tr>
               <th>TANGGAL</th>
               <th>USIA</th>
-              <th>TB (Cm)</th>
               <th>BB (Kg)</th>
+              <th>TB (Cm)</th>
               <th>LK (Cm)</th>
+              <th>VERIF</th>
             </tr>
           </thead>
           <tbody id="riwayat"></tbody>
@@ -180,6 +136,7 @@ function month($tanggalLahir) {
     html2canvas(modal, {
         windowWidth: document.documentElement.offsetWidth,
         windowHeight: modal.scrollHeight + 100,
+        scrollY: -window.scrollY // Atasi masalah scroll
       }).then(function(canvas) {
         var doc = new jsPDF('p', 'mm', 'a4');
         var imgData = canvas.toDataURL('image/png');
@@ -193,7 +150,7 @@ function month($tanggalLahir) {
         heightLeft -= pageHeight;
 
         while (heightLeft >= 0) {
-          position = heightLeft - imgHeight + 10
+          position = heightLeft - imgHeight + 10;
           doc.addPage();
           doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
@@ -204,7 +161,7 @@ function month($tanggalLahir) {
   }
 
   // Print status gizi
-  function print(){
+  function printModal(){
     $("#modalPrint").printThis({ 
       importCSS: true,
       importStyle: true,
@@ -214,32 +171,76 @@ function month($tanggalLahir) {
 
   // Func Status Gizi
   function statusGizi(tbu, bbu, tb, bb){
+    // Menentukan status dan kelas untuk berat badan
+    let bbStatus, bbClass;
     if(bbu < -3){
-      var bbuHasil = "<button class='btn btn-md btn-danger mt-1'><b>Berat badan sangat kurang</b> (" + bb + " kg)</button>";
+      bbStatus = "Sangat kurang";
+      bbClass = "danger";
+      bbTextColor = "white";
     }else if(bbu >= -3 && bbu < -2) {
-      var bbuHasil = "<button class='btn btn-md btn-warning mt-1'><b>Berat badan kurang</b> (" + bb + " kg)</button>";
+      bbStatus = "Kurang";
+      bbClass = "warning";
+      bbTextColor = "black";
     }else if(bbu >= -2 && bbu <= 1) {
-      var bbuHasil = "<button class='btn btn-md btn-success mt-1'><b>Berat badan normal</b> (" + bb + " kg)</button>";
+      bbStatus = "Normal";
+      bbClass = "success";
+      bbTextColor = "white";
     }else if(bbu > 1) {
-      var bbuHasil = "<button class='btn btn-md btn-warning mt-1'><b>Berat badan lebih</b> (" + bb + " kg)</button>";
+      bbStatus = "Lebih";
+      bbClass = "warning";
+      bbTextColor = "black";
     }
-
+    
+    // Menentukan status dan kelas untuk tinggi badan
+    let tbStatus, tbClass;
     if(tbu < -3){
-      var tbuHasil = "<button class='btn btn-md btn-danger mt-1'><b>Tinggi badan sangat pendek</b> (" + tb + " cm)</button>";
+      tbStatus = "Sangat pendek";
+      tbClass = "danger";
+      tbTextColor = "white";
     }else if(tbu >= -3 && tbu < -2) {
-      var tbuHasil = "<button class='btn btn-md btn-warning mt-1'><b>Tinggi badan pendek</b> (" + tb + " cm)</button>";
+      tbStatus = "Pendek";
+      tbClass = "warning";
+      tbTextColor = "black";
     }else if(tbu >= -2 && tbu <= 3) {
-      var tbuHasil = "<button class='btn btn-md btn-success mt-1'><b>Tinggi badan normal</b> (" + tb + " cm)</button>";
+      tbStatus = "Normal";
+      tbClass = "success";
+      tbTextColor = "white";
     }else if(tbu > 3) {
-      var tbuHasil = "<button class='btn btn-md btn-success mt-1'><b>Tinggi badan lebih</b> (" + tb + " cm)</button>";
+      tbStatus = "Tinggi";
+      tbClass = "success";
+      tbTextColor = "white";
     }
-
-    return bbuHasil + " &nbsp; " + tbuHasil
+    
+    // Mengembalikan data dalam format tabel
+    return `
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td class="text-center text-bold" style="width: 50%">Berat Badan</td>
+            <td class="text-center text-bold" style="width: 50%">Tinggi Badan</td>
+          </tr>
+          <tr>
+            <td class="p-1">
+              <div class="bg-${bbClass} py-3 text-center">
+                <span class="text-${bbTextColor} text-bold">${bbStatus}</span>
+                <span class="text-${bbTextColor} ml-2">${bb} kg</span>
+              </div>
+            </td>
+            <td class="p-1">
+              <div class="bg-${tbClass} py-3 text-center">
+                <span class="text-${tbTextColor} text-bold">${tbStatus}</span>
+                <span class="text-${tbTextColor} ml-2">${tb} cm</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `;
   }
 
   // Func Data Lengkap
   function dataModal(id, nama, kelurahan, posyandu, nama_ibu, nik_ibu, nama_ayah, nik_ayah, no_kk){
-    const myModal = new bootstrap.Modal(document.getElementById('dataModal')); // creating modal object
+    const myModal = new bootstrap.Modal(document.getElementById('dataModal')); 
     myModal.show();
     
     // Button PDF
@@ -266,11 +267,17 @@ function month($tanggalLahir) {
             if(data.length > 0){
               if(data.length > 1){
                 // Status Gizi
-                if(data[0]['verif'] == 'y'){
-                  var gizi = statusGizi(data[0]['tbu'], data[0]['bbu'], data[0]['tb'], data[0]['bb']);
-                }else{
-                  var gizi = statusGizi(data[1]['tbu'], data[1]['bbu'], data[1]['tb'], data[1]['bb']);
+                let verifiedData = null;
+                for(let i = 0; i < data.length; i++) {
+                  if(data[i]['verif'] == 'y') {
+                    verifiedData = data[i];
+                    break;
+                  }
                 }
+                
+                var gizi = verifiedData ? 
+                  statusGizi(verifiedData['tbu'], verifiedData['bbu'], verifiedData['tb'], verifiedData['bb']) :
+                  "<span class='text-secondary mt-2'><i>Status gizi belum di verifikasi</i></span>";
   
                 // Riwayat Pendataan
                 document.getElementById('riwayat').innerHTML = "";
@@ -278,16 +285,17 @@ function month($tanggalLahir) {
                   document.getElementById('riwayat').innerHTML +=
                     `<tr><td>` + data[i]['tgl_pelayanan'].toString().split('-').reverse().join('-') + `</td>` +
                     `<td>` + data[i]['usia'] + ` Bulan</td>` +
-                    `<td>` + data[i]['tb'] + `</td>` +
                     `<td>` + data[i]['bb'] + `</td>` +
-                    `<td>` + data[i]['lingkar_kepala'] + `</td></tr>`;
+                    `<td>` + data[i]['tb'] + `</td>` +
+                    `<td>` + data[i]['lingkar_kepala'] + `</td>` +
+                    `<td>` + (data[i]['verif'] === "y" ? "<span class='text-success'>Sudah</span>" : "Belum") + `</td></tr>`;
                 }
               }else{
                 // Status Gizi
                 if(data[0]['verif'] == 'y'){
                   var gizi = statusGizi(data[0]['tbu'], data[0]['bbu'], data[0]['tb'], data[0]['bb']);
                 }else{
-                  var gizi = "<button class='btn btn-md btn-secondary mt'><b>Status gizi belum di proses</b></button>";
+                  var gizi = "<span class='text-secondary mt-2'><i>Status gizi belum di verifikasi</i></span>";
                 }
   
                 // Riwayat Pendataan
@@ -296,31 +304,20 @@ function month($tanggalLahir) {
                   document.getElementById('riwayat').innerHTML +=
                     `<tr><td>` + data[i]['tgl_pelayanan'].toString().split('-').reverse().join('-') + `</td>` +
                     `<td>` + data[i]['usia'] + ` Bulan</td>` +
-                    `<td>` + data[i]['tb'] + `</td>` +
                     `<td>` + data[i]['bb'] + `</td>` +
-                    `<td>` + data[i]['lingkar_kepala'] + `</td></tr>`;
+                    `<td>` + data[i]['tb'] + `</td>` +
+                    `<td>` + data[i]['lingkar_kepala'] + `</td>` +
+                    `<td>` + (data[i]['verif'] === "y" ? "<span class='text-success'>Sudah</span>" : "Belum") + `</td></tr>`;
                 }
               }
             }else{
-              var gizi = "<button class='btn btn-md btn-secondary mt'><b>Belum ada data</b></button>";
+              var gizi = "<span class='text-secondary mt-2'><i>Belum ada data</i></span>";
               document.getElementById('riwayat').innerHTML = "<td colspan='6'><center><i>Belum ada data.</i></center></td>";
             }
 
             document.getElementById('gizi').innerHTML = gizi;
         }
     );
-  }
-  
-  window.onload = (event) => {
-    setTimeout(
-      function() {
-        var notes = document.createElement('small');
-        notes.className = 'text-primary text-bold';
-        notes.innerHTML = '*Klik nama balita untuk info lebih lengkap.';
-
-        var wrapper = document.getElementById('balita_wrapper');
-        wrapper.insertBefore(notes, wrapper.querySelectorAll('.row')[1]);
-      }, 1);
   }
 </script>
 @endsection

@@ -78,7 +78,7 @@ $beforeDateTo = $tahun.'-'.($bulan-1).'-31';
             <td>{{ $balita->nik_ibu }}</td>
             <td>{{ $balita->no_kk }}</td>
             <td>{{ $balita->kelurahan }}</td>
-            <td>{{ $balita->posyandu()->first()->name }}</td>
+            <td>{{ $balita->posyanduRelation()->first()->name }}</td>
             <td>{{ $pendataan == null ? '' : date('d-m-Y', strtotime($pendataan->tgl_pelayanan)) }}</td>
             <td>{{ $pendataan == null ? '' : $pendataan->usia }}</td>
             <td>{{ $pendataan == null ? '' : $pendataan->bb }}</td>

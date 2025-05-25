@@ -301,11 +301,44 @@ if(session('level') == 'petugas'){
 @if(Request::is('balita') || Request::is('balita/history'))
 <script>
   $(function () {
+    var columns = [
+        { data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
+        { data: 'nik', name: 'nik', orderable: false },
+        { data: 'nama', name: 'nama' },
+        { data: 'jenis_kelamin', name: 'jenis_kelamin', orderable: false },
+        { data: 'tgl_lahir', name: 'tgl_lahir' },
+        { data: 'usia', name: 'tgl_lahir', searchable: false },
+    ];
+
+    var requestOnBalita = "{{ Request::is('balita') }}";
+    var userLevel = "{{ session('level') }}";
+    var userArea = "{{ auth()->user()->area }}";
+
+    if ((userLevel == 'pimpinan' && userArea == 'all') || userLevel == 'admin') {
+        columns.push({ data: 'kelurahan', name: 'kelurahan' });
+    }
+    columns.push({ data: 'posyandu_name', name: 'posyanduRelation.name' });
+
+    if (userLevel == 'pimpinan' && userArea != 'all') {
+      if (requestOnBalita) {
+        columns.push({ data: 'action', name: 'action', className: 'text-center align-middle notexport', orderable: false, searchable: false });
+      }
+    }
+
     var table = $("#balita").DataTable({
-      "columnDefs": [{targets:[0], orderable: false, searchable: false}],
-      "pageLength": 20,
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": [
+      ajax: "{{ Request::is('balita') ? url('/balita') : url('/balita/history') }}",
+      processing: true,
+      serverSide: true,
+      columns: columns,
+      lengthChange: true,
+      pageLength: 20,
+      responsive: true,
+      autoWidth: false,
+      order: [[5, "desc"]],
+      dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" + // Baris untuk Tombol dan Filter
+             "<'row'<'col-sm-12'tr>>" + // Baris untuk Tabel (tr = table + processing)
+             "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // Baris untuk Info dan Paginasi
+      buttons: [
         {
             extend: 'colvis',
             className: 'btn btn-info',
@@ -325,39 +358,133 @@ if(session('level') == 'petugas'){
             extend: 'excel',
             className: 'btn btn-success',
             exportOptions: {
-              columns: <?= ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
-                ? '[ 0, 1, 2, 3, 4, 5, 6, 7 ]'
-                : '[ 0, 1, 2, 3, 4, 5, 6]'
-               ?>
-            },
-            customizeData: function (data) {
-              for (var i = 0; i < data.body.length; i++) {
-                for (var j = 0; j < data.body[i].length; j++) {
-                  data.body[i][1] = '\u200C' + data.body[i][1];
+              columns: ':visible:not(.notexport)',
+              format: {
+                body: function ( data, row, column, node ) {
+                  var nikColumnIndex = 1; // Indeks kolom NIK (mulai dari 0)
+                  // Cari indeks kolom NIK secara dinamis jika urutan bisa berubah
+                  // $("#balita thead th").each(function(index) { if ($(this).text() === "NIK") nikColumnIndex = index; });
+                  
+                  var cellData = $(node).html(); // Ambil HTML mentah dari sel untuk NIK
+
+                  if (column === nikColumnIndex) {
+                    // Jika NIK adalah HTML (misal, <small>), ekstrak teksnya
+                    var nikValue = cellData.includes("<small>") ? $(cellData).text() : cellData;
+                    return nikValue === 'Belum memiliki NIK' ? nikValue : '\u200C' + nikValue;
+                  }
+                  // Untuk kolom lain, strip HTML jika ada
+                  return typeof cellData === 'string' ? cellData.replace(/<[^>]+>/g, '') : cellData;
                 }
               }
             }
         },
         {
-            extend: 'print',
-            className: 'btn btn-dark',
-            exportOptions: {
-              columns: <?= ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
-                ? '[ 0, 1, 2, 3, 4, 5, 6, 7 ]'
-                : '[ 0, 1, 2, 3, 4, 5, 6]'
-               ?>
-            }
+          extend: 'print',
+          className: 'btn btn-dark',
+          exportOptions: {
+            columns: <?= ((session('level') == 'pimpinan' && auth()->user()->area == 'all') || (session('level') == 'admin'))
+              ? '[ 0, 1, 2, 3, 4, 5, 6, 7 ]'
+              : '[ 0, 1, 2, 3, 4, 5, 6]'
+              ?>
+          }
         }
-    ],
+      ],
+      initComplete: function(settings, json) {
+        var api = this.api(); // Dapatkan instance API DataTables
+
+        // Buat container utama dengan flex display
+        var mainContainer = document.createElement('div');
+        mainContainer.style.display = 'flex';
+        mainContainer.style.justifyContent = 'space-between'; // Untuk memberi ruang antara kiri dan kanan
+        mainContainer.style.alignItems = 'center'; // Menyelaraskan item secara vertikal
+        mainContainer.style.marginTop = '10px';
+        mainContainer.style.marginBottom = '10px';
+
+        // Buat container untuk teks di sebelah kiri
+        var textContainer = document.createElement('div');
+        var notes1 = document.createElement('small');
+        notes1.className = 'text-primary text-bold d-block';
+        notes1.innerHTML = '*Klik nama balita untuk info lebih lengkap.';
+        var notes2 = document.createElement('small');
+        notes2.className = 'text-danger text-bold d-block';
+        notes2.innerHTML = '*Aktifkan "Tampilkan Semua Data" sebelum export/print jika ingin semua data terambil.';
+
+        textContainer.appendChild(notes1);
+        textContainer.appendChild(notes2);
+
+        // Buat container untuk slider di sebelah kanan
+        var sliderContainer = document.createElement('div');
+        sliderContainer.style.display = 'flex';
+        var sliderLabel = document.createElement('span');
+        sliderLabel.innerHTML = 'Tampilkan Semua Data';
+        sliderLabel.className = 'text-bold';
+        var sliderCheckbox = document.createElement('input');
+        sliderCheckbox.type = 'checkbox';
+        sliderCheckbox.className = 'form-check-input';
+        sliderCheckbox.style.width = '1em';
+        sliderCheckbox.style.height = '1em';
+
+        // Event listener untuk slider
+        sliderCheckbox.addEventListener('change', function() {
+          if (this.checked) {
+            api.page.len(-1).draw(); // Tampilkan semua data
+          } else {
+            api.page.len(20).draw(); // Kembalikan ke default (misalnya 20, atau nilai dari lengthMenu)
+          }
+        });
+
+        sliderContainer.appendChild(sliderLabel);
+        sliderContainer.appendChild(sliderCheckbox);
+
+        // Tambahkan textContainer dan sliderContainer ke mainContainer
+        mainContainer.appendChild(textContainer);
+        mainContainer.appendChild(sliderContainer);
+
+        // Sisipkan mainContainer ke dalam DOM
+        var wrapper = document.getElementById('balita_wrapper');
+        if (wrapper) {
+          var rowsInWrapper = $(wrapper).find('> .row');
+          if (rowsInWrapper.length > 1) {
+            $(rowsInWrapper[1]).before(mainContainer);
+          } else if (rowsInWrapper.length === 1) {
+            $(rowsInWrapper[0]).after(mainContainer);
+          } else {
+            $(wrapper).prepend(mainContainer);
+          }
+        }
+      }
     });
 
-    table.buttons().container().appendTo('#balita_wrapper .col-md-6:eq(0)');
-    table.on('order.dt search.dt', function () {
-      table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-        cell.innerHTML = i+1;
-        table.cell(cell).invalidate('dom');
+    table.on('preXhr.dt', function ( e, settings, data ) {
+      console.log('preXhr.dt: Requesting data from server...');
+      Swal.fire({
+        title: 'Memperbarui Data',
+        text: 'Mohon tunggu sebentar...', // Opsional
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
       });
-    }).draw();
+    });
+
+    table.on('draw.dt', function (e, settings) {
+      console.log('draw.dt: Table redrawn.');
+      Swal.close();
+    });
+
+    // debounce search
+    var searchInput = $('div.dataTables_filter input');
+    var debounceTimer;
+
+    searchInput.off('keyup.DT input.DT'); // Hapus event listener default
+
+    searchInput.on('keyup input', function() {
+        clearTimeout(debounceTimer);
+        var that = this;
+        debounceTimer = setTimeout(function() {
+            table.search($(that).val()).draw();
+        }, 1000); // Delay 1 detik (1000 ms)
+    });
   });
 </script>
 @endif
@@ -381,32 +508,6 @@ if(session('level') == 'petugas'){
         });
         setTimeout(function() {
           document.getElementById("delete"+id).submit();
-        }, 2000);
-      }
-    })
-  }
-</script>
-@endif
-
-@if(Request::is('verifikasi'))
-<script>
-  function verif(nik) {
-    Swal.fire({
-      html: "<h2>Verifikasi data ini?</h2>",
-      showConfirmButton: true,
-      showDenyButton: false,
-      showCancelButton: true,
-      ConfirmButtonText: 'Ya',
-      cancelButtonText: 'Batal',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          showConfirmButton: false,
-          icon: 'success',
-          text: 'Berhasil.',
-        });
-        setTimeout(function() {
-          document.getElementById(nik).submit();
         }, 2000);
       }
     })
