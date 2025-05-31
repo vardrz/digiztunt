@@ -58,9 +58,13 @@
 
       <hr>
       <div class="social-auth-links text-center mt-2 mb-3">
-        <a href="http://wa.me/628100200300" class="btn btn-block btn-danger">
-            <i class="fa fa-key mr-2"></i> Lupa Password?
+        <a href="http://wa.me/6285727055781" target="_blank" class="btn btn-block btn-danger">
+          <i class="fa fa-question-circle mr-2"></i> Butuh bantuan? Klik disini
         </a>
+
+        <div class="mt-3 text-bold">
+          <span class="text-danger">HOTLINE DIGIZTUNT</span> : <a href="http://wa.me/6285727055781" target="_blank" class="text-dark">085727055781 (WA)</a>
+        </div>
       </div>
       <!-- /.social-auth-links -->
     </div>

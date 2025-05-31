@@ -51,7 +51,10 @@ Route::get('/verifikasi', [StantingController::class, 'index'])->middleware('aut
 Route::post('/verifikasi/accept', [StantingController::class, 'verif'])->middleware('auth');
 Route::post('/verifikasi/update', [StantingController::class, 'update'])->middleware('auth');
 Route::get('/status/{tahun?}/{bulan?}', [StantingController::class, 'status'])->middleware('auth');
+Route::get('/data-status', [StantingController::class, 'dataStatus'])->middleware('auth');
 Route::get('/belum-ditimbang/{tahun?}/{bulan?}', [StantingController::class, 'belumDitimbang'])->middleware('auth');
+Route::get('/data/balita-belum-ditimbang', [StantingController::class, 'dataBelumDitimbang'])->middleware('auth');
+Route::get('/data/balita-sudah-ditimbang', [StantingController::class, 'dataSudahDitimbang'])->middleware('auth');
 
 // Posyandu
 Route::get('/posyandu', [PosyanduController::class, 'index'])->middleware('auth');
@@ -65,6 +68,7 @@ Route::get('/kader', [KaderController::class, 'index'])->middleware('auth');
 Route::get('/kader/generate', [KaderController::class, 'generate'])->middleware('auth');
 Route::post('/kader', [KaderController::class, 'store'])->middleware('auth');
 Route::post('/kader/reset', [KaderController::class, 'resetPassword'])->middleware('auth');
+Route::put('/kader/update', [KaderController::class, 'update'])->name('kader.update')->middleware('auth');
 Route::post('/kader/delete', [KaderController::class, 'destroy'])->middleware('auth');
 
 // Excel

@@ -12,7 +12,7 @@ class Balita extends Model
     use HasFactory;
     public $timestamps = false;
 
-    public function posyandu()
+    public function posyanduRelation()
     {
         return $this->belongsTo(Posyandu::class, 'posyandu', 'id');
     }

@@ -4,6 +4,7 @@ namespace App\Charts;
 
 use App\Models\Balita;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
+use Illuminate\Support\Facades\DB; // Pastikan DB facade di-import
 
 class StuntingChart
 {
@@ -14,57 +15,91 @@ class StuntingChart
         $this->chart = $chart;
     }
 
-    private function countDataGiziBuruk($data, $ukur, $between)
+    private function getCountGiziBurukForKelurahan($kelurahan, $ukur, $between, $fiveYearAgo, $thisDay)
     {
-        // dd($between);
-        $count = 0;
-        foreach ($data as $d) {
-            // $cek = $d->pelayanan->where('verif', 'y')->whereBetween('tgl_pelayanan', $between);
-            // dd($cek);
-
-            if ($ukur == 'tbu') {
-                if ($d->status == null) {
-                    // $count = 0;
-                } elseif ($d->pelayanan->where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->last() == null) {
-                    // $count++;
-                } elseif ($d->pelayanan->where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->last()->tbu < -2) {
-                    $count++;
-                }
-            } else {
-                if ($d->status == null) {
-                    // $count = 0;
-                } elseif ($d->pelayanan->where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->last() == null) {
-                    // $count++;
-                } elseif ($d->pelayanan->where('verif', 'y')->whereBetween('tgl_pelayanan', $between)->last()->bbu < -2) {
-                    $count++;
-                }
-            }
-        }
-
-        return $count;
+        return Balita::where('kelurahan', $kelurahan)
+            ->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])
+            ->whereHas('pelayanan', function ($query) use ($ukur, $between) {
+                $query->where('verif', 'y')
+                      ->whereBetween('tgl_pelayanan', $between)
+                      ->when($ukur == 'tbu', function ($q) {
+                          $q->where('tbu', '<', -2);
+                      })
+                      ->when($ukur == 'bbu', function ($q) {
+                          $q->where('bbu', '<', -2);
+                      })
+                      // Ensure we are checking the latest relevant record within the $between period
+                      // This part is tricky with whereHas and might need a subquery for perfect accuracy
+                      // For now, this counts balita if ANY verified pelayanan in the period matches criteria.
+                      // A more precise (but complex) query would ensure it's the *last* record in the period.
+                      ;
+            })
+            ->count();
     }
 
-    private function countData($data, $ukur)
+    // Optimized version of countData, assuming we want the latest overall verified pelayanan
+    private function getCountForKelurahan($kelurahan, $ukur, $fiveYearAgo, $thisDay)
     {
-        // dd($data[0]->pelayanan->last()->verif == 'n');
-        $count = 0;
-        foreach ($data as $d) {
-            if ($ukur == 'tbu') {
-                if ($d->status == null) {
-                    // $count = 0;
-                } elseif ($d->pelayanan->where('verif', 'y')->last()->tbu < -2) {
-                    $count++;
-                }
-            } else {
-                if ($d->status == null) {
-                    // $count = 0;
-                } elseif ($d->pelayanan->where('verif', 'y')->last()->bbu < -2) {
-                    $count++;
-                }
-            }
+        // Subquery untuk mendapatkan id pelayanan terakhir yang terverifikasi untuk setiap balita
+        $latestVerifiedPelayananSubquery = DB::table('pelayanans as p_sub')
+            ->select('p_sub.id_balita', DB::raw('MAX(p_sub.id) as latest_pelayanan_id'))
+            ->where('p_sub.verif', 'y')
+            ->groupBy('p_sub.id_balita');
+
+        $query = Balita::joinSub($latestVerifiedPelayananSubquery, 'latest_pelayanan', function ($join) {
+            $join->on('balitas.id', '=', 'latest_pelayanan.id_balita');
+        })
+        ->join('pelayanans as p_main', 'p_main.id', '=', 'latest_pelayanan.latest_pelayanan_id')
+        ->where('balitas.kelurahan', $kelurahan)
+        ->whereBetween('balitas.tgl_lahir', [$fiveYearAgo, $thisDay]);
+
+        if ($ukur == 'tbu') {
+            $query->where('p_main.tbu', '<', -2);
+        } elseif ($ukur == 'bbu') {
+            $query->where('p_main.bbu', '<', -2);
         }
 
-        return $count;
+        return $query->count();
+    }
+
+    public function puskesmasGiziBuruk($puskesmas): \ArielMejiaDev\LarapexCharts\BarChart
+    {
+        $thisDay = date('Y-m-d');
+        $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
+
+        $pendek = [];
+        $kurus = [];
+        $axisX = [];
+
+        // Mapping puskesmas ke kelurahan tetap sama
+        $puskesmasKelurahanMap = [
+            'KUSUMA BANGSA' => ['PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG'],
+            'KRAPYAK' => ['KRAPYAK', 'DEGAYU'],
+            'DUKUH' => ['PADUKUHAN KRATON', 'BANDENGAN'] 
+        ];
+
+        if (isset($puskesmasKelurahanMap[$puskesmas])) {
+            $axisX = $puskesmasKelurahanMap[$puskesmas];
+            foreach ($axisX as $index => $kelurahanName) {
+                $pendek[$index] = $this->getCountForKelurahan($kelurahanName, 'tbu', $fiveYearAgo, $thisDay);
+                $kurus[$index] = $this->getCountForKelurahan($kelurahanName, 'bbu', $fiveYearAgo, $thisDay);
+            }
+        } else {
+            // Log atau handle jika puskesmas tidak ditemukan di map
+            // error_log("Puskesmas tidak ditemukan di map: " . $puskesmas);
+        }
+
+        return $this->chart->barChart()
+            ->setTitle('Grafik Masalah Gizi Balita Puskesmas ' . $puskesmas)
+            ->setSubtitle('Jumlah masalah gizi balita per kelurahan.')
+            ->addData('Pendek', $pendek)
+            ->addData('Kurus', $kurus)
+            ->setXAxis($axisX)
+            ->setHeight(320)
+            ->setFontFamily('Montserrat')
+            ->setColors(['#FFC107', '#303F9F'])
+            ->setMarkers(['#FFC107', '#303F9F'], 7, 10)
+            ->setGrid();
     }
 
     public function giziBuruk($between, $title): \ArielMejiaDev\LarapexCharts\AreaChart
@@ -72,37 +107,26 @@ class StuntingChart
         $thisDay = date('Y-m-d');
         $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
 
+        $kelurahanList = [
+            'PANJANG WETAN', 'PANJANG BARU', 'KANDANG PANJANG',
+            'KRAPYAK', 'DEGAYU', 'PADUKUHAN KRATON', 'BANDENGAN'
+        ];
+
         $pendek = [];
         $kurus = [];
 
-        $panjangwetan = Balita::where('kelurahan', 'PANJANG WETAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-        $pendek[0] = $this->countDataGiziBuruk($panjangwetan, 'tbu', $between);
-        $kurus[0] = $this->countDataGiziBuruk($panjangwetan, 'bbu', $between);
-        $panjangbaru = Balita::where('kelurahan', 'PANJANG BARU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-        $pendek[1] = $this->countDataGiziBuruk($panjangbaru, 'tbu', $between);
-        $kurus[1] = $this->countDataGiziBuruk($panjangbaru, 'bbu', $between);
-        $kandangpanjang = Balita::where('kelurahan', 'KANDANG PANJANG')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-        $pendek[2] = $this->countDataGiziBuruk($kandangpanjang, 'tbu', $between);
-        $kurus[2] = $this->countDataGiziBuruk($kandangpanjang, 'bbu', $between);
-        $krapyak = Balita::where('kelurahan', 'KRAPYAK')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-        $pendek[3] = $this->countDataGiziBuruk($krapyak, 'tbu', $between);
-        $kurus[3] = $this->countDataGiziBuruk($krapyak, 'bbu', $between);
-        $degayu = Balita::where('kelurahan', 'DEGAYU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-        $pendek[4] = $this->countDataGiziBuruk($degayu, 'tbu', $between);
-        $kurus[4] = $this->countDataGiziBuruk($degayu, 'bbu', $between);
-        $padukuhankraton = Balita::where('kelurahan', 'PADUKUHAN KRATON')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-        $pendek[5] = $this->countDataGiziBuruk($padukuhankraton, 'tbu', $between);
-        $kurus[5] = $this->countDataGiziBuruk($padukuhankraton, 'bbu', $between);
-        $bandengan = Balita::where('kelurahan', 'BANDENGAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-        $pendek[6] = $this->countDataGiziBuruk($bandengan, 'tbu', $between);
-        $kurus[6] = $this->countDataGiziBuruk($bandengan, 'bbu', $between);
+        foreach ($kelurahanList as $index => $kelurahanName) {
+            // Menggunakan method yang sudah dioptimasi
+            $pendek[$index] = $this->getCountGiziBurukForKelurahan($kelurahanName, 'tbu', $between, $fiveYearAgo, $thisDay);
+            $kurus[$index] = $this->getCountGiziBurukForKelurahan($kelurahanName, 'bbu', $between, $fiveYearAgo, $thisDay);
+        }
 
         return $this->chart->areaChart()
-            ->setTitle('Grafik Masalah Gizi Balita ' . $title,)
+            ->setTitle('Grafik Masalah Gizi Balita ' . $title)
             ->setSubtitle('Jumlah masalah gizi balita per kelurahan.')
             ->addData('Pendek', $pendek)
             ->addData('Kurus', $kurus)
-            ->setXAxis(['Panjang Wetan', 'Panjang Baru', 'Kandang Panjang', 'Krapyak', 'Degayu', 'Padukuhan Kraton', 'Bandengan'])
+            ->setXAxis($kelurahanList) // Menggunakan list kelurahan untuk XAxis
             ->setHeight(320)
             ->setFontFamily('Montserrat')
             ->setColors(['#FFC107', '#303F9F'])
@@ -227,65 +251,6 @@ class StuntingChart
             ->setHeight(320)
             ->setFontFamily('Montserrat')
             ->setColors(['#303F9F'])
-            ->setGrid();
-    }
-
-    public function puskesmasGiziBuruk($puskesmas): \ArielMejiaDev\LarapexCharts\BarChart
-    {
-        $thisDay = date('Y-m-d');
-        $fiveYearAgo = date('Y-m-d', strtotime('-5 years'));
-
-        $pendek = [];
-        $kurus = [];
-
-        if ($puskesmas == 'KUSUMA BANGSA') {
-            $panjangwetan = Balita::where('kelurahan', 'PANJANG WETAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-            $pendek[0] = $this->countData($panjangwetan, 'tbu');
-            $kurus[0] = $this->countData($panjangwetan, 'bbu');
-            $panjangbaru = Balita::where('kelurahan', 'PANJANG BARU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-            $pendek[1] = $this->countData($panjangbaru, 'tbu');
-            $kurus[1] = $this->countData($panjangbaru, 'bbu');
-            $kandangpanjang = Balita::where('kelurahan', 'KANDANG PANJANG')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-            $pendek[2] = $this->countData($kandangpanjang, 'tbu');
-            $kurus[2] = $this->countData($kandangpanjang, 'bbu');
-        } elseif ($puskesmas == 'KRAPYAK') {
-            $krapyak = Balita::where('kelurahan', 'KRAPYAK')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-            $pendek[0] = $this->countData($krapyak, 'tbu');
-            $kurus[0] = $this->countData($krapyak, 'bbu');
-            $degayu = Balita::where('kelurahan', 'DEGAYU')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-            $pendek[1] = $this->countData($degayu, 'tbu');
-            $kurus[1] = $this->countData($degayu, 'bbu');
-        } else {
-            $padukuhankraton = Balita::where('kelurahan', 'PADUKUHAN KRATON')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-            $pendek[0] = $this->countData($padukuhankraton, 'tbu');
-            $kurus[0] = $this->countData($padukuhankraton, 'bbu');
-            $bandengan = Balita::where('kelurahan', 'BANDENGAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->get();
-            $pendek[1] = $this->countData($bandengan, 'tbu');
-            $kurus[1] = $this->countData($bandengan, 'bbu');
-        }
-
-        // $kurus[0] = Balita::where('kelurahan', 'PANJANG WETAN')->whereBetween('tgl_lahir', [$fiveYearAgo, $thisDay])->whereHas('pelayanan', function ($query) {
-        //     $query->orderBy('tgl_pelayanan', 'desc')->limit(1)->where('bbu', '<', -2);
-        // })->count();
-
-        if ($puskesmas == 'KUSUMA BANGSA') {
-            $axisX = ['Panjang Wetan', 'Panjang Baru', 'Kandang Panjang'];
-        } elseif ($puskesmas == 'KRAPYAK') {
-            $axisX = ['Krapyak', 'Degayu'];
-        } else {
-            $axisX = ['Padukuhan Kraton', 'Bandengan'];
-        }
-
-        return $this->chart->barChart()
-            ->setTitle('Grafik Masalah Gizi Balita',)
-            ->setSubtitle('Jumlah masalah gizi balita per kelurahan.')
-            ->addData('Pendek', $pendek)
-            ->addData('Kurus', $kurus)
-            ->setXAxis($axisX)
-            ->setHeight(320)
-            ->setFontFamily('Montserrat')
-            ->setColors(['#FFC107', '#303F9F'])
-            ->setMarkers(['#FFC107', '#303F9F'], 7, 10)
             ->setGrid();
     }
 

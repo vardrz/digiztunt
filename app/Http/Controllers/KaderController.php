@@ -37,7 +37,7 @@ class KaderController extends Controller
     {
         $validate = Validator::make($request->all(), [
             "name" => "required",
-            "email" => "required|email|unique:users",
+            "email" => "required|unique:users",
             "posyandu" => "required",
         ]);
 
@@ -92,5 +92,36 @@ class KaderController extends Controller
         }
 
         return $added . " Data Kader Berhasil Ditambahkan.";
+    }
+
+    public function update(Request $request)
+    {
+        $kader = User::findOrFail($request->id_kader);
+
+        $rules = [
+            'edit_name' => 'required|string',
+            'edit_email' => 'required|string|unique:users,email,' . $kader->id,
+        ];
+
+        $messages = [
+            'edit_name.required' => 'Nama kader tidak boleh kosong.',
+            'edit_email.required' => 'Username kader tidak boleh kosong.',
+            'edit_email.unique' => 'Username sudah digunakan oleh akun lain.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator, 'updateKader') // Memberikan nama khusus untuk error bag
+                ->withInput()
+                ->with('error_modal_id', $request->id_kader); // Kirim ID kader untuk membuka modal yang benar jika ada error
+        }
+
+        $kader->name = $request->edit_name;
+        $kader->email = $request->edit_email;
+        $kader->save();
+
+        return redirect()->back()->with('success', 'Data kader berhasil diperbarui.');
     }
 }

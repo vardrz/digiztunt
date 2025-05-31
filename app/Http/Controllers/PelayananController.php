@@ -68,8 +68,12 @@ class PelayananController extends Controller
 
     public function find($data = null)
     {
-        // $return = Pelayanan::where('nik_balita', $data)->orderBy('tgl_pelayanan', 'DESC')->get();
-        $return = Pelayanan::where('id_balita', $data)->orderBy('tgl_pelayanan', 'DESC')->get();
+        // $return = Pelayanan::where('id_balita', $data)->orderBy('tgl_pelayanan', 'DESC')->get();
+        $return = Pelayanan::where('id_balita', $data)
+            ->where('tgl_pelayanan', '>=', now()->subMonths(12))
+            ->where('tgl_pelayanan', '<=', now())
+            ->orderBy('tgl_pelayanan', 'DESC')
+            ->get();
         return $return;
     }
 

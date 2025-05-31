@@ -1,4 +1,3 @@
-<?php $no=1; ?>
 @extends('layout.main')
 
 @section('content')
@@ -31,6 +30,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php $no = 1; @endphp
                         @foreach ($data as $d)
                         <tr>
                             <td class="text-center">{{ $no }}</td>
@@ -39,14 +39,19 @@
                             <td>{{ $d->name }}</td>
                             <td>{{ $d->email }}</td>
                             <td class="text-center align-middle">
-                                {{-- <a href="/posyandu/edit/{{ $d->id }}" class="btn btn-lg py-0 px-1 text-primary"><i class="fas fa-edit"></i></a> --}}
-                                <button type="button" onclick="reset({{ $d->id }},'{{ $d->name }}','{{ $d->posyandu->name }}')" class="btn btn-xs btn-primary py-0 px-1 w-100">Reset Password</button><br>
+                                <button type="button" class="btn btn-xs btn-primary py-0 px-1 w-100 btn-edit-kader"
+                                        data-id="{{ $d->id }}"
+                                        data-name="{{ $d->name }}"
+                                        data-email="{{ $d->email }}">
+                                    Edit Akun
+                                </button>
+                                <button type="button" onclick="reset({{ $d->id }},'{{ $d->name }}','{{ $d->posyandu->name }}')" class="btn btn-xs btn-secondary py-0 px-1 w-100">Reset Password</button><br>
                                 <form action="/kader/reset" method="post" id="reset{{ $d->id }}">@csrf <input type="hidden" name="id" value="{{ $d->id }}"></form>
                                 <button type="button" onclick="del({{ $d->id }},'{{ $d->name }}','{{ $d->posyandu->name }}')" class="btn btn-xs btn-danger py-0 px-1 w-100">Hapus Akun</button>
                                 <form action="/kader/delete" method="post" id="delete{{ $d->id }}">@csrf <input type="hidden" name="id" value="{{ $d->id }}"></form>
                             </td>
                         </tr>
-                        <?php $no++; ?>
+                        @php $no++; @endphp
                         @endforeach
                     </tbody>
                 </table>
@@ -62,6 +67,7 @@
 
 @section('script')
 
+<!-- Modal Tambah Kader -->
 <div class="modal fade" id="kaderNewModal">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
@@ -75,8 +81,8 @@
                 @error('name')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
-                <label for="email">Email Kader</label>
-                <input type="email" value="{{ old('email') }}" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email Kader" required>
+                <label for="email">Username Kader</label>
+                <input type="text" value="{{ old('email') }}" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Username Kader" required>
                 @error('email')<span class="error text-uppercase invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
@@ -104,10 +110,45 @@
     </div>
 </div>
 
+<!-- Modal Edit Kader -->
+<div class="modal fade" id="kaderEditModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="h4 pt-4 pb-3 text-center w-100" style="border-bottom: solid 1px #b4b4b4">Edit Akun Kader</div>
+            <div class="modal-body">
+                <form method="post" action="{{ route('kader.update') }}" id="editKaderForm">
+                    @csrf
+                    @method('PUT') <!-- Gunakan method PUT untuk update -->
+                    <input type="hidden" name="id_kader" id="edit_id_kader">
+                    <div class="form-group">
+                        <label for="edit_name">Nama Kader</label>
+                        <input type="text" name="edit_name" id="edit_name" class="form-control @error('edit_name', 'updateKader') is-invalid @enderror" placeholder="Nama Kader" required>
+                        @error('edit_name', 'updateKader')<span class="error text-danger invalid-feedback">{{ $message }}</span>@enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_email">Username Kader</label>
+                        <input type="text" name="edit_email" id="edit_email" class="form-control @error('edit_email', 'updateKader') is-invalid @enderror" placeholder="Username Kader" required>
+                        @error('edit_email', 'updateKader')<span class="error text-danger invalid-feedback">{{ $message }}</span>@enderror
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-primary w-100 mb-1">Simpan Perubahan</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-danger w-100" data-dismiss="modal">Batal</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const kaderNewModal = new bootstrap.Modal(document.getElementById('kaderNewModal'));
+    const kaderEditModal = new bootstrap.Modal(document.getElementById('kaderEditModal'));
 
-    // SweetAlert
+    // SweetAlert functions (reset, del, confirm)
     function typeConfirm(id, name, posyandu, type) {
         Swal.fire({
             html: `
@@ -261,12 +302,51 @@
             });
         }).draw();
     });
-</script>
 
-@if (session()->has('fail'))
-<script>
+    // Event listener untuk tombol edit
+    $('.btn-edit-kader').on('click', function() {
+        const id = $(this).data('id');
+        const name = $(this).data('name');
+        const email = $(this).data('email');
+    
+        $('#edit_id_kader').val(id);
+        $('#edit_name').val(name);
+        $('#edit_email').val(email);
+        
+        // Hapus kelas is-invalid dan pesan error sebelumnya jika ada
+        $('#editKaderForm .is-invalid').removeClass('is-invalid');
+        $('#editKaderForm .invalid-feedback').text('');
+    
+        kaderEditModal.show();
+    });
+    
+    @if (session()->has('fail'))
     kaderNewModal.show();
-</script>
-@endif
+    @endif
+    
+    // Jika ada error validasi saat update, buka kembali modal edit yang sesuai
+    @if ($errors->updateKader->any() && session('error_modal_id'))
+    $(document).ready(function() {
+        // Isi kembali field jika ada old input (meskipun tidak ideal untuk modal, tapi bisa membantu)
+        $('#edit_id_kader').val('{{ session('error_modal_id') }}');
+        // Anda mungkin perlu cara yang lebih baik untuk mengisi ulang data lama jika validasi gagal
+        // karena data asli dari tombol edit mungkin sudah hilang.
+        // Untuk sekarang, kita hanya buka modalnya.
+        
+        // Cari tombol edit yang sesuai dengan ID untuk mendapatkan data lama jika perlu
+        // Ini hanya contoh, mungkin perlu disesuaikan
+        var originalButton = $('.btn-edit-kader[data-id="{{ session('error_modal_id') }}"]');
+        if (originalButton.length) {
+                $('#edit_name').val('{{ old('edit_name') }}' || originalButton.data('name'));
+                $('#edit_email').val('{{ old('edit_email') }}' || originalButton.data('email'));
+        } else {
+                $('#edit_name').val('{{ old('edit_name') }}');
+                $('#edit_email').val('{{ old('edit_email') }}');
+        }
 
+        kaderEditModal.show();
+    });
+    @endif
+    
+</script>
 @endsection
