@@ -102,7 +102,7 @@
       }
       
       var table = $("#balita").DataTable({
-        ajax: "{{ url('/verifikasi') }}",
+        ajax: "/verifikasi",
         processing: true,
         serverSide: true,
         columns: [

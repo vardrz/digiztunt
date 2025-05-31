@@ -105,7 +105,7 @@ class BalitaController extends Controller
                 ->addColumn('action', function ($row) {
                     $actionBtn = '';
                     if (session('level') == 'pimpinan' && auth()->user()->area != 'all') {
-                        $editUrl = url('/balita/edit/' . $row->id);
+                        $editUrl = '/balita/edit/' . $row->id;
                         $deleteFormId = 'delete' . $row->id;
                         $deleteUrl = url('/balita/delete/' . $row->id);
                         $actionBtn = '<a href="'.$editUrl.'" class="btn btn-lg py-0 px-0 mr-1 text-primary"><i class="fas fa-edit"></i></a>';

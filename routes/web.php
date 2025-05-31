@@ -53,8 +53,8 @@ Route::post('/verifikasi/update', [StantingController::class, 'update'])->middle
 Route::get('/status/{tahun?}/{bulan?}', [StantingController::class, 'status'])->middleware('auth');
 Route::get('/data-status', [StantingController::class, 'dataStatus'])->middleware('auth');
 Route::get('/belum-ditimbang/{tahun?}/{bulan?}', [StantingController::class, 'belumDitimbang'])->middleware('auth');
-Route::get('/data/balita-belum-ditimbang', [StantingController::class, 'dataBelumDitimbang'])->name('balita.data.belumditimbang')->middleware('auth');
-Route::get('/data/balita-sudah-ditimbang', [StantingController::class, 'dataSudahDitimbang'])->name('balita.data.sudahditimbang')->middleware('auth');
+Route::get('/data/balita-belum-ditimbang', [StantingController::class, 'dataBelumDitimbang'])->middleware('auth');
+Route::get('/data/balita-sudah-ditimbang', [StantingController::class, 'dataSudahDitimbang'])->middleware('auth');
 
 // Posyandu
 Route::get('/posyandu', [PosyanduController::class, 'index'])->middleware('auth');

@@ -315,12 +315,20 @@ class StantingController extends Controller
         $title = '';
         $area = '';
 
-        $areaPrefix = match($user->level) {
-            'pimpinan' => $user->area === 'all' ? 'Kec. Pekalongan Utara' : 'Kelurahan ' . ucwords(strtolower($user->area)),
-            'admin' => 'Puskesmas ' . ucwords(strtolower($user->area)),
-            'petugas' => 'Posyandu ' . ($user->posyandu->name ?? ''),
-            default => 'Kelurahan ' . ucwords(strtolower($user->area))
-        };
+        $areaPrefix = '';
+        switch($user->level) {
+            case 'pimpinan':
+                $areaPrefix = $user->area === 'all' ? 'Kec. Pekalongan Utara' : 'Kelurahan ' . ucwords(strtolower($user->area));
+                break;
+            case 'admin':
+                $areaPrefix = 'Puskesmas ' . ucwords(strtolower($user->area));
+                break;
+            case 'petugas':
+                $areaPrefix = 'Posyandu ' . ($user->posyandu->name ?? '');
+                break;
+            default:
+                $areaPrefix = 'Kelurahan ' . ucwords(strtolower($user->area));
+        }
 
         $title = "Balita Belum Ditimbang $areaPrefix {$bulan[$bln_index]} $tahun";
         $area = $areaPrefix;

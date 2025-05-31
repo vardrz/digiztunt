@@ -150,7 +150,7 @@ $dataTahun = [$thisYear, $thisYear-1, $thisYear-2, $thisYear-3, $thisYear-4];
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('balita.data.belumditimbang') }}", // Sesuaikan dengan nama route Anda
+                url: "/data/balita-belum-ditimbang",
                 data: function (d) {
                     d.tahun = selectedTahun;
                     d.bulan = selectedBulan;
@@ -264,7 +264,7 @@ $dataTahun = [$thisYear, $thisYear-1, $thisYear-2, $thisYear-3, $thisYear-4];
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('balita.data.sudahditimbang') }}", // Sesuaikan dengan nama route Anda
+                url: "/data/balita-sudah-ditimbang",
                 data: function (d) {
                     d.tahun = selectedTahun;
                     d.bulan = selectedBulan;

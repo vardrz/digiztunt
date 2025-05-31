@@ -326,7 +326,7 @@ if(session('level') == 'petugas'){
     }
 
     var table = $("#balita").DataTable({
-      ajax: "{{ Request::is('balita') ? url('/balita') : url('/balita/history') }}",
+      ajax: "{{ Request::is('balita') ? '/balita' : '/balita/history' }}",
       processing: true,
       serverSide: true,
       columns: columns,
